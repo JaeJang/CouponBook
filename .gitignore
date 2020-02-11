@@ -57,3 +57,8 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+#vscode settings
+*.vscode/
+
+/src/configs/configs.js
