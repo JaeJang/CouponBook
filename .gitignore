@@ -62,3 +62,8 @@ buck-out/
 *.vscode/
 
 /src/configs/configs.js
+
+package-lock.json
+
+android/app/google-services.json
+android/google-services.json

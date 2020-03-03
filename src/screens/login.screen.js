@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, StyleSheet, TextInput, Alert } from 'react-native';
-import { Card, CardItem, Form, Input, Item, Button, Label } from 'native-base';
+import { View, Text, Animated, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { Card, CardItem, Form, Input, Item, Label, Button } from 'native-base';
+import { connect } from 'react-redux';
 
 import firebase from '../configs/firebase';
 
+import * as authenticationAction from '@modules/authentication';
 import AnimatedName from '@components/animatedName';
 import { sleep } from '@utils/sleep';
+import { isEmailValid } from '@utils/validate';
+import { timingAnimation } from '@utils/animation';
 
 const LOGIN = 'LOGIN';
 const SIGNUP = 'SIGNUP';
+
+//const INIT_ANI_START = 1500;
+//const SLEEP_BETWEEN_NAME_FORM = 1000;
+const INIT_ANI_START = 0;
+const SLEEP_BETWEEN_NAME_FORM = 0;
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -19,94 +28,116 @@ class LoginScreen extends Component {
     this.signupFormOpacity = new Animated.Value(0);
 
     this.state = {
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      firstName: '',
-      lastName: '',
+      data: {
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        firstName: '',
+        lastName: ''
+      },
       screen: LOGIN
     };
   }
 
   componentDidMount() {
     const user = firebase.auth().currentUser;
-    this.initialAnimationStart(1000, user);
+    this.initialAnimationStart(INIT_ANI_START, user);
   }
 
   initForm = () => {
     this.setState({
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      firstName: '',
-      lastName: ''
+      ...this.state,
+      data: {
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        firstName: '',
+        lastName: ''
+      }
     });
   };
 
   initialAnimationStart = (milisec, user) => {
     setTimeout(async () => {
-      this.timingAnimation(this.nameFlex);
+      timingAnimation(this.nameFlex);
 
-      await sleep(1000);
+      await sleep(SLEEP_BETWEEN_NAME_FORM);
 
-      if (!user) {
-        this.timingAnimation(this.loginFormOpacity);
-      }
+      //if (!user) {
+      timingAnimation(this.loginFormOpacity);
+      //}
     }, milisec);
   };
 
-  timingAnimation = (value, toValue = 1, duration = 1000) => {
-    Animated.timing(value, {
-      toValue: toValue,
-      duration: duration
-    }).start();
-  };
-
-  handleLogin = async () => {
-    if (this.state.screen === LOGIN) {
-      const { email, password } = this.state;
-      if (!email || !password) {
-        Alert.alert('Login', 'Please enter email and password!');
-        return;
-      }
-
-      firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-        Alert.alert('success');
-      });
+  handleLogin = () => {
+    const { email, password } = this.state.data;
+    if (!email || !password) {
+      Alert.alert('Login', 'Please enter email and password!');
+      return;
     } else {
-      this.timingAnimation(this.signupFormOpacity, 0, 500);
-      await sleep(500);
-      this.initForm();
-      this.setState({ screen: LOGIN });
-      this.timingAnimation(this.loginFormOpacity, 1, 500);
-      //this.switchScreen(this.signupFormOpacity, this.loginFormOpacity, LOGIN);
+      this.props.login(this.state.data);
     }
   };
 
   handleSignup = async () => {
-    if (this.state.screen === SIGNUP) {
-      const { firstName, lastName, email, password, passwordConfirm } = this.state;
-      if (!firstName || !lastName || !email || !password || !passwordConfirm) {
-        Alert.alert('Sign Up', 'Please enter all fields');
-        return;
-      } else {
-      }
+    const { firstName, lastName, email, password, passwordConfirm } = this.state.data;
+    if (!firstName || !lastName || !email || !password || !passwordConfirm) {
+      Alert.alert('Sign Up', 'Please enter all fields');
+      return;
+    } else if (!isEmailValid(email)) {
+      Alert.alert('Sign Up', 'Invalid Email Address');
+      this.emailRef.focus();
+    } else if (password !== passwordConfirm) {
+      Alert.alert('Sign Up', 'Passwords are not matched');
+      this.setState({ password: '', passwordConfirm: '' });
+      this.passwordRef.focus();
     } else {
-      this.timingAnimation(this.loginFormOpacity, 0, 500);
-      await sleep(500);
-      this.initForm();
-      this.setState({ screen: SIGNUP });
-      this.timingAnimation(this.signupFormOpacity, 1, 500);
-      //this.switchScreen(this.loginFormContainer, this.signupFormOpacity, SIGNUP);
+      this.props.signup(
+        this.state.data,
+        // onSuccess
+        () => {
+          Alert.alert('We sent a verfication email! Please vertify and log in.');
+          this.initForm();
+          this.switchToLogin();
+        },
+        // onFailed
+        error => {
+          Alert.alert(error);
+        }
+      );
     }
   };
 
-  switchScreen = async (valueA, valueB, screenA) => {
-    this.timingAnimation(valueA, 0, 500);
+  switchToSignup = async () => {
+    timingAnimation(this.loginFormOpacity, 0, 500);
     await sleep(500);
     this.initForm();
-    this.setState({ screen: screenA });
-    this.timingAnimation(valueB, 1, 500);
+    this.setState({ screen: SIGNUP });
+    timingAnimation(this.signupFormOpacity, 1, 500);
+  };
+
+  switchToLogin = async () => {
+    timingAnimation(this.signupFormOpacity, 0, 500);
+    await sleep(500);
+    this.initForm();
+    this.setState({ screen: LOGIN });
+    timingAnimation(this.loginFormOpacity, 1, 500);
+  };
+
+  renderButtons = () => {
+    const { screen } = this.state;
+    const onPressLogin = screen === LOGIN ? this.handleLogin : this.switchToLogin;
+    const onPressSignup = screen === SIGNUP ? this.handleSignup : this.switchToSignup;
+    return (
+      <View>
+        <TouchableOpacity style={[styles.button]} onPress={onPressLogin}>
+          <Text style={[styles.buttonText]}>LOG IN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#DDDDDD' }]} onPress={onPressSignup}>
+          <Text style={[styles.buttonText]}>SIGN UP</Text>
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   renderLoginForm = () => {
@@ -122,13 +153,14 @@ class LoginScreen extends Component {
         <Form style={styles.form}>
           <Item full style={{}}>
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Please Enter Email"
-              ref={ref => (this.inputRef = ref)}
+              ref={ref => (this.emailRef = ref)}
               required={true}
-              value={this.state.email}
-              onChangeText={value => this.setState({ email: value })}
+              value={this.state.data.email}
+              onChangeText={value => this.setState({ data: { ...this.state.data, email: value } })}
             />
           </Item>
           <Item full>
@@ -137,16 +169,11 @@ class LoginScreen extends Component {
               placeholderTextColor="#fff"
               placeholder="Please Enter Password"
               type={'password'}
-              value={this.state.password}
-              onChangeText={value => this.setState({ password: value })}
+              value={this.state.data.password}
+              onChangeText={value => this.setState({ data: { ...this.state.data, password: value } })}
             />
           </Item>
-          <Button full block style={styles.button} onPress={this.handleLogin}>
-            <Text>Log In</Text>
-          </Button>
-          <Button full block style={[styles.button, { backgroundColor: '#bcdeff' }]} onPress={this.handleSignup}>
-            <Text>Sign Up</Text>
-          </Button>
+          {this.renderButtons()}
         </Form>
       </Animated.View>
     );
@@ -168,25 +195,26 @@ class LoginScreen extends Component {
               placeholder="First Name"
               placeholderTextColor="#fff"
               value={this.state.firstName}
-              onChangeText={value => this.setState({ firstName: value })}
+              onChangeText={value => this.setState({ data: { ...this.state.data, firstName: value } })}
             />
             <TextInput
               style={[styles.input, styles.inputName]}
               placeholder="Last Name"
               placeholderTextColor="#fff"
-              value={this.state.lastName}
-              onChangeText={value => this.setState({ lastName: value })}
+              value={this.state.data.lastName}
+              onChangeText={value => this.setState({ data: { ...this.state.data, lastName: value } })}
             />
           </Item>
           <Item full style={{}}>
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Please Enter Email"
-              ref={ref => (this.inputRef = ref)}
+              ref={ref => (this.emailRef = ref)}
               required={true}
-              value={this.state.email}
-              onChangeText={value => this.setState({ email: value })}
+              value={this.state.data.email}
+              onChangeText={value => this.setState({ data: { ...this.state.data, email: value } })}
             />
           </Item>
           <Item full>
@@ -195,8 +223,9 @@ class LoginScreen extends Component {
               placeholderTextColor="#fff"
               placeholder="Please Enter Password"
               type={'password'}
-              value={this.state.password}
-              onChangeText={value => this.setState({ password: value })}
+              value={this.state.data.password}
+              ref={ref => (this.passwordRef = ref)}
+              onChangeText={value => this.setState({ data: { ...this.state.data, password: value } })}
             />
           </Item>
           <Item full>
@@ -206,15 +235,10 @@ class LoginScreen extends Component {
               placeholder="Confirm Your Password"
               type={'password'}
               value={this.state.passwordConfirm}
-              onChangeText={value => this.setState({ passwordConfirm: value })}
+              onChangeText={value => this.setState({ data: { ...this.state.data, passwordConfirm: value } })}
             />
           </Item>
-          <Button full block style={styles.button} onPress={this.handleLogin}>
-            <Text>Log In</Text>
-          </Button>
-          <Button full block style={[styles.button, { backgroundColor: '#bcdeff' }]} onPress={this.handleSignup}>
-            <Text>Sign Up</Text>
-          </Button>
+          {this.renderButtons()}
         </Form>
       </Animated.ScrollView>
     );
@@ -260,7 +284,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: '#fff',
-    borderRadius: 5
+    borderRadius: 5,
+    alignItems: 'center',
+    padding: 10
+  },
+  buttonText: {
+    fontSize: 15
   },
   input: {
     color: '#fff',
@@ -280,4 +309,17 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LoginScreen;
+const mapStateToProps = state => {
+  return {
+    isLoading: state.authentication.isLoading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    login: data => dispatch(authenticationAction.login(data)),
+    signup: (data, onSuccess, onFailed) => dispatch(authenticationAction.signup(data, onSuccess, onFailed))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

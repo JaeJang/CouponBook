@@ -8,9 +8,9 @@ firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    store.dispatch(login(user));
+    //store.dispatch(login(user));
   } else {
-    store.dispatch(logout());
+    //store.dispatch(logout());
   }
 });
 

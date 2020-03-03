@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 import { sleep } from '@utils/sleep';
-
+import { timingAnimation } from '@utils/animation';
 const name = ['A', 'O', 'A', 'A', 'A', 'A', ' B', 'O', 'O', 'K'];
 
-const AnimatedName = ({ props }) => {
+const AnimatedName = ({ ...props }) => {
   const animated = [];
   const opacities = [];
   for (let i = 0; i < 10; ++i) {
@@ -21,11 +21,9 @@ const AnimatedName = ({ props }) => {
   useEffect(() => {
     let startAnimate = async () => {
       for (let ani of animated) {
-        Animated.timing(ani, {
-          toValue: 1,
-          duration: 1000
-        }).start();
-        await sleep(0);
+        timingAnimation(ani);
+        //await sleep(100);
+        await sleep(100);
       }
     };
     startAnimate();
