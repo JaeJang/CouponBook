@@ -4,6 +4,7 @@ import store from './src/store';
 import { Provider } from 'react-redux';
 import LoginScreen from './src/screens/login.screen';
 import Loader from '@components/loader';
+import AppNavigator from './src/navigation/app.navigation';
 
 export default class App extends Component {
   render() {
@@ -11,7 +12,8 @@ export default class App extends Component {
       <Provider store={store}>
         <Root>
           <Loader />
-          <LoginScreen />
+          <AppNavigator />
+          {/* <LoginScreen /> */}
         </Root>
       </Provider>
     );

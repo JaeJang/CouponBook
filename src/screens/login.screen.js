@@ -29,8 +29,8 @@ class LoginScreen extends Component {
 
     this.state = {
       data: {
-        email: '',
-        password: '',
+        email: 'wogur0505@gmail.com',
+        password: 'Ring1080',
         passwordConfirm: '',
         firstName: '',
         lastName: ''
@@ -75,7 +75,9 @@ class LoginScreen extends Component {
       Alert.alert('Login', 'Please enter email and password!');
       return;
     } else {
-      this.props.login(this.state.data);
+      this.props.login(this.state.data, () => {
+        this.props.navigation.navigate('From');
+      });
     }
   };
 
@@ -317,7 +319,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: data => dispatch(authenticationAction.login(data)),
+    login: (data, onSuccess) => dispatch(authenticationAction.login(data, onSuccess)),
     signup: (data, onSuccess, onFailed) => dispatch(authenticationAction.signup(data, onSuccess, onFailed))
   };
 };

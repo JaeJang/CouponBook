@@ -1,0 +1,76 @@
+{
+  "_from": "react-native-multi-loader",
+  "_id": "react-native-multi-loader@1.0.3",
+  "_inBundle": false,
+  "_integrity": "sha512-6QaqO4tXBk02Rj13gmF3aTM8H33JHdCQkhGSgZQ+43K98AU6dv0GNb7DXreV8KBLTn08JR+C2Cwf/ky1Hhy2Fg==",
+  "_location": "/react-native-multi-loader",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "react-native-multi-loader",
+    "name": "react-native-multi-loader",
+    "escapedName": "react-native-multi-loader",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-multi-loader/-/react-native-multi-loader-1.0.3.tgz",
+  "_shasum": "c8c1d8cc45696e62405c808f7075dd042e895eff",
+  "_spec": "react-native-multi-loader",
+  "_where": "/Users/jae/jae/CouponBook",
+  "author": {
+    "name": "Dharmendra Vaishnav",
+    "url": "dv190196@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/dharmen1901/react-native-multi-loader/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "prop-types": "^15.7.2"
+  },
+  "deprecated": false,
+  "description": "React Native Component for Multiple animated loaders and loading texts ",
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.56.3",
+    "react": "16.9.0",
+    "react-native": "0.61.5"
+  },
+  "homepage": "https://github.com/dharmen1901/react-native-multi-loader",
+  "keywords": [
+    "react",
+    "react-native",
+    "android",
+    "ios",
+    "loading",
+    "bar",
+    "dots",
+    "modal",
+    "popup",
+    "progress",
+    "indicator",
+    "spinner",
+    "animation",
+    "overlay"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "react-native-multi-loader",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dharmen1901/react-native-multi-loader.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.3"
+}

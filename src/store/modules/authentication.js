@@ -7,12 +7,13 @@ import { PROCESSING, PROCESSED } from '@store/types/loading';
 
 import { processing, processed } from '@store/modules/processing';
 
-export const login = data => dispatch => {
+export const login = (data, onSuccess) => dispatch => {
   dispatch(processing());
   firebase
     .auth()
     .signInWithEmailAndPassword(data.email, data.password)
     .then(() => {
+      dispatch(processed());
       const user = firebase.auth().currentUser;
       if (!user.emailVerified) {
         Alert.alert('Log In', 'Please verify your email first and log in again!', [
@@ -25,21 +26,28 @@ export const login = data => dispatch => {
               dispatch(processing());
               user
                 .sendEmailVerification()
-                .then(() => Alert.alert('Log In', 'We resent it! Please check your email.'))
-                .catch(error => Alert.alert('Log In', error.message))
-                .finally(() => dispatch(processed()));
+                .then(() => {
+                  dispatch(processed());
+                  Alert.alert('Log In', 'We resent it! Please check your email.');
+                })
+                .catch(error => {
+                  dispatch(processed());
+                  Alert.alert('Log In', error.message);
+                })
+                .finally(() => {});
             }
           }
         ]);
       } else {
         dispatch({ type: LOGIN, payload: firebase.auth().currentUser });
+        onSuccess();
       }
     })
     .catch(error => {
-      console.log(error);
+      dispatch(processed());
       Alert.alert('Log In', 'Incorrect Username or Password');
-    })
-    .finally(() => dispatch(processed()));
+    });
+  //.finally(() => dispatch(processed()));
 };
 
 export const logout = () => dispatch => {
