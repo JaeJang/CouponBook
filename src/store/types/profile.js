@@ -1,0 +1,1 @@
+export const SET_BASIC_IMAGE = 'SET_BASIC_IMAGE';

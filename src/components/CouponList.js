@@ -11,6 +11,7 @@ const CouponList = ({ list, ...props }) => {
       showsHorizontalScrollIndicator={false}
       horizontal={false}
       renderItem={({ item, index }) => <CouponItem item={item} />}
+      style={{}}
     />
   );
 };

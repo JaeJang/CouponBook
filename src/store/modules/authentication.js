@@ -66,7 +66,7 @@ export const signup = (data, onSuccess, onFailed) => async dispatch => {
   const user = firebase.auth().currentUser;
   user
     .updateProfile({
-      displayName: data.firstName + data.lastName
+      displayName: `${data.firstName}  ${data.lastName}`
     })
     .then(() => {
       user
