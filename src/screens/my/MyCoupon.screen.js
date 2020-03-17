@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
-import { Icon } from 'native-base';
+import { Icon, Fab } from 'native-base';
 
 const actions = [
   {
@@ -47,14 +47,24 @@ const actions = [
 ];
 
 class MyCouponScreen extends Component {
+
+  goToAddList = () => {
+    this.props.navigation.navigate('Add Coupon List');
+  }
+
   render() {
     return (
       <View style={{flex:1}}>
-        <Text>My Coupons</Text>
-        <FloatingAction 
-          actions={actions} 
-          onPressItem={name => console.log(name)}
-          floatingIcon={<Icon active name="md-menu" />} />
+        <Fab
+            active={false}
+            direction="up"
+            containerStyle={{}}
+            style={{ backgroundColor: '#ff6d1a' }}
+            position="bottomRight"
+            onPress={this.goToAddList}
+          >
+            <Icon name="md-add" />
+          </Fab>
       </View>
     );
   }

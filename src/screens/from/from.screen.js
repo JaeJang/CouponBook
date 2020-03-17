@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FlatList, Image, View, Text } from 'react-native';
+import {Icon, Fab} from 'native-base';
 import firebase from 'firebase';
 
 import CouponList from '@components/CouponList';
@@ -42,7 +43,20 @@ class FromScreen extends Component {
   }
 
   render() {
-    return <CouponList list={this.state.data} />;
+    return (
+      <View style={{flex:1}}>
+        <CouponList list={this.state.data} />
+        <Fab
+            active={false}
+            direction="up"
+            containerStyle={{}}
+            style={{ backgroundColor: '#ff6d1a' }}
+            position="bottomRight"
+          >
+            <Icon name="md-add" />
+          </Fab>
+      </View>
+    );
   }
 }
 

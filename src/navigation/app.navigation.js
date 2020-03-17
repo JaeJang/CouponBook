@@ -8,6 +8,8 @@ import LoginScreen from '@screens/login.screen';
 import FromScreen from '@screens/from/from.screen';
 import ToScreen from '@screens/to/to.screen';
 import MyCouponScreen from '@screens/my/MyCoupon.screen';
+import AddMyCouponListScreen from '@screens/my/AddMyCouponList.screen'
+import NewCouponScreen from '@screens/my/NewCoupon.screen';
 import ProfileScreen from '@screens/profile/profile.screen';
 
 import { Icon } from 'native-base';
@@ -44,7 +46,19 @@ const ToStackNavigator = createStackNavigator({
 
 const MyCouponsStackNavigator = createStackNavigator({
   'My Coupons': {
-    screen: MyCouponScreen
+    screen: MyCouponScreen,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  'Add Coupon List': {
+    screen: AddMyCouponListScreen,
+    navigationOptions: {
+      headerBackTitle: 'Back'
+    }
+  },
+  'New Coupon': {
+    screen: NewCouponScreen
   }
 });
 
@@ -59,7 +73,7 @@ const ProfileStackNavigator = createStackNavigator({
 
 const CouponTabNavigator = createBottomTabNavigator({
   From: {
-    screen: FromStackNavigator,
+    screen: MyCouponsStackNavigator,
     navigationOptions: {
       //tabBarVisible: false
     }

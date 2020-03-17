@@ -1,7 +1,20 @@
-import React, { useState, Component, useEffect } from 'react';
-import { Platform, StyleSheet, Dimensions, View, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, Component, useEffect, useRef } from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+  Animated
+} from 'react-native';
 import Sibling from 'react-native-root-siblings';
 import { Content } from 'native-base';
+import _ from 'lodash';
+
+import { timingAnimation } from '@utils/animation';
+import { sleep } from '@utils/sleep';
 /*
 In current react native for ios, Alert disappears when modal from react-native-modal is being closed.
 Becasue of that reason, we can use react-native-modal in Android but need to create a new modal 
@@ -23,39 +36,152 @@ const modalSize = (width, height) => {
   return { width, height };
 };
 
+const getOutputRange = height => {
+  const partial = height / 5;
+  return [height, height - partial, height - partial * 2, height - partial * 3, height - partial * 2, 0];
+};
+
 // Base Modal for ios
 const Modal_IOS_Base = ({ ...props }) => {
+  const touchToClose = _.get(props, 'touchToClose', false);
   const [opacity, setOpacity] = useState(0);
+  const [visible, setVisible] = useState(props.visible);
   const size = modalSize(props.width, props.height);
+  const containerOpacityValue = useRef(new Animated.Value(0)).current;
+  const contentOpacityValue = useRef(new Animated.Value(0)).current;
+  const transformYValue = useRef(new Animated.Value(0)).current;
+  const transformXValue = useRef(new Animated.Value(0)).current;
+
+  const hasOpacityAnimation = _.get(props, 'hasOpacityAnimation', false);
+  const hasTransformYAnimation = _.get(props, 'hasTransformYAnimation', false);
+  const hasTransformXAnimation = _.get(props, 'hasTransformXAnimation', false);
+  const opacityTiming = _.get(props, 'opacityTiming', 1000);
+  const transformTiming = _.get(props, 'transformTiming', 1000);
+
+  const inputRange = [0, 1];
+  const outputRangeContainer = [0, 0.6];
+  const outputRangeContent = [0, 1];
+  const outputRangeTransform = [300, 0];
+  const containerOpacity = containerOpacityValue.interpolate({
+    inputRange: inputRange,
+    outputRange: visible ? outputRangeContainer : outputRangeContainer.reverse()
+  });
+
+  const contentOpacity = contentOpacityValue.interpolate({
+    inputRange: inputRange,
+    outputRange: visible ? outputRangeContent : outputRangeContent.reverse()
+  });
+
+  const transformY = transformYValue.interpolate({
+    inputRange: inputRange,
+    outputRange: visible ? outputRangeTransform : outputRangeTransform.reverse()
+  });
+
+  const transformX = transformXValue.interpolate({
+    inputRange: inputRange,
+    outputRange: visible ? outputRangeTransform : outputRangeTransform.reverse()
+  });
+
+  const dimissModal = async () => {
+    if (hasOpacityAnimation) {
+      timingAnimation(containerOpacityValue, 0, opacityTiming);
+      timingAnimation(contentOpacityValue, 0, opacityTiming);
+    }
+    if (hasTransformYAnimation) timingAnimation(transformYValue, 0, transformTiming);
+    if (hasTransformXAnimation) timingAnimation(transformXValue, 0, transformTiming);
+    await sleep(500);
+    setVisible(false);
+    props.onDismiss();
+  };
 
   useEffect(
     () => {
       if (props.visible) {
-        setOpacity(0.1);
+        if (hasOpacityAnimation) {
+          timingAnimation(containerOpacityValue, 1, opacityTiming);
+          timingAnimation(contentOpacityValue, 1, opacityTiming);
+        }
+        if (hasTransformYAnimation) timingAnimation(transformYValue, 1, transformTiming);
+        if (hasTransformXAnimation) timingAnimation(transformXValue, 1, transformTiming);
+
+        setVisible(true);
       } else {
-        setOpacity(0);
-        props.onDismiss();
+        dimissModal();
       }
     },
     [props.visible]
   );
 
-  if (props.visible) {
+  /*   useEffect(
+    () => {
+      if (visible) {
+        if (hasOpacityAnimation) {
+          timingAnimation(containerOpacityValue, 1, opacityTiming);
+          timingAnimation(contentOpacityValue, 1, opacityTiming);
+        }
+        if (hasTransformYAnimation) timingAnimation(transformYValue, 1, transformTiming);
+        if (hasTransformXAnimation) timingAnimation(transformXValue, 1, transformTiming);
+      } else {
+       console.log(containerOpacityValue._value);
+        if (hasOpacityAnimation) {
+          timingAnimation(containerOpacityValue, 0, opacityTiming);
+          timingAnimation(contentOpacityValue, 0, opacityTiming);
+        }
+        if (hasTransformYAnimation) timingAnimation(transformYValue, 0, transformTiming);
+        if (hasTransformXAnimation) timingAnimation(transformXValue, 0, transformTiming); 
+      }
+    },
+    [visible]
+  ); */
+
+  if (visible) {
     return (
-      <View style={[styles.container, props.containerStyle]}>
+      <Animated.View style={[StyleSheet.absoluteFill, styles.container, props.containerStyle]}>
         <View style={[styles.content]}>
-          <View style={[StyleSheet.absoluteFill, size, { backgroundColor: '#000', opacity: opacity }]}>
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              size,
+              {
+                backgroundColor: '#000',
+                opacity: hasOpacityAnimation ? containerOpacity : 0.5,
+                transform: [
+                  { translateY: hasTransformYAnimation ? transformY : 0 },
+                  { translateX: hasTransformXAnimation ? transformX : 0 }
+                ]
+              }
+            ]}
+          >
             <TouchableOpacity style={[StyleSheet.absoluteFill]} />
-          </View>
-          <View style={{}}>
-            <View style={[styles.modal, size, props.modalStyle]}>
-              <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                {props.children}
+          </Animated.View>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              if (touchToClose) {
+                dimissModal();
+              }
+            }}
+          >
+            <View style={{}}>
+              <View style={[styles.modal, size, props.modalStyle]}>
+                <Animated.View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    opacity: hasOpacityAnimation ? contentOpacity : 1,
+                    transform: [
+                      { translateY: hasTransformYAnimation ? transformY : 0 },
+                      { translateX: hasTransformXAnimation ? transformX : 0 }
+                    ]
+                  }}
+                >
+                  {props.children}
+                </Animated.View>
               </View>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </Animated.View>
     );
   } else {
     return null;
@@ -106,6 +232,9 @@ class Modal_IOS extends Component {
   onDismiss = () => {
     this.sibling.destroy();
     this.sibling = null;
+    if (this.props.onDismiss) {
+      this.props.onDismiss();
+    }
   };
 
   renderModal = () => {
@@ -119,7 +248,6 @@ class Modal_IOS extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
     zIndex: 1000,
     elevation: 10
   },

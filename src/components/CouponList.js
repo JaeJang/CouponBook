@@ -11,7 +11,7 @@ const CouponList = ({ list, ...props }) => {
       showsHorizontalScrollIndicator={false}
       horizontal={false}
       renderItem={({ item, index }) => <CouponItem item={item} />}
-      style={{}}
+      style={props.listStye}
     />
   );
 };
@@ -48,7 +48,6 @@ const InfoView = ({ item }) => {
   );
 };
 const CouponItem = ({ item }) => {
-  console.log(item);
   return <CouponCard imageView={() => <ImageView url={item.imageUrl} />} infoView={() => <InfoView item={item} />} />;
 };
 export default CouponList;

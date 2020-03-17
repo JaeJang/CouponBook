@@ -23,7 +23,13 @@ class Spinner extends React.Component {
 
   render() {
     return (
-      <Modal animationType={this.props.modalAnimation} transparent={true} visible={this.props.visible}>
+      <Modal
+        animationType={this.props.modalAnimation}
+        transparent={true}
+        visible={this.props.visible}
+        hasOpacityAnimation={true}
+        opacityTiming={500}
+      >
         <View
           style={{
             flex: 1,

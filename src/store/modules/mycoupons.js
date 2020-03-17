@@ -1,10 +1,19 @@
+import firebase from '../../configs/firebase';
+
 import { PROCESSING, PROCESSED } from '@store/types/loading';
-import { ADD_LIST } from '@store/types/mycoupons';
+import { ADD_LIST, GET_LISTS } from '@store/types/mycoupons';
 import { processing, processed } from '@store/modules/processing';
 
 export const addCouponList = (data, onSuccess, onFailed) => dispatch => {
   dispatch(processing());
   dispatch(processed());
+}
+
+export const getCouponLists = (onSuccess, onFailed) => dispatch => {
+  const uid = firebase.auth().currentUser.uid;
+  dispatch(processing());
+  
+  dispatch(processed()); 
 }
 
 const initialState = {
