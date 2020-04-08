@@ -8,31 +8,47 @@ import {
   StyleSheet,
   Text,
   Animated,
-  ScrollView
+  ScrollView,
+  KeyboardAvoidingView,
+  Alert
 } from 'react-native';
-import { Input, Button } from 'native-base';
+import { Input, Button, Content, Container, Icon } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultImage from '../../images/default_image.png';
 import CheckBox from 'react-native-check-box';
 import { Dropdown } from 'react-native-material-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Toast from 'react-native-simple-toast';
+
 import DateTimePickerModal from '@components/DateTimePicker';
+import SubmitButton from '@components/SubmitButton';
 
 import { EXPIRE } from '@constants';
-import { uriToBlob } from '@utils/uploadImage';
+
+import * as MyCouponService from '@service/MyCouponService';
 import { timingAnimation } from '@utils/animation';
-import { sleep } from '@utils/sleep';
+import firebase from '../../configs/firebase';
+
+import NewCoupon from '../../models/NewCoupon';
+
+import store from '../../store';
+import { processing, processed } from '@store/modules/processing';
 
 const deviceWidth = Dimensions.get('window').width;
-
+const inputRange = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+const outputRange = [0, -10, 10, -10, 10, -10, 10, -10, 10, -10, 0];
 const expireInData = [
   {
-    value: 'Year'
+    value: 'year',
+    label: 'Year'
   },
   {
-    value: 'Month'
+    value: 'month',
+    label: 'Month'
   },
   {
-    value: 'Day'
+    value: 'day',
+    label: 'Day'
   }
 ];
 
@@ -51,144 +67,302 @@ class NewCouponScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: '',
-      expireOption: '',
+      data: {
+        image: '',
+        expireOption: '',
+        description: '',
+        note: '',
+        expireIn: { measure: '', amount: '' },
+        expireAt: '',
+        title: ''
+      },
       isDatePickerVisible: false,
-      description: '',
-      note: '',
-      expireIn: {measure: '', amount: ''},
-      expireAt: ''
+      nameError: false,
+      expiryError: false,
+      status: props.navigation.getParam('status')
     };
+
+    this.nameEmptyError = new Animated.Value(0);
+    this.expireError = new Animated.Value(0);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.state.status === 'UPDATE') {
+      const data = this.props.navigation.getParam('coupon', null);
+      this.setState({ data: data });
+    } else {
+      const user = firebase.getUser();
+      if (user.photoURL) {
+        this.setState({ data: { ...this.state.data, image: user.photoURL } });
+      }
+    }
+  }
 
   openImagePicker = () => {
     ImagePicker.openPicker({
       width: 400,
-      includeBase64: true,
+      height: 400,
+
       cropping: true,
-      compressImageQuality: 0.8
+      compressImageQuality: 0.3
     }).then(image => {
-      this.setState({ image: image.path });
+      this.setState({ data: { ...this.state.data, image: image.path } });
     });
   };
 
+  setToDefaultImage = () => {
+    this.setState({ data: { ...this.state.data, image: '' } });
+  };
+
   onClickExpireIn = async () => {
-    if (this.state.expireOption === EXPIRE.IN) {
-      this.setState({ expireOption: '' });
+    if (this.state.data.expireOption === EXPIRE.IN) {
+      this.setState({ data: { ...this.state.data, expireOption: '' } });
     } else {
-      this.setState({ expireOption: EXPIRE.IN });
+      this.setState({ data: { ...this.state.data, expireOption: EXPIRE.IN } });
     }
   };
 
   onClickExpireAt = () => {
-    if (this.state.expireOption === EXPIRE.AT) {
-      this.setState({ expireOption: '' });
+    if (this.state.data.expireOption === EXPIRE.AT) {
+      this.setState({ data: { ...this.state.data, expireOption: '' } });
     } else {
-      this.setState({ expireOption: EXPIRE.AT });
+      this.setState({ data: { ...this.state.data, expireOption: EXPIRE.AT } });
     }
   };
 
+  checkExpiry = () => {
+    const { data } = this.state;
+    if (data.expireOption === EXPIRE.IN) {
+      if (!data.expireIn.measure && !data.expireIn.amount) {
+        return false;
+      }
+    } else if (data.expireOption === EXPIRE.AT && !data.expireAt) {
+      return false;
+    }
+    return true;
+  };
+
+  validateBasicInfo = () => {
+    const { title } = this.state.data;
+    let valid = true;
+    if (!title) {
+      this.setState({ nameError: true });
+      this.nameEmptyError.setValue(0);
+      timingAnimation(this.nameEmptyError, 1, 800);
+      valid = false;
+    } else {
+      this.setState({ nameError: false });
+    }
+    if (!this.checkExpiry()) {
+      this.setState({ expiryError: true });
+      this.expireError.setValue(0);
+      timingAnimation(this.expireError, 1, 800);
+      valid = false;
+    } else {
+      this.setState({ expiryError: false });
+    }
+    return valid;
+  };
+
   handleConfirm = date => {
-    console.log(date);
-    this.setState({expireAt: date});
+    this.setState({ data: { ...this.state.data, expireAt: date.getTime() } });
     this.hideDatePicker();
   };
   hideDatePicker = () => {
     this.setState({ isDatePickerVisible: false });
   };
 
-  render() {
-    const { image, expireOption, isDatePickerVisible, expireAt } = this.state;
+  handleSave = async () => {
+    const { data } = this.state;
 
+    if (!this.validateBasicInfo()) {
+      return;
+    }
+    store.dispatch(processing());
+    const newCoupon = new NewCoupon(data);
+
+    if (data.image) {
+      try {
+        const imageData = await MyCouponService.uploadPhoto(data.image);
+        newCoupon.setImage(imageData);
+      } catch (error) {
+        Alert.alert('New Coupon', 'Something went wrong. Please try again');
+        store.dispatch(processed());
+      }
+    }
+    MyCouponService.createNewCoupon(newCoupon)
+      .then(result => {
+        Toast.showWithGravity('Successfully Uploaded!', Toast.SHORT, Toast.BOTTOM);
+        this.props.navigation.navigate('Add Coupon List', { newCoupon: result });
+      })
+      .catch(error => {
+        Alert.alert('New Coupon', 'Something went wrong. Please try again');
+      })
+      .finally(() => store.dispatch(processed()));
+  };
+
+  render() {
+    const { data, isDatePickerVisible } = this.state;
+    const nameFontSize = this.nameEmptyError.interpolate({
+      inputRange: inputRange,
+      outputRange: outputRange
+    });
+    const expireShake = this.expireError.interpolate({
+      inputRange: inputRange,
+      outputRange: outputRange
+    });
+    const nameBorderStyle = this.state.nameError ? { borderBottomColor: 'red' } : { borderBottomColor: 'gray' };
+    const expiryBorderStyle = this.state.expiryError
+      ? { borderColor: 'red', borderWidth: 1, borderBottomColor: 'red', borderBottomWidth: 1, borderRadius: 5 }
+      : {};
     return (
-      <ScrollView>
-        <View style={{ alignItems: 'center' }}>
-          <TextInput placeholder="New Coupon Name" style={{ fontSize: 30, borderBottomWidth: 2, marginTop: 15 }} />
-        </View>
-        <View style={{ marginTop: 20 }}>
-          <TouchableOpacity onPress={this.openImagePicker}>
-            {!image
-              ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="cover" />
-              : <Image source={{ uri: image }} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />}
-          </TouchableOpacity>
-          <Text style={styles.imageClickText}>Touch image above if you want to use your own image</Text>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <View style={{ paddingBottom: 10 }}>
-            <Field label="Expiry (optional)">
-              <View style={[styles.expireSelectionView]}>
-                <View style={[styles.expireSelection]}>
-                  <Text>Expires </Text>
-                  <Text style={{ fontWeight: '700' }}>IN</Text>
-                  <CheckBox
-                    checkBoxColor={'#00aaff'}
-                    isChecked={expireOption === EXPIRE.IN}
-                    onClick={this.onClickExpireIn}
-                  />
-                </View>
-                <View style={[styles.expireSelection, { marginLeft: 30 }]}>
-                  <Text>Expires </Text>
-                  <Text style={{ fontWeight: '700' }}>AT</Text>
-                  <CheckBox
-                    checkBoxColor={'#00aaff'}
-                    isChecked={expireOption === EXPIRE.AT}
-                    onClick={this.onClickExpireAt}
-                  />
-                </View>
-              </View>
-              <Animated.View style={[{ paddingHorizontal: 20 }]}>
-                {expireOption === EXPIRE.IN &&
-                  <Animated.View style={[styles.expirePicker]}>
-                    <Dropdown containerStyle={{ flex: 1 }} label="Select" data={expireInData} />
-                    <Input style={[styles.expireInTextInput]} keyboardType={'number-pad'} returnKeyType={'done'} />
-                  </Animated.View>}
-                {expireOption === EXPIRE.AT &&
-                  <View style={[styles.expirePicker]}>
-                    <Button style={[styles.selectDate]} onPress={() => this.setState({ isDatePickerVisible: true })}>
-                      <Text style={{ color: '#00aaff' }}>Select Expriy date</Text>
-                    </Button>
-                    <Text style={{ flex: 1, marginLeft: 10, textAlign: 'center' }}>{expireAt ? expireAt.toDateString() : '-'}</Text>
-                    <DateTimePickerModal
-                      isVisible={isDatePickerVisible}
-                      mode="date"
-                      onConfirm={this.handleConfirm}
-                      onCancel={this.hideDatePicker}
-                    />
-                  </View>}
-              </Animated.View>
-            </Field>
-            <Field label="Description *">
-              <TextInput
-                multiline={true}
-                numberOfLines={10}
-                style={[styles.descriptionTextInput]}
-                onChangeText={text => {
-                  this.setState({ description: text });
-                }}
-                value={this.state.description}
-              />
-            </Field>
-            <Field label="Note (optional)">
-              <TextInput
-                multiline={true}
-                numberOfLines={10}
-                style={[styles.noteTextInput]}
-                onChangeText={text => {
-                  this.setState({ note: text });
-                }}
-                value={this.state.note}
-              />
-            </Field>
+      <View style={{ flex: 1 }}>
+        <KeyboardAwareScrollView>
+          <Animated.View style={[{ left: nameFontSize }, nameBorderStyle, styles.newtitle]}>
+            <Text style={{ color: 'gray' }}>New Coupon Name*</Text>
+            <TextInput
+              autoFocus={true}
+              placeholder="Please enter"
+              maxLength={30}
+              style={[styles.titleInput, nameBorderStyle]}
+              onChangeText={text => this.setState({ data: { ...this.state.data, title: text } })}
+              value={this.state.data.title}
+            />
+            <View style={{ borderBottomWidth: 2, borderBottomColor: 'red', marginBottom: 10 }} />
+          </Animated.View>
+          <View style={{ marginTop: 20 }}>
+            <TouchableOpacity onPress={this.openImagePicker}>
+              {!data.image
+                ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="cover" />
+                : <Image
+                    source={{ uri: data.image }}
+                    style={{ height: 230,  }}
+                    resizeMode="cover"
+                    
+                  />}
+              {data.image !== '' &&
+                <TouchableOpacity style={[styles.setToDefaultImageTouchable]} onPress={this.setToDefaultImage}>
+                  <Icon name="close" style={[styles.setToDefaultImageIcon]} />
+                </TouchableOpacity>}
+            </TouchableOpacity>
+            <Text style={styles.imageClickText}>Touch image above if you want to use your own image</Text>
           </View>
-        </View>
-      </ScrollView>
+          <View style={{ marginTop: 10 }}>
+            <View style={{ paddingBottom: 10 }}>
+              <Animated.View style={[styles.field, expiryBorderStyle, { left: expireShake }]}>
+                <Text style={styles.fieldLabel}>Expiry</Text>
+                <Animated.View style={[styles.expireSelectionView]}>
+                  <View style={[styles.expireSelection]}>
+                    <Text>Expires </Text>
+                    <Text style={{ fontWeight: '700' }}>IN</Text>
+                    <CheckBox
+                      checkBoxColor={'#00aaff'}
+                      isChecked={data.expireOption === EXPIRE.IN}
+                      onClick={this.onClickExpireIn}
+                    />
+                  </View>
+                  <View style={[styles.expireSelection, { marginLeft: 30 }]}>
+                    <Text>Expires </Text>
+                    <Text style={{ fontWeight: '700' }}>AT</Text>
+                    <CheckBox
+                      checkBoxColor={'#00aaff'}
+                      isChecked={data.expireOption === EXPIRE.AT}
+                      onClick={this.onClickExpireAt}
+                    />
+                  </View>
+                </Animated.View>
+                <Animated.View style={[{ paddingHorizontal: 20 }]}>
+                  {data.expireOption === EXPIRE.IN &&
+                    <Animated.View style={[styles.expirePicker]}>
+                      <Dropdown
+                        containerStyle={{ flex: 1 }}
+                        label="Select"
+                        data={expireInData}
+                        value={this.state.data.expireIn.measure}
+                        onChangeText={text =>
+                          this.setState({
+                            data: { ...this.state.data, expireIn: { ...this.state.data.expireIn, measure: text } }
+                          })}
+                      />
+                      <Input
+                        style={[styles.expireInTextInput]}
+                        keyboardType={'number-pad'}
+                        returnKeyType={'done'}
+                        value={data.expireIn.amount}
+                        onChangeText={text =>
+                          this.setState({
+                            data: { ...this.state.data, expireIn: { ...this.state.data.expireIn, amount: text } }
+                          })}
+                      />
+                    </Animated.View>}
+                  {data.expireOption === EXPIRE.AT &&
+                    <View style={[styles.expirePicker]}>
+                      <Button style={[styles.selectDate]} onPress={() => this.setState({ isDatePickerVisible: true })}>
+                        <Text style={{ color: '#00aaff' }}>Select Expriy date</Text>
+                      </Button>
+                      <Text style={{ flex: 1, marginLeft: 10, textAlign: 'center' }}>
+                        {data.expireAt ? new Date(data.expireAt).toDateString() : '-'}
+                      </Text>
+                      <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={this.handleConfirm}
+                        onCancel={this.hideDatePicker}
+                      />
+                    </View>}
+                </Animated.View>
+              </Animated.View>
+              <Field label="Description">
+                <TextInput
+                  multiline={true}
+                  numberOfLines={10}
+                  style={[styles.descriptionTextInput]}
+                  onChangeText={text => {
+                    this.setState({ data: { ...this.state.data, description: text } });
+                  }}
+                  value={this.state.data.description}
+                />
+              </Field>
+              <Field label="Note">
+                <TextInput
+                  multiline={true}
+                  numberOfLines={10}
+                  style={[styles.noteTextInput]}
+                  onChangeText={text => {
+                    this.setState({ data: { ...this.state.data, note: text } });
+                  }}
+                  value={this.state.data.note}
+                  returnKeyType="done"
+                />
+              </Field>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+        <SubmitButton onPress={this.handleSave} />
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  newtitle: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+    marginTop: 15
+  },
+  titleInput: {
+    paddingTop: 10,
+    fontSize: 20,
+    textAlign: 'center',
+    width: '95%',
+    paddingHorizontal: 10
+    //marginTop: 15,
+    //borderWidth: 1,
+    //borderColor: 'gray',
+    //paddingVertical: 5,
+    //borderRadius: 10,
+  },
   imageClickText: {
     textAlign: 'center',
     fontSize: 12,
@@ -211,9 +385,9 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   field: {
-    borderWidth: 0.5,
-    borderColor: 'gray',
-    borderRadius: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'gray',
+    //borderRadius: 10,
     marginHorizontal: 10,
     paddingHorizontal: 5,
     paddingTop: 5,
@@ -226,14 +400,14 @@ const styles = StyleSheet.create({
   descriptionTextInput: {
     paddingHorizontal: 10,
     marginTop: 10,
-    backgroundColor: 'white',
+
     borderRadius: 5,
     fontSize: 20
   },
   noteTextInput: {
     paddingHorizontal: 10,
     marginTop: 10,
-    backgroundColor: 'white',
+
     borderRadius: 5,
     fontSize: 15,
     fontStyle: 'italic',
@@ -249,6 +423,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center'
+  },
+  setToDefaultImageIcon: {
+    fontWeight: '800',
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 35,
+    width: 35,
+    height: 35,
+    borderColor: '#000'
+  },
+  setToDefaultImageTouchable: {
+    position: 'absolute',
+    backgroundColor: 'rgba(175,175,175,0.8)',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    top: 5,
+    right: 5
   }
 });
 

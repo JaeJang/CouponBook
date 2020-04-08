@@ -14,7 +14,7 @@ export const login = (data, onSuccess) => dispatch => {
     .signInWithEmailAndPassword(data.email, data.password)
     .then(() => {
       dispatch(processed());
-      const user = firebase.auth().currentUser;
+      const user = firebase.getUser();
       if (!user.emailVerified) {
         Alert.alert('Log In', 'Please verify your email first and log in again!', [
           {
@@ -39,7 +39,7 @@ export const login = (data, onSuccess) => dispatch => {
           }
         ]);
       } else {
-        dispatch({ type: LOGIN, payload: firebase.auth().currentUser });
+        dispatch({ type: LOGIN, payload: firebase.getUser() });
         onSuccess();
       }
     })
@@ -63,7 +63,7 @@ export const signup = (data, onSuccess, onFailed) => async dispatch => {
     onFailed(error.message);
     return;
   }
-  const user = firebase.auth().currentUser;
+  const user = firebase.getUser()
   user
     .updateProfile({
       displayName: `${data.firstName}  ${data.lastName}`

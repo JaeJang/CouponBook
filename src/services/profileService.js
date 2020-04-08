@@ -7,15 +7,15 @@ import store from '../store';
 import { processing, processed } from '@store/modules/processing';
 
 export const updatePhotoUrl = (uri, onSuccess) => {
-  const user = firebase.auth().currentUser;
+  const user = firebase.getUser();
   store.dispatch(processing());
   uriToBlob(uri)
     .then(blob => {
       uploadToFirebase(blob, `${user.uid}_default`)
-        .then(url => {
+        .then(data => {
           user
             .updateProfile({
-              photoURL: url
+              photoURL: data.url
             })
             .then(() => {
               store.dispatch(processed());

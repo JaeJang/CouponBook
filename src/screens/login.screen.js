@@ -40,7 +40,7 @@ class LoginScreen extends Component {
   }
 
   componentDidMount() {
-    const user = firebase.auth().currentUser;
+    const user = firebase.getUser();
     this.initialAnimationStart(INIT_ANI_START, user);
   }
 

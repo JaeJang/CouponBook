@@ -56,7 +56,7 @@ const Modal_IOS_Base = ({ ...props }) => {
   const hasTransformYAnimation = _.get(props, 'hasTransformYAnimation', false);
   const hasTransformXAnimation = _.get(props, 'hasTransformXAnimation', false);
   const opacityTiming = _.get(props, 'opacityTiming', 1000);
-  const transformTiming = _.get(props, 'transformTiming', 1000);
+  const transformTiming = _.get(props, 'transformTiming', 700);
 
   const inputRange = [0, 1];
   const outputRangeContainer = [0, 0.6];

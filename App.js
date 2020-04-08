@@ -13,7 +13,7 @@ export default class App extends Component {
       <Provider store={store}>
 
         <Root>
-          <View style={{flex:1, paddingTop:30, backgroundColor:'rgb(242, 242, 242)'}}>
+          <View style={{flex:1, backgroundColor:'rgb(242, 242, 242)'}}>
             <Loader />
             <AppNavigator />
             {/* <LoginScreen /> */}

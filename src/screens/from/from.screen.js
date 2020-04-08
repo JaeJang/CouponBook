@@ -18,7 +18,7 @@ class FromScreen extends Component {
       data: [
         {
           id: '0',
-          couponName: 'Test Coupon',
+          title: 'Test Coupon',
           company: 'Test Company',
           email: 'test@test.com',
           firstName: 'Jae',
@@ -29,7 +29,7 @@ class FromScreen extends Component {
         },
         {
           id: '1',
-          couponName: 'Test Coupon',
+          title: 'Test Coupon',
           company: 'Test Company',
           email: 'test@test.com',
           firstName: 'Jae',
@@ -45,7 +45,7 @@ class FromScreen extends Component {
   render() {
     return (
       <View style={{flex:1}}>
-        <CouponList list={this.state.data} />
+        {/* <CouponList list={this.state.data} /> */}
         <Fab
             active={false}
             direction="up"

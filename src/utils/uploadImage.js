@@ -24,19 +24,19 @@ export const uriToBlob = uri => {
 
 export const uploadToFirebase = (blob, name) => {
   return new Promise((resolve, reject) => {
-    const storageRef = firebase.storage().ref();
+    const storageRef = firebase.getImageStorageRef();
     name = `${name}_${new Date().getTime()}.jpg`;
     storageRef
-      .child(`public/images/${name}`)
+      .child(`${name}`)
       .put(blob, {
         contentType: 'image/jpeg'
       })
       .then(snapshot => {
         blob.close();
-        return storageRef.child(`public/images/${name}`).getDownloadURL();
+        return storageRef.child(`${name}`).getDownloadURL();
       })
       .then(url => {
-        resolve(url);
+        resolve({url:url, name:name});
       })
       .catch(error => {
         reject(error);
