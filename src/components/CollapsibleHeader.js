@@ -31,6 +31,10 @@ const CollapsibleHeader = ({ route,navigation, ...props }) => {
 
   const couponListsColor = route === 'Coupon Lists' ? '#00aaff' : '#000';
   const couponsColor = route === 'Coupons' ? '#00aaff' : '#000';
+
+  if (props.scrollEnabled !== undefined && !props.scrollEnabled) {
+    timingAnimation(scrollHalf, HEADER_HEIGHT, 200);
+  }
   return (
     <View style={{ flex: 1 }}>
       <FlatList 
@@ -54,6 +58,8 @@ const CollapsibleHeader = ({ route,navigation, ...props }) => {
         keyExtractor={item => item.key}
         renderItem={props.renderItem}
         contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+        ListFooterComponent={props.ListFooterComponent ? props.ListFooterComponent : null}
+        scrollEnabled={props.scrollEnabled !== undefined ? props.scrollEnabled : true} 
       />
 
       {/* <ScrollView
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
 
 CollapsibleHeader.propTypes = {
   route: PropTypes.string.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };
 
 export default CollapsibleHeader;

@@ -1,8 +1,10 @@
-import firebase from '../configs/firebase';
+import { Alert } from 'react-native';
 
+import firebase from '../configs/firebase';
 import NewCoupon from '../models/NewCoupon';
 
 import { uploadToFirebase, uriToBlob } from '@utils/uploadImage';
+import { COUPON_STATUS, LIST_STATUS } from '@constants';
 
 export const uploadPhoto = uri => {
   const uid = firebase.getUser().uid;
@@ -35,7 +37,7 @@ export const createNewCoupon = data => {
       .then(result => {
         firebase
           .getCUsersRef()
-          .child(`mycoupons`)
+          .child(`myCoupons`)
           .child(newKeyCoupon)
           .set(newKeyCoupon)
           .then(result => {
@@ -132,8 +134,129 @@ export const removeListFromList = key => {
 
 export const getCoupon = key => {
   return new Promise((resolve, reject) => {
-    firebase.getCouponsRef().child(key).once('value')
+    firebase
+      .getCouponsRef()
+      .child(key)
+      .once('value')
       .then(snapshot => resolve(snapshot.val()))
       .catch(error => reject(error));
   });
-}
+};
+
+export const getMyCouponKeys = () => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getCUsersRef()
+      .child('myCoupons')
+      .orderByKey()
+      .once('value')
+      .then(snapshot => resolve(Object.keys(snapshot.val()).reverse()))
+      .catch(error => reject(error));
+  });
+};
+
+export const getCouponByKey = key => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getCouponsRef()
+      .child(key)
+      .once('value')
+      .then(snapshot => resolve(snapshot.val()))
+      .catch(error => reject(error));
+  });
+};
+
+export const deleteCouponFromCouponList = (index, parentKey) => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getCouponListRef()
+      .child(`${parentKey}/list/${index}`)
+      .remove()
+      .then(() => resolve())
+      .catch(error => reject(error));
+  });
+};
+
+export const deleteCoupon = key => {
+  return new Promise((resolve, reject) => {
+    firebase.getCUsersRef().child(key).remove().then(() => resolve()).catch(error => reject(error));
+  });
+};
+
+export const checkUser = email => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getUsersRef()
+      .orderByChild('email')
+      .equalTo(email)
+      .once('value')
+      .then(snapshot => {
+        const value = snapshot.val();
+        if (value) resolve(value);
+        resolve(false);
+      })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
+};
+
+export const getCurrentUserEmail = () => {
+  return firebase.getUser().email;
+};
+
+export const sendList = (email, item, userKey) => {
+  const object = {};
+  object.key = item.key;
+  object.titel = item.title;
+  object.status = LIST_STATUS.PENDING;
+  object.image = item.image;
+  object.list = [];
+  object.numOfCoupons = 0;
+  for (let coupon of item.list) {
+    object.numOfCoupons += coupon.numOfCoupons;
+    for (let i = 0; i < coupon.numOfCoupons; ++i) {
+      object.list.push({ key: coupon.key, status: COUPON_STATUS.NOT_USED });
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    const ref = firebase.getDistributedRef();
+    const newDistributedKey = ref.push().key;
+    ref
+      .child(newDistributedKey)
+      .update(object)
+      .then(() => {
+        object.userKey = userKey;
+        firebase
+          .getCUsersRef()
+          .child(`to/${newDistributedKey}`)
+          .set({ key: newDistributedKey, userKey: userKey })
+          .then(() => {
+            firebase
+              .getUsersRef()
+              .child(userKey)
+              .child(`from/${newDistributedKey}`)
+              .set({ key: newDistributedKey, userKey: firebase.getUser().uid })
+              .then(() => resolve())
+              .catch(error => {
+                console.error(error);
+                ref.child(newDistributedKey).remove();
+                firebase.getCUsersRef().child(`to/${newDistributedKey}`).remove();
+                reject(error);
+              });
+          })
+          .catch(error => {
+            ref.child(newDistributedKey).remove();
+            console.log(error);
+            reject(error);
+          });
+      })
+      .catch(error => {
+        ref.child(newDistributedKey).remove();
+        console.error(error);
+        reject(error);
+      });
+  });
+};

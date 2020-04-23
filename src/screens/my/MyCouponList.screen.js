@@ -8,6 +8,7 @@ import firebase from '../../configs/firebase';
 import CollapsibleHeader from '@components/CollapsibleHeader';
 import CouponCard from '@components/CouponCard';
 import Card from '@components/Card';
+import Modal from '@components/Modal';
 
 import { CARD_TYPE } from '@constants';
 import { getMyCouponLists, addCouponList, removeListFromList } from '@modules/mycoupons';
@@ -21,26 +22,26 @@ const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
 
 class MyCouponListScreen extends Component {
   componentDidMount() {
-    this.props.getMyCouponLists();
+    if (!this.props.lists.length) {
+      this.props.getMyCouponLists();
+    }
   }
 
   componentWillUpdate(prevProps) {
-    if (prevProps.lists.length !== this.props.lists.length) {
-      console.log(this.props.lists);
-    }
+
   }
   goToAddList = () => {
     this.props.navigation.navigate('Add Coupon List');
   };
 
-  onPressX = item => {
+  onPressX = (item, index) => {
 
-    Alert.alert('My Coupon List', `Do you really want to delete ${item.title} from the list?`, [
+    Alert.alert('My Coupon List', `Do you really want to delete ${item.title} from your list?`, [
       {
-        text: 'CANCEL'
+        text: 'Cancel'
       },
       {
-        text: 'OK',
+        text: 'Ok',
         onPress: () => {
           store.dispatch(processing());
           MyCouponService.removeListFromList(item.key)
@@ -53,8 +54,12 @@ class MyCouponListScreen extends Component {
   };
 
   onPressList = item => {
-    this.props.navigation.navigate('My Coupon List Detail', {title: item.tilte, list: item.list});
-  }
+    this.props.navigation.navigate('My Coupon List Detail', {title: item.title, list: item.list, parentKey: item.key});
+  };
+
+  onPressShare = item => {
+    this.props.navigation.navigate('Share', {item: item});
+  };
 
   render() {
     const { lists } = this.props;
@@ -70,34 +75,16 @@ class MyCouponListScreen extends Component {
               item={item}
               showXButton={true}
               onPress={() => this.onPressList(item)}
-              onPressX={() => this.onPressX(item)}
+              onPressX={() => this.onPressX(item, index)}
+              sharable={true}
             />}
         >
-          {/* <FlatList 
-            data={lists}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={item => item.key}
-            renderItem={({item, index}) => (
-              <Card
-                type={CARD_TYPE.LIST}
-                item={item}
-                showXButton={true}
-              />
-            )}
-          /> */}
-          {/* {lists.map((item, index) => (
-            <Card
-              type={CARD_TYPE.LIST}
-              item={item}
-              showXButton={true}
-            />            
-          ))} */}
         </CollapsibleHeader>
         <Fab
           active={false}
           direction="up"
           containerStyle={{}}
-          style={{ backgroundColor: '#ff6d1a' }}
+          style={{ backgroundColor: '#00afff' }}
           position="bottomRight"
           onPress={this.goToAddList}
         >

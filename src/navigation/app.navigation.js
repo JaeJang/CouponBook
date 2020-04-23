@@ -13,6 +13,8 @@ import AddMyCouponListScreen from '@screens/my/AddMyCouponList.screen';
 import NewCouponScreen from '@screens/my/NewCoupon.screen';
 import ProfileScreen from '@screens/profile/profile.screen';
 import MyCouponListDetailScreen from '@screens/my/MyCouponListDetail.screen';
+import ImportCouponScreen from '@screens/my/ImportCoupon.screen';
+import ShareScreen from '@screens/my/Share.screen';
 
 import { Icon } from 'native-base';
 
@@ -103,6 +105,12 @@ const MyCouponsStackNavigator = createStackNavigator({
     navigationOptions: {
       headerBackTitle: 'Back'
     }
+  },
+  'Import Coupon': {
+    screen: ImportCouponScreen
+  },
+  'Share': {
+    screen: ShareScreen
   }
 });
 

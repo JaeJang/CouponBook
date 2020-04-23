@@ -63,23 +63,33 @@ export const signup = (data, onSuccess, onFailed) => async dispatch => {
     onFailed(error.message);
     return;
   }
-  const user = firebase.getUser()
+  const user = firebase.getUser();
   user
     .updateProfile({
       displayName: `${data.firstName}  ${data.lastName}`
     })
     .then(() => {
-      user
-        .sendEmailVerification()
+      firebase
+        .getCUsersRef()
+        .set({ email: data.email, name: `${data.firstName} ${data.lastName}` })
         .then(() => {
-          onSuccess();
+          user
+            .sendEmailVerification()
+            .then(() => {
+              onSuccess();
+            })
+            .catch(error => {
+              onFailed(error);
+            });
         })
         .catch(error => {
-          onFailed(error);
+          onFailed(error.message);
+          user.delete();
         });
     })
     .catch(error => {
       onFailed(error.message);
+      user.delete();
     })
     .finally(() => {
       dispatch({ type: PROCESSED });

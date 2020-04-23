@@ -10,14 +10,23 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
-  ImageBackground
+  ImageBackground,
+  TextInput,
+  Alert
 } from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import CachedImage from 'react-native-image-cache-wrapper';
+import Toast from 'react-native-simple-toast';
 
+import SubmitButton from '@components/SubmitButton';
+import Modal from '@components/Modal';
+
+import * as MyCouponService from '@service/MyCouponService';
 import { CARD_TYPE, EXPIRE } from '@constants';
-
+import store from '../store';
+import { processing, processed } from '@store/modules/processing';
 import DefaultImage from '../images/default_image.png';
 
 const { width, height } = Dimensions.get('window');
@@ -36,7 +45,10 @@ class Card extends Component {
 
       pressed: false,
 
-      offset: 0
+      offset: 0,
+
+      shareModalVisible: false,
+      email: ''
     };
 
     this.topWidth = new Animated.Value(width - 32);
@@ -53,10 +65,12 @@ class Card extends Component {
     this.buttonOpac = new Animated.Value(0);
     this.backOpac = new Animated.Value(0);
     this.plus = new Animated.Value(1);
+    console.log(props.item);
   }
 
   onPress = () => {
     if (this.props.onPress) this.props.onPress();
+
     if (this.props.type === CARD_TYPE.COUPON) {
       this.setState({ pressed: !this.state.pressed });
       this.calculateOffset();
@@ -169,6 +183,38 @@ class Card extends Component {
     }
   };
 
+  onPressShare = () => {
+    this.setState({ shareModalVisible: true });
+  };
+
+  onCloseShareModal = () => {
+    this.setState({ shareModalVisible: false, email: ''});
+  }
+
+  onPressSend = async () => {
+    if (MyCouponService.getCurrentUserEmail() === this.state.email) {
+      Alert.alert('My Coupons', 'You can\'t send it to yourself');
+      return;
+    }
+    try {
+      const userExist = await MyCouponService.checkUser(this.state.email);
+      if (userExist) {
+        const userKey = Object.keys(userExist)[0];
+        this.onCloseShareModal();
+        store(processing());
+        MyCouponService.sendList(this.state.email, this.props.item, userKey)
+          .then(() => Toast.showWithGravity('Successfully sent!', Toast.SHORT, Toast.BOTTOM))
+          .catch(() => Alert.alert('My Coupons', 'Something went wrong. Please try again later'))
+          .finally(() => store(processed()));
+        ;
+      } else {
+        Alert.alert('My Coupons', 'User does not exist!');
+      }
+    } catch(error) {
+      Alert.alert('My Coupons', 'Something went wrong! Please try  again');
+    }
+  }
+
   renderTop = () => {
     const back = this.state.pressed
       ? <TouchableOpacity style={[styles.backButton]} onPress={this.onPress}>
@@ -204,7 +250,7 @@ class Card extends Component {
         ]}
       >
         {/* {imageContent} */}
-        <ImageBackground source={image} style={{ width: '100%', height: '100%' }}>
+        <CachedImage source={image} style={{ width: '100%', height: '100%' }}>
           {back}
           {this.props.item.numOfCoupons &&
             !this.state.pressed &&
@@ -224,7 +270,7 @@ class Card extends Component {
             >
               <Icon name="close" style={[styles.xButtonIcon]} />
             </TouchableOpacity>}
-        </ImageBackground>
+        </CachedImage>
       </Animated.View>
     );
   };
@@ -240,6 +286,9 @@ class Card extends Component {
         <Icon name='check-circle' style={{fontSize: 24, color: this.props.color}}/>
     </Animated.View> */
     const { expireOption, expireIn, expireAt, title } = this.props.item;
+    const disableButton = this.props.disableButton !== undefined ? this.props.disableButton : false;
+    const { sharable } = this.props;
+
     return (
       <Animated.View
         style={[
@@ -257,20 +306,30 @@ class Card extends Component {
             <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
               {title}
             </Text>
-            <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
-              {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
-              {expireOption === EXPIRE.AT && `Expires at ${new Date(expireAt).toLocaleDateString()}`}
-            </Text>
+            {this.props.type === CARD_TYPE.COUPON &&
+              <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
+                {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
+                {expireOption === EXPIRE.AT && `Expires at ${new Date(expireAt).toLocaleDateString()}`}
+                {!expireOption && 'No expiry!!'}
+              </Text>}
+            {this.props.type === CARD_TYPE.LIST &&
+              sharable &&
+              <TouchableOpacity onPress={this.onPressShare}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', textDecorationLine: 'underline' }}>
+                  <Text style={{ fontSize: 15, fontWeight: '500', color: '#00aaff' }}>Share with others</Text>
+                  <Icon name="md-share-alt" style={{ fontSize: 20, marginLeft: 5, color: '#00aaff' }} />
+                </View>
+              </TouchableOpacity>}
           </View>
 
           {/* {plusButton} */}
         </View>
         {this.state.pressed &&
-          <TouchableOpacity>
+          <TouchableOpacity disabled={disableButton}>
             <Animated.View
               style={{
                 opacity: this.buttonOpac,
-                backgroundColor: '#00aaff',
+                backgroundColor: !disableButton ? '#00aaff' : 'rgba(0,0,0,0.2)',
                 marginTop: 10,
                 borderRadius: 10,
                 width: width - 64,
@@ -333,23 +392,44 @@ class Card extends Component {
             {this.renderTop()}
             {this.renderBottom()}
             {this.renderContent()}
-            {this.props.type === CARD_TYPE.LIST ? <View
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  backgroundColor: 'rgba(0,0,0,0.2)',
-                  top: -10,
-                  left: 10,
-                  right: -10,
-                  bottom: 10,
-                  position: 'absolute',
-                  borderBottomRightRadius:5,
-                  zIndex: -1
-                }
-              ]}
-            /> : null}
+            {this.props.type === CARD_TYPE.LIST
+              ? <View
+                  style={[
+                    StyleSheet.absoluteFill,
+                    {
+                      backgroundColor: 'rgba(0,0,0,0.2)',
+                      top: -10,
+                      left: 10,
+                      right: -10,
+                      bottom: 10,
+                      position: 'absolute',
+                      borderBottomRightRadius: 5,
+                      zIndex: -1
+                    }
+                  ]}
+                />
+              : null}
           </View>
         </TouchableWithoutFeedback>
+        <Modal
+          visible={this.state.shareModalVisible}
+          hasOpacityAnimation={true}
+          touchToClose={true}
+          onDismiss={this.onCloseShareModal}
+        >
+          <View style={{ marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
+            <TextInput
+              style={{ flex: 0.8, backgroundColor: '#fff', paddingLeft: 10 }}
+              width={100}
+              placeholder="Email"
+              autoFocus={true}
+              autoCapitalize={'none'}
+              keyboardType={'email-address'}
+              onChangeText={text => this.setState({email: text})}
+            />
+            <SubmitButton style={{ flex: 0.2 }} label="SEND" onPress={this.onPressSend}/>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -425,7 +505,10 @@ Card.propTypes = {
   item: PropTypes.object.isRequired,
   onPress: PropTypes.func,
   onEditNumOfCoupons: PropTypes.func,
-  onPressX: PropTypes.func
+  onPressX: PropTypes.func,
+  showXButton: PropTypes.bool,
+  disableButton: PropTypes.bool,
+  sharable: PropTypes.bool
 };
 
 export default Card;

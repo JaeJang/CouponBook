@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Alert
 } from 'react-native';
+import { connect } from 'react-redux';
 import { Input, Button, Content, Container, Icon } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultImage from '../../images/default_image.png';
@@ -19,6 +20,7 @@ import CheckBox from 'react-native-check-box';
 import { Dropdown } from 'react-native-material-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-simple-toast';
+import PropTypes from 'prop-types';
 
 import DateTimePickerModal from '@components/DateTimePicker';
 import SubmitButton from '@components/SubmitButton';
@@ -33,6 +35,7 @@ import NewCoupon from '../../models/NewCoupon';
 
 import store from '../../store';
 import { processing, processed } from '@store/modules/processing';
+import { refreshMyCoupons } from '@modules/mycoupons';
 
 const deviceWidth = Dimensions.get('window').width;
 const inputRange = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
@@ -173,7 +176,7 @@ class NewCouponScreen extends Component {
   };
 
   handleSave = async () => {
-    const { data } = this.state;
+    const { data, status } = this.state;
 
     if (!this.validateBasicInfo()) {
       return;
@@ -193,7 +196,13 @@ class NewCouponScreen extends Component {
     MyCouponService.createNewCoupon(newCoupon)
       .then(result => {
         Toast.showWithGravity('Successfully Uploaded!', Toast.SHORT, Toast.BOTTOM);
-        this.props.navigation.navigate('Add Coupon List', { newCoupon: result });
+        if (status === 'LIST') {
+          this.props.refreshMyCoupons();
+          this.props.navigation.navigate('Add Coupon List', { newCoupon: result });
+        } else if (status === 'COUPON') {
+          this.props.refreshMyCoupons();
+          this.props.navigation.navigate('Coupons');
+        }
       })
       .catch(error => {
         Alert.alert('New Coupon', 'Something went wrong. Please try again');
@@ -234,12 +243,7 @@ class NewCouponScreen extends Component {
             <TouchableOpacity onPress={this.openImagePicker}>
               {!data.image
                 ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="cover" />
-                : <Image
-                    source={{ uri: data.image }}
-                    style={{ height: 230,  }}
-                    resizeMode="cover"
-                    
-                  />}
+                : <Image source={{ uri: data.image }} style={{ height: 230 }} resizeMode="cover" />}
               {data.image !== '' &&
                 <TouchableOpacity style={[styles.setToDefaultImageTouchable]} onPress={this.setToDefaultImage}>
                   <Icon name="close" style={[styles.setToDefaultImageIcon]} />
@@ -444,4 +448,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default NewCouponScreen;
+NewCouponScreen.propTypes = {
+  refreshMyCoupons: PropTypes.func.isRequired
+};
+
+export default connect(null, { refreshMyCoupons })(NewCouponScreen);

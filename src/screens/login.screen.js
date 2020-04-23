@@ -236,7 +236,7 @@ class LoginScreen extends Component {
               placeholderTextColor="#fff"
               placeholder="Confirm Your Password"
               type={'password'}
-              value={this.state.passwordConfirm}
+              value={this.state.data.passwordConfirm}
               onChangeText={value => this.setState({ data: { ...this.state.data, passwordConfirm: value } })}
             />
           </Item>

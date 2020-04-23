@@ -12,28 +12,34 @@ class Firebase {
 
   auth = () => {
     return firebase.auth();
-  }
+  };
   getUser = () => {
     return firebase.auth().currentUser;
-  }
+  };
 
   getImageStorageRef = () => {
     return firebase.storage().ref('public/images/');
-  }
+  };
 
   getDatabaseRef = () => {
     return firebase.database().ref();
-  }
+  };
   getCouponsRef = () => {
     return firebase.database().ref('coupon/');
-  }
+  };
   getCouponListRef = () => {
     return firebase.database().ref('couponList/');
-  }
+  };
   getCUsersRef = () => {
     const uid = this.getUser().uid;
     return firebase.database().ref(`users/${uid}`);
-  }
+  };
+  getUsersRef = () => {
+    return firebase.database().ref('users');
+  };
+  getDistributedRef = () => {
+    return firebase.database().ref('distributed');
+  };
 }
 /* // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

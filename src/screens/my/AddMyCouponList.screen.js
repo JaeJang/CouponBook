@@ -7,7 +7,7 @@ import CouponList from '@components/CouponList';
 import Modal from '@components/Modal';
 import SubmitButton from '@components/SubmitButton';
 import NumOfCouponsModal from '@components/NumOfCouponsModal';
-import AddCouponModal from '@components/AddCouponModal';
+import TwoButtonModal from '@components/TwoButtonModal';
 import Card from '@components/Card';
 
 import { CARD_TYPE } from '@constants';
@@ -55,9 +55,14 @@ class AddMyCouponList extends Component {
   }
 
   goToNewCoupon = () => {
-    this.props.navigation.navigate('New Coupon', { status: 'NEW' });
+    this.props.navigation.navigate('New Coupon', { status: 'LIST' });
     this.setState({ addCouponOptionModal: false });
   };
+
+  goToImportCoupon = () => {
+    this.props.navigation.navigate('Import Coupon');
+    this.setState({ addCouponOptionModal: false });
+  }
 
   goToUpdateCoupon = index => {
     const { couponList } = this.state;
@@ -210,11 +215,13 @@ class AddMyCouponList extends Component {
             <SubmitButton onPress={this.handleSave} />
           </View>
         </View>
-        <AddCouponModal
+        <TwoButtonModal
           visible={addCouponOptionModal}
           onDismiss={() => this.setState({ addCouponOptionModal: false })}
-          onNew={this.goToNewCoupon}
-          onImport={() => {}}
+          onPressRight={this.goToNewCoupon}
+          onPressLeft={this.goToImportCoupon}
+          left={{icon: 'md-search', label: 'Import'}}
+          right={{icon: 'md-add', label: 'Create New'}}
         />
         {editNumOfCouponsModal &&
           <NumOfCouponsModal

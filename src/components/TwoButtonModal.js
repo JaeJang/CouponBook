@@ -4,7 +4,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 
-const AddCouponModal = ({ visible, onDismiss, onImport, onNew, ...props }) => {
+const TwoButtonModal = ({ visible, onDismiss, onPressLeft, onPressRight, left, right, ...props }) => {
   return (
     <Modal
       visible={visible}
@@ -15,16 +15,16 @@ const AddCouponModal = ({ visible, onDismiss, onImport, onNew, ...props }) => {
     >
       <View style={[styles.container]}>
         <View style={[styles.alignCenter]}>
-          <TouchableOpacity style={[styles.customFab]}>
-            <Icon name="md-search" style={[styles.white]} />
+          <TouchableOpacity style={[styles.customFab]} onPress={onPressLeft}>
+            <Icon name={left.icon} style={[styles.white]} />
           </TouchableOpacity>
-          <Text style={[styles.customFabText]}>Import</Text>
+          <Text style={[styles.customFabText]}>{left.label}</Text>
         </View>
         <View style={[styles.alignCenter]}>
-          <TouchableOpacity style={[styles.customFab]} onPress={onNew}>
-            <Icon name="md-add" style={[styles.white]} />
+          <TouchableOpacity style={[styles.customFab]} onPress={onPressRight}>
+            <Icon name={right.icon} style={[styles.white]} />
           </TouchableOpacity>
-          <Text style={[styles.customFabText]}>Create New</Text>
+          <Text style={[styles.customFabText]}>{right.label}</Text>
         </View>
       </View>
     </Modal>
@@ -62,11 +62,13 @@ const styles = StyleSheet.create({
 
 });
 
-AddCouponModal.propTypes = {
+TwoButtonModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func,
-  onImport: PropTypes.func.isRequired,
-  onNew: PropTypes.func.isRequired
+  onPressLeft: PropTypes.func.isRequired,
+  onPressRight: PropTypes.func.isRequired,
+  left: PropTypes.object.isRequired,
+  right: PropTypes.object.isRequired
 };
 
-export default AddCouponModal;
+export default TwoButtonModal;
