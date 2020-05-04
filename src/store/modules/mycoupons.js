@@ -3,18 +3,18 @@ import _ from 'lodash';
 
 import * as MyCouponService from '@service/MyCouponService';
 import { PROCESSING, PROCESSED } from '@store/types/loading';
-import {
-  ADD_LIST,
-  GET_MY_LISTS,
-  ADD_MY_LIST,
-  REMOVE_LIST,
-  GET_MY_COUPON_KEYS,
-  EDIT_LAST_KEY,
-  ADD_COUPON,
-  RESET_COUPONS,
-  SET_COUPONS
-} from '@store/types/mycoupons';
 import { processing, processed } from '@store/modules/processing';
+
+export const ADD_LIST = 'ADD_LIST';
+export const GET_LISTS = 'GET_LISTS';
+export const GET_MY_LISTS = 'GET_MY_LISTS';
+export const ADD_MY_LIST = 'ADD_MY_LIST';
+export const REMOVE_LIST = 'REMOVE_LIST';
+export const GET_MY_COUPON_KEYS = 'GET_MY_COUPON_KEYS'; 
+export const EDIT_LAST_KEY = 'EDIT_LAST_KEY';
+export const ADD_COUPON = 'ADD_COUPON';
+export const RESET_COUPONS = 'RESET_COUPONS';
+export const SET_COUPONS = 'SET_COUPONS';
 
 export const addCouponList = list => dispatch => {
   dispatch(processing());

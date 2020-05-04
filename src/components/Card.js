@@ -24,7 +24,7 @@ import SubmitButton from '@components/SubmitButton';
 import Modal from '@components/Modal';
 
 import * as MyCouponService from '@service/MyCouponService';
-import { CARD_TYPE, EXPIRE } from '@constants';
+import { CARD_TYPE, EXPIRE, LIST_STATUS, COUPON_STATUS } from '@constants';
 import store from '../store';
 import { processing, processed } from '@store/modules/processing';
 import DefaultImage from '../images/default_image.png';
@@ -48,24 +48,23 @@ class Card extends Component {
       offset: 0,
 
       shareModalVisible: false,
-      email: ''
+      email: '',
+
+      top_width: new Animated.Value(width - 32),
+      top_height: new Animated.Value(height / 5),
+      bottom_width: new Animated.Value(width - 32),
+      bottom_height: new Animated.Value(height / 9),
+      content_height: new Animated.Value(0),
+
+      top_pan: new Animated.ValueXY(),
+      bottom_pan: new Animated.ValueXY(),
+      content_pan: new Animated.ValueXY(),
+
+      content_opac: new Animated.Value(0),
+      button_opac: new Animated.Value(0),
+      back_opac: new Animated.Value(0),
+      plus: new Animated.Value(1)
     };
-
-    this.topWidth = new Animated.Value(width - 32);
-    this.topHeight = new Animated.Value(height / 5);
-    this.bottomWidth = new Animated.Value(width - 32);
-    this.bottomHeight = new Animated.Value(height / 9);
-    this.contentHeight = new Animated.Value(0);
-
-    this.topPan = new Animated.ValueXY();
-    this.bottomPan = new Animated.ValueXY();
-    this.contentPan = new Animated.ValueXY();
-
-    this.contentOpac = new Animated.Value(0);
-    this.buttonOpac = new Animated.Value(0);
-    this.backOpac = new Animated.Value(0);
-    this.plus = new Animated.Value(1);
-    console.log(props.item);
   }
 
   onPress = () => {
@@ -81,47 +80,47 @@ class Card extends Component {
     this.setState({ topBorderRadius: 0, bottomBorderRadius: 5 });
 
     Animated.parallel([
-      Animated.spring(this.topWidth, {
+      Animated.spring(this.state.top_width, {
         toValue: width
       }).start(),
-      Animated.spring(this.topHeight, {
+      Animated.spring(this.state.top_height, {
         toValue: height / 2
       }).start(),
-      Animated.spring(this.bottomHeight, {
+      Animated.spring(this.state.bottom_height, {
         toValue: height / 9 + 50
       }).start(),
-      Animated.spring(this.contentHeight, {
+      Animated.spring(this.state.content_height, {
         toValue: height / 2
       }).start(),
-      Animated.spring(this.topPan, {
+      Animated.spring(this.state.top_pan, {
         toValue: {
           x: 0,
           y: -this.state.offset
         }
       }).start(),
-      Animated.spring(this.contentPan, {
+      Animated.spring(this.state.content_pan, {
         toValue: {
           x: 0,
           y: -(height / 8 + this.state.offset)
         }
       }).start(),
-      Animated.spring(this.bottomPan, {
+      Animated.spring(this.state.bottom_pan, {
         toValue: {
           x: 0,
           y: -(50 + this.state.offset)
         }
       }).start(),
 
-      Animated.timing(this.contentOpac, {
+      Animated.timing(this.state.content_opac, {
         toValue: 1
       }).start(),
-      Animated.timing(this.buttonOpac, {
+      Animated.timing(this.state.button_opac, {
         toValue: 1
       }).start(),
-      Animated.timing(this.backOpac, {
+      Animated.timing(this.state.back_opac, {
         toValue: 1
       }).start(),
-      Animated.timing(this.plus, {
+      Animated.timing(this.state.plus, {
         toValue: 0
       }).start()
     ]);
@@ -130,40 +129,40 @@ class Card extends Component {
     this.setState({ TopBorderRadius: 5, BottomBorderRadius: 0 });
     if (this.props.onPressBack) this.props.onPressBack();
     Animated.parallel([
-      Animated.spring(this.topWidth, {
+      Animated.spring(this.state.top_width, {
         toValue: this.state.orgWidth
       }).start(),
-      Animated.spring(this.topHeight, {
+      Animated.spring(this.state.top_height, {
         toValue: this.state.orgHeight
       }).start(),
-      Animated.spring(this.bottomHeight, {
+      Animated.spring(this.state.bottom_height, {
         toValue: height / 9
       }).start(),
-      Animated.spring(this.topPan, {
+      Animated.spring(this.state.top_pan, {
         toValue: {
           x: 0,
           y: 0
         }
       }).start(),
-      Animated.spring(this.bottomPan, {
+      Animated.spring(this.state.bottom_pan, {
         toValue: {
           x: 0,
           y: 0
         }
       }).start(),
-      Animated.spring(this.contentHeight, {
+      Animated.spring(this.state.content_height, {
         toValue: 0
       }).start(),
-      Animated.timing(this.contentOpac, {
+      Animated.timing(this.state.content_opac, {
         toValue: 0
       }).start(),
-      Animated.timing(this.buttonOpac, {
+      Animated.timing(this.state.button_opac, {
         toValue: 0
       }).start(),
-      Animated.timing(this.backOpac, {
+      Animated.timing(this.state.back_opac, {
         toValue: 0
       }).start(),
-      Animated.timing(this.plus, {
+      Animated.timing(this.state.plus, {
         toValue: 1
       }).start()
     ]);
@@ -188,12 +187,12 @@ class Card extends Component {
   };
 
   onCloseShareModal = () => {
-    this.setState({ shareModalVisible: false, email: ''});
-  }
+    this.setState({ shareModalVisible: false, email: '' });
+  };
 
   onPressSend = async () => {
     if (MyCouponService.getCurrentUserEmail() === this.state.email) {
-      Alert.alert('My Coupons', 'You can\'t send it to yourself');
+      Alert.alert('My Coupons', "You can't send it to yourself");
       return;
     }
     try {
@@ -201,24 +200,29 @@ class Card extends Component {
       if (userExist) {
         const userKey = Object.keys(userExist)[0];
         this.onCloseShareModal();
-        store(processing());
+        store.dispatch(processing());
         MyCouponService.sendList(this.state.email, this.props.item, userKey)
           .then(() => Toast.showWithGravity('Successfully sent!', Toast.SHORT, Toast.BOTTOM))
           .catch(() => Alert.alert('My Coupons', 'Something went wrong. Please try again later'))
-          .finally(() => store(processed()));
-        ;
+          .finally(() => store.dispatch(processed()));
       } else {
         Alert.alert('My Coupons', 'User does not exist!');
       }
-    } catch(error) {
+    } catch (error) {
       Alert.alert('My Coupons', 'Something went wrong! Please try  again');
+    }
+  };
+
+  onPressMainButton = () => {
+    if (this.props.onPressRequest) {
+      this.props.onPressRequest();
     }
   }
 
   renderTop = () => {
     const back = this.state.pressed
-      ? <TouchableOpacity style={[styles.backButton]} onPress={this.onPress}>
-          <Animated.View style={{ opacity: this.backOpac }}>
+      ? <TouchableOpacity style={[styles.backButton, {}]} onPress={this.onPress}>
+          <Animated.View style={{ opacity: this.state.back_opac }}>
             <Text style={{ color: 'white' }}>
               <Icon name="md-arrow-back" />
             </Text>
@@ -236,7 +240,11 @@ class Card extends Component {
           style={[
             styles.top,
             borderStyles,
-            { width: this.topWidth, height: this.topHeight, transform: this.topPan.getTranslateTransform() }
+            {
+              width: this.state.top_width,
+              height: this.state.top_height,
+              transform: this.state.top_pan.getTranslateTransform()
+            }
           ]}
         />
       : <Animated.Image source={DefaultImage} style={{ width: '100%', height: '100%' }} />;
@@ -246,7 +254,11 @@ class Card extends Component {
         style={[
           styles.top,
           borderStyles,
-          { width: this.topWidth, height: this.topHeight, transform: this.topPan.getTranslateTransform() }
+          {
+            width: this.state.top_width,
+            height: this.state.top_height,
+            transform: this.state.top_pan.getTranslateTransform()
+          }
         ]}
       >
         {/* {imageContent} */}
@@ -285,19 +297,19 @@ class Card extends Component {
         <Animated.View style={{opacity: this.state.plus, justifyContent: 'center', alignItems: 'center'}}>
         <Icon name='check-circle' style={{fontSize: 24, color: this.props.color}}/>
     </Animated.View> */
-    const { expireOption, expireIn, expireAt, title } = this.props.item;
+    const { expireOption, expireIn, expireAt, title, status } = this.props.item;
     const disableButton = this.props.disableButton !== undefined ? this.props.disableButton : false;
-    const { sharable } = this.props;
+    const { sharable, type } = this.props;
 
     return (
       <Animated.View
         style={[
           styles.bottom,
           {
-            width: this.bottomWidth,
-            height: this.bottomHeight,
+            width: this.state.bottom_width,
+            height: this.state.bottom_height,
             borderRadius: this.bottomBorderRadius,
-            transform: this.bottomPan.getTranslateTransform()
+            transform: this.state.bottom_pan.getTranslateTransform()
           }
         ]}
       >
@@ -306,13 +318,13 @@ class Card extends Component {
             <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
               {title}
             </Text>
-            {this.props.type === CARD_TYPE.COUPON &&
+            {type === CARD_TYPE.COUPON &&
               <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
                 {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
                 {expireOption === EXPIRE.AT && `Expires at ${new Date(expireAt).toLocaleDateString()}`}
                 {!expireOption && 'No expiry!!'}
               </Text>}
-            {this.props.type === CARD_TYPE.LIST &&
+            {type === CARD_TYPE.LIST &&
               sharable &&
               <TouchableOpacity onPress={this.onPressShare}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', textDecorationLine: 'underline' }}>
@@ -320,15 +332,24 @@ class Card extends Component {
                   <Icon name="md-share-alt" style={{ fontSize: 20, marginLeft: 5, color: '#00aaff' }} />
                 </View>
               </TouchableOpacity>}
+            {type === CARD_TYPE.LIST_FROM &&
+              <View>
+                <Text style={{ fontSize: 15, fontWeight: '500', color: 'gray' }}>
+                  {this.props.item.userName}
+                </Text>
+                <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
+                  {this.props.item.email}
+                </Text>
+              </View>}
           </View>
 
           {/* {plusButton} */}
         </View>
         {this.state.pressed &&
-          <TouchableOpacity disabled={disableButton}>
+          <TouchableOpacity disabled={disableButton} onPress={this.onPressMainButton}>
             <Animated.View
               style={{
-                opacity: this.buttonOpac,
+                opacity: this.state.button_opac,
                 backgroundColor: !disableButton ? '#00aaff' : 'rgba(0,0,0,0.2)',
                 marginTop: 10,
                 borderRadius: 10,
@@ -338,7 +359,9 @@ class Card extends Component {
                 justifyContent: 'center'
               }}
             >
-              <Text style={{ color: 'white', fontWeight: '800', fontSize: 18 }}>Request</Text>
+              {status === COUPON_STATUS.NOT_USED && <Text style={{ color: 'white', fontWeight: '800', fontSize: 18 }}>Request</Text>}
+              {status === COUPON_STATUS.REQUESTED && <ActivityIndicator animating={true} color='white'/>}
+              {status === COUPON_STATUS.USED && <Text style={{ color: 'white', fontWeight: '800', fontSize: 18 }}>Used</Text>}
             </Animated.View>
           </TouchableOpacity>}
       </Animated.View>
@@ -352,12 +375,12 @@ class Card extends Component {
     return (
       <Animated.View
         style={{
-          opacity: this.contentOpac,
+          opacity: this.state.content_opac,
           width: width,
-          height: this.contentHeight,
+          height: this.state.content_height,
           zIndex: -1,
           backgroundColor: 'rgb(242, 242, 242)',
-          transform: this.contentPan.getTranslateTransform(),
+          transform: this.state.content_pan.getTranslateTransform(),
           marginTop: 30
         }}
       >
@@ -376,39 +399,49 @@ class Card extends Component {
     );
   };
 
+  renderCardListBackground = () => {
+    return (
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            top: -10,
+            left: 10,
+            right: -10,
+            bottom: 10,
+            position: 'absolute',
+            borderBottomRightRadius: 5,
+            zIndex: -1
+          }
+        ]}
+      />
+    );
+  };
+
+  renderActivateList = () => {
+    const { type, item } = this.props;
+    return type === CARD_TYPE.LIST_FROM && item.status === LIST_STATUS.PENDING
+      ? <View style={[StyleSheet.absoluteFill, styles.coverCard, {}]}>
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>Touch to activate</Text>
+        </View>
+      : null;
+  };
+
   render() {
+    const { type } = this.props;
     return (
       <View style={[styles.container, this.state.pressedStyle]}>
         <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPress : null} style={{}}>
           <View ref="container" style={[{ alignItems: 'center' }]}>
             {this.props.item.used &&
               !this.state.pressed &&
-              <View
-                style={[
-                  StyleSheet.absoluteFill,
-                  { backgroundColor: 'rgba(255,255,255,0.6)', top: 0, left: 0, position: 'absolute', zIndex: 10 }
-                ]}
-              />}
+              <View style={[StyleSheet.absoluteFill, styles.coverCard]} />}
+            
             {this.renderTop()}
             {this.renderBottom()}
             {this.renderContent()}
-            {this.props.type === CARD_TYPE.LIST
-              ? <View
-                  style={[
-                    StyleSheet.absoluteFill,
-                    {
-                      backgroundColor: 'rgba(0,0,0,0.2)',
-                      top: -10,
-                      left: 10,
-                      right: -10,
-                      bottom: 10,
-                      position: 'absolute',
-                      borderBottomRightRadius: 5,
-                      zIndex: -1
-                    }
-                  ]}
-                />
-              : null}
+            {type === CARD_TYPE.LIST || type === CARD_TYPE.LIST_FROM ? this.renderCardListBackground() : null}
           </View>
         </TouchableWithoutFeedback>
         <Modal
@@ -425,9 +458,9 @@ class Card extends Component {
               autoFocus={true}
               autoCapitalize={'none'}
               keyboardType={'email-address'}
-              onChangeText={text => this.setState({email: text})}
+              onChangeText={text => this.setState({ email: text })}
             />
-            <SubmitButton style={{ flex: 0.2 }} label="SEND" onPress={this.onPressSend}/>
+            <SubmitButton style={{ flex: 0.2 }} label="SEND" onPress={this.onPressSend} />
           </View>
         </Modal>
       </View>
@@ -444,16 +477,13 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: -120,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'flex-start'
+    backgroundColor: 'transparent',
+    top: 32,
+    left: 10
   },
   top: {
     marginBottom: 0,
-    backgroundColor: 'blue'
+    backgroundColor: 'gray'
   },
   bottom: {
     marginTop: 0,
@@ -497,6 +527,15 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderColor: '#000'
+  },
+  coverCard: {
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    top: 0,
+    left: 0,
+    position: 'absolute',
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

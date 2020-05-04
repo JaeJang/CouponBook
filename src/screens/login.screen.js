@@ -29,7 +29,7 @@ class LoginScreen extends Component {
 
     this.state = {
       data: {
-        email: 'wogur0505@gmail.com',
+        email: 'jae.payfirma@gmail.com',
         password: 'Ring1080',
         passwordConfirm: '',
         firstName: '',

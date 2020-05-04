@@ -30,19 +30,28 @@ class MyCouponListDetail extends Component {
 
   async componentDidMount() {
     const list = this.props.navigation.getParam('list', []);
-
+    const { couponsInStore } = this.props;
+    const couponList = [];
     for (let element of list) {
       let coupon;
-      try {
-        coupon = await MyCouponService.getCoupon(element.key);
-      } catch (error) {
-        Alert.alert('My Coupon List', 'Something went wrong. Please try again.');
-        this.props.navigation.goBack();
+      for (let couponInStore of couponsInStore) {
+        if (couponInStore.key === element.key) {
+          coupon = couponInStore;
+        }
+      }
+      if (!coupon) {
+        try {
+          coupon = await MyCouponService.getCoupon(element.key);
+        } catch (error) {
+          Alert.alert('My Coupon List', 'Something went wrong. Please try again.');
+          this.props.navigation.goBack();
+        }
       }
       coupon.numOfCoupons = element.numOfCoupons;
       coupon.key = element.key;
-      this.setState({ list: this.state.list.concat(coupon) });
+      couponList.push(coupon);
     }
+    this.setState({ list: couponList });
   }
 
   onPressCard = () => {
@@ -108,4 +117,10 @@ class MyCouponListDetail extends Component {
 
 MyCouponListDetail.propTypes = {};
 
-export default connect(null, { removeCouponFromList })(MyCouponListDetail);
+const mapStateToProps  = state => {
+  return {
+    couponsInStore: state.mycoupons.coupons
+  }
+}
+
+export default connect(mapStateToProps, { removeCouponFromList })(MyCouponListDetail);

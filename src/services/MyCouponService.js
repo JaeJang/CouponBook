@@ -2,9 +2,11 @@ import { Alert } from 'react-native';
 
 import firebase from '../configs/firebase';
 import NewCoupon from '../models/NewCoupon';
+import store from '../store';
 
 import { uploadToFirebase, uriToBlob } from '@utils/uploadImage';
-import { COUPON_STATUS, LIST_STATUS } from '@constants';
+import { COUPON_STATUS, LIST_STATUS, EXPIRE } from '@constants';
+import * as Utils from '@utils/utils';
 
 export const uploadPhoto = uri => {
   const uid = firebase.getUser().uid;
@@ -206,24 +208,40 @@ export const getCurrentUserEmail = () => {
   return firebase.getUser().email;
 };
 
-export const sendList = (email, item, userKey) => {
+export const sendList = async (email, item, userKey) => {
   const object = {};
-  object.key = item.key;
-  object.titel = item.title;
+  object.title = item.title;
   object.status = LIST_STATUS.PENDING;
   object.image = item.image;
   object.list = [];
   object.numOfCoupons = 0;
+  const couponsInStore = store.getState().mycoupons.coupons;
   for (let coupon of item.list) {
     object.numOfCoupons += coupon.numOfCoupons;
+    let couponToBeAdded;
+    for (let couponInStore of couponsInStore) {
+      if (couponInStore.key === coupon.key) {
+        couponToBeAdded = couponInStore;
+      }
+    }
+    if (!couponToBeAdded) {
+      couponToBeAdded = await getCoupon(coupon.key);
+    }
+    if (couponToBeAdded.expireOption === EXPIRE.IN) {
+      couponToBeAdded.expireOption = EXPIRE.AT;
+      couponToBeAdded.expireAt = Utils.convertExpiry(couponToBeAdded.expireIn);
+    } else if (couponToBeAdded.expireOption === EXPIRE.AT && !Utils.checkExpiry(couponToBeAdded.expireAt)) {
+      continue;
+    }
     for (let i = 0; i < coupon.numOfCoupons; ++i) {
-      object.list.push({ key: coupon.key, status: COUPON_STATUS.NOT_USED });
+      object.list.push({ ...couponToBeAdded, status: COUPON_STATUS.NOT_USED });
     }
   }
 
   return new Promise((resolve, reject) => {
     const ref = firebase.getDistributedRef();
     const newDistributedKey = ref.push().key;
+    object.key = newDistributedKey;
     ref
       .child(newDistributedKey)
       .update(object)
@@ -232,13 +250,13 @@ export const sendList = (email, item, userKey) => {
         firebase
           .getCUsersRef()
           .child(`to/${newDistributedKey}`)
-          .set({ key: newDistributedKey, userKey: userKey })
+          .set({ key: newDistributedKey, userKey: userKey, status: LIST_STATUS.PENDING })
           .then(() => {
             firebase
               .getUsersRef()
               .child(userKey)
               .child(`from/${newDistributedKey}`)
-              .set({ key: newDistributedKey, userKey: firebase.getUser().uid })
+              .set({ key: newDistributedKey, userKey: firebase.getUser().uid, status: LIST_STATUS.PENDING })
               .then(() => resolve())
               .catch(error => {
                 console.error(error);

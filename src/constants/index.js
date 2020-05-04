@@ -7,17 +7,22 @@ export const EXPIRE = {
 export const CARD_TYPE = {
   COUPON: 'COUPON',
   LIST: 'LIST',
-  IMPORT: 'IMPORT'
-}
+  IMPORT: 'IMPORT',
+  LIST_FROM: 'LIST_FROM'
+};
 
 export const COUPON_STATUS = {
   NOT_USED: 'NOT_USED',
   REQUESTED: 'REQUESTED',
   USED: 'USED'
-}
+};
 
 export const LIST_STATUS = {
   PENDING: 'PENDING',
   ACTIVATED: 'ACTIVATED',
+  REQUESTED: 'REQUESTED'
+};
 
+export const ALERT_TYPE = {
+  REQUESTED: 'REQUESTED' 
 }

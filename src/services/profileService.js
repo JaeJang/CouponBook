@@ -40,3 +40,19 @@ export const updatePhotoUrl = (uri, onSuccess) => {
       console.error(error);
     })
 };
+
+export const getToAlerts = async (cb) => {
+  firebase.getCUsersRef().child('alert/to').on('value', snapshot => {
+    if (snapshot.val()) {
+      cb(snapshot.val());
+    }
+  })
+};
+
+export const getFromAlerts = async (cb) => {
+  firebase.getCUsersRef().child('alert/from').on('value', snapshot => {
+    if (snapshot.val()) {
+      cb(snapshot.val());
+    }
+  })
+};

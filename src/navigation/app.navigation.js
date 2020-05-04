@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator, createBottomTabNavigator, createTabNavig
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import LoginScreen from '@screens/login.screen';
-import FromScreen from '@screens/from/from.screen';
+import FromScreen from '@screens/from/From.screen';
 import ToScreen from '@screens/to/to.screen';
 import MyCouponListScreen from '@screens/my/MyCouponList.screen';
 import MyCouponScreen from '@screens/my/MyCoupon.screen';
@@ -15,6 +15,7 @@ import ProfileScreen from '@screens/profile/profile.screen';
 import MyCouponListDetailScreen from '@screens/my/MyCouponListDetail.screen';
 import ImportCouponScreen from '@screens/my/ImportCoupon.screen';
 import ShareScreen from '@screens/my/Share.screen';
+import FromDetailScreen from '@screens/from/From.detail.screen';
 
 import { Icon } from 'native-base';
 
@@ -30,16 +31,22 @@ const LoginStackNavigator = createStackNavigator({
 const FromStackNavigator = createStackNavigator(
   {
     From: {
-      screen: FromScreen
+      screen: FromScreen,
+      navigationOptions: () => ({
+        headerShown: false
+      })
+    },
+    'From Detail': {
+      screen: FromDetailScreen
     }
   },
-  {
+  /* {
     defaultNavigationOptions: ({ navigation }) => {
       return {
         headerShown: false
       };
     }
-  }
+  } */
 );
 
 const ToStackNavigator = createStackNavigator({
@@ -126,7 +133,7 @@ const ProfileStackNavigator = createStackNavigator({
 const CouponTabNavigator = createBottomTabNavigator(
   {
     From: {
-      screen: MyCouponsStackNavigator,
+      screen: FromStackNavigator,
       navigationOptions: {}
     },
     To: {

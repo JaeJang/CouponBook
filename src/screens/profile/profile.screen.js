@@ -10,7 +10,7 @@ import firebase from '../../configs/firebase';
 //import ImagePicker from 'react-native-image-picker';
 
 import _ from 'lodash';
-import * as ProfileService from '@service/profileService';
+import * as ProfileService from '@service/ProfileService';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -21,16 +21,17 @@ class Profile extends Component {
     this.state = {
       displayNameEditable: false,
       displayName: '',
-      image: ''
+      image: '',
+      alerts: {}
     };
   }
   componentDidMount() {
     const user = firebase.getUser();
-    console.log(user);
     this.setState({
       displayName: _.get(user, 'displayName', ''),
       image: _.get(user, 'photoURL', '')
     });
+    ProfileService.getAlerts((value) => this.setState({alerts: value}));
   }
 
   openImagePicker = () => {

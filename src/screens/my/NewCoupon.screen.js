@@ -46,8 +46,8 @@ const expireInData = [
     label: 'Year'
   },
   {
-    value: 'month',
-    label: 'Month'
+    value: 'week',
+    label: 'Week'
   },
   {
     value: 'day',
@@ -168,6 +168,11 @@ class NewCouponScreen extends Component {
   };
 
   handleConfirm = date => {
+    date.setHours(0);
+    date.setSeconds(0);
+    date.setMinutes(0);
+    date.setMilliseconds(0);
+
     this.setState({ data: { ...this.state.data, expireAt: date.getTime() } });
     this.hideDatePicker();
   };
