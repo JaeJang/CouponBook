@@ -39,7 +39,9 @@ export const requestCoupon = (key, index, ownerKey, title) => {
           .getDistributedRef()
           .child(`${key}/list/${index}`)
           .update({ status: COUPON_STATUS.REQUESTED })
-          .then(() => resolve())
+          .then(() => {
+            resolve()
+          })
           .catch(error => {
             console.error(error);
             reject(error);

@@ -32,8 +32,11 @@ import { checkExpiry } from '../utils/utils';
 
 const { width, height } = Dimensions.get('window');
 
+const BOTTOM_HEIGHT_DIVIDER = height < 700 ? 7 : 9;
+
 class Card extends Component {
   constructor(props) {
+    console.log(`width ${width} && height: ${height}`)
     super(props);
     this.state = {
       pressedStyle: {},
@@ -54,7 +57,7 @@ class Card extends Component {
       top_width: new Animated.Value(width - 32),
       top_height: new Animated.Value(height / 5),
       bottom_width: new Animated.Value(width - 32),
-      bottom_height: new Animated.Value(height / 8),
+      bottom_height: new Animated.Value(height / BOTTOM_HEIGHT_DIVIDER),
       content_height: new Animated.Value(0),
 
       top_pan: new Animated.ValueXY(),
@@ -114,7 +117,7 @@ class Card extends Component {
         toValue: height / 2
       }).start(),
       Animated.spring(this.state.bottom_height, {
-        toValue: height / 8 + 50
+        toValue: height / BOTTOM_HEIGHT_DIVIDER + 50
       }).start(),
       Animated.spring(this.state.content_height, {
         toValue: height / 2
@@ -163,7 +166,7 @@ class Card extends Component {
         toValue: this.state.orgHeight
       }).start(),
       Animated.spring(this.state.bottom_height, {
-        toValue: height / 9
+        toValue: height / BOTTOM_HEIGHT_DIVIDER
       }).start(),
       Animated.spring(this.state.top_pan, {
         toValue: {
@@ -258,8 +261,8 @@ class Card extends Component {
       : <View />;
 
     const borderStyles = !this.state.pressed
-      ? { borderRadius: this.state.topBorderRadius, borderBottomLeftRadius: 0 }
-      : { borderTopRightRadius: this.state.topBorderRadius, borderTopLeftRadius: this.state.topBorderRadius };
+    ? { borderTopRightRadius: this.state.topBorderRadius, borderTopLeftRadius: this.state.topBorderRadius }
+      : { borderTopRightRadius:0, borderTopLeftRadius: 0 };
 
     const imageContent = this.props.item.image
       ? <Animated.Image
@@ -326,7 +329,7 @@ class Card extends Component {
     }
     if (status === COUPON_STATUS.USED) 
       return <Text style={styles.buttonText}>Used</Text>
-      
+
     if (type === CARD_TYPE.COUPON && status === COUPON_STATUS.REQUESTED) {
       return <ActivityIndicator animating={true} color="white" />;
     }

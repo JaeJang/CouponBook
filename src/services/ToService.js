@@ -21,7 +21,10 @@ export const confirmCoupon = (title, key, index, userKey, alertKey) => {
         const newAlertKey = ref.push().key;
         ref.child(newAlertKey)
           .update({ title, name, key, index, type: ALERT_TYPE.CONFIRMED, date: date.getTime(), userKey: uid });
-        firebase.getCUsersRef().child('alert/to').child(alertKey).remove();
+        
+        if (alertKey) {
+          firebase.getCUsersRef().child('alert/to').child(alertKey).remove();
+        }
         resolve();
       })
       .catch(error => {

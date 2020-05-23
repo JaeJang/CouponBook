@@ -19,6 +19,7 @@ export const updateFromAlerts = alerts => dispatch => {
   for (let key in alerts) {
     list.push({ alertKey: key, ...alerts[key] });
   }
+  list.reverse();
   dispatch({ type: SET_FROM_ALERTS, payload: list });
 };
 

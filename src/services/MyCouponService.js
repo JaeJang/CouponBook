@@ -255,13 +255,13 @@ export const sendList = async (email, item, userKey) => {
         firebase
           .getCUsersRef()
           .child(`to/${newDistributedKey}`)
-          .set({ key: newDistributedKey, userKey: userKey, status: LIST_STATUS.PENDING })
+          .set({ key: newDistributedKey, userKey: userKey })
           .then(() => {
             firebase
               .getUsersRef()
               .child(userKey)
               .child(`from/${newDistributedKey}`)
-              .set({ key: newDistributedKey, userKey: firebase.getUser().uid, status: LIST_STATUS.PENDING })
+              .set({ key: newDistributedKey, userKey: firebase.getUser().uid })
               .then(() => resolve())
               .catch(error => {
                 console.error(error);
