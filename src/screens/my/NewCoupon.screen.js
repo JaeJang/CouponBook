@@ -29,6 +29,7 @@ import { EXPIRE } from '@constants';
 
 import * as MyCouponService from '@service/MyCouponService';
 import { timingAnimation } from '@utils/animation';
+import { checkExpiry } from '@utils/utils';
 import firebase from '../../configs/firebase';
 
 import NewCoupon from '../../models/NewCoupon';
@@ -139,7 +140,7 @@ class NewCouponScreen extends Component {
       if (!data.expireIn.measure && !data.expireIn.amount) {
         return false;
       }
-    } else if (data.expireOption === EXPIRE.AT && !data.expireAt) {
+    } else if (data.expireOption === EXPIRE.AT && checkExpiry(data.expireAt)) {
       return false;
     }
     return true;

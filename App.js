@@ -6,22 +6,19 @@ import LoginScreen from './src/screens/login.screen';
 import Loader from '@components/loader';
 import AppNavigator from './src/navigation/app.navigation';
 import { SafeAreaView } from 'react-navigation';
+import ToastScreen from '@screens/Toast.screen';
 
 export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-
         <Root>
-          <View style={{flex:1, backgroundColor:'rgb(242, 242, 242)'}}>
+          <View style={{ flex: 1, backgroundColor: 'rgb(242, 242, 242)' }}>
             <Loader />
             <AppNavigator />
             {/* <LoginScreen /> */}
-
           </View>
         </Root>
-
-
       </Provider>
     );
   }

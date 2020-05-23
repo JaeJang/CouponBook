@@ -230,7 +230,9 @@ class Modal_IOS extends Component {
   };
 
   onDismiss = () => {
-    this.sibling.destroy();
+    if (this.sibling) {
+      this.sibling.destroy();
+    }
     this.sibling = null;
     if (this.props.onDismiss) {
       this.props.onDismiss();

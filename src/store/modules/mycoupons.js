@@ -10,7 +10,7 @@ export const GET_LISTS = 'GET_LISTS';
 export const GET_MY_LISTS = 'GET_MY_LISTS';
 export const ADD_MY_LIST = 'ADD_MY_LIST';
 export const REMOVE_LIST = 'REMOVE_LIST';
-export const GET_MY_COUPON_KEYS = 'GET_MY_COUPON_KEYS'; 
+export const GET_MY_COUPON_KEYS = 'GET_MY_COUPON_KEYS';
 export const EDIT_LAST_KEY = 'EDIT_LAST_KEY';
 export const ADD_COUPON = 'ADD_COUPON';
 export const RESET_COUPONS = 'RESET_COUPONS';
@@ -98,18 +98,17 @@ export const removeCouponFromList = (parentKey, key) => (dispatch, getState) => 
 };
 
 export const removeCoupon = (key, index) => (dispatch, getState) => {
-  const coupons = getState().mycoupons.coupons;
-  const keys = getState().mycoupons.couponKeys;
-  const lastKey = getState().mycoupons.couponLastKey;
+  const {coupons, keys, lastKey} = getState().mycoupons;
+  
   if (key === lastKey) {
-    if (keys.length - 1 === index) dispatch({ type: EDIT_LAST_KEY, payload: '' });
-  } else {
-    dispatch({ type: EDIT_LAST_KEY, payload: keys[index - 1] });
+    if (index === 0) {
+      dispatch({ type: EDIT_LAST_KEY, payload: '' });
+    } else {
+      dispatch({ type: EDIT_LAST_KEY, payload: keys[index - 1] });
+    }
   }
-  coupons.splice(index, 1);
-  keys.splice(index, 1);
-  dispatch({ type: SET_COUPONS, payload: coupons });
-  dispatch({ type: GET_MY_COUPON_KEYS, payload: keys });
+  dispatch({ type: SET_COUPONS, payload: coupons.filter((item, i) => i !== index) });
+  dispatch({ type: GET_MY_COUPON_KEYS, payload: keys.filter((item, i) => i !== index) });
 };
 
 const initialState = {

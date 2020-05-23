@@ -1,21 +1,24 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialTopTabNavigator, createBottomTabNavigator, createTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
-import LoginScreen from '@screens/login.screen';
-import FromScreen from '@screens/from/From.screen';
-import ToScreen from '@screens/to/to.screen';
-import MyCouponListScreen from '@screens/my/MyCouponList.screen';
-import MyCouponScreen from '@screens/my/MyCoupon.screen';
-import AddMyCouponListScreen from '@screens/my/AddMyCouponList.screen';
-import NewCouponScreen from '@screens/my/NewCoupon.screen';
-import ProfileScreen from '@screens/profile/profile.screen';
-import MyCouponListDetailScreen from '@screens/my/MyCouponListDetail.screen';
-import ImportCouponScreen from '@screens/my/ImportCoupon.screen';
-import ShareScreen from '@screens/my/Share.screen';
-import FromDetailScreen from '@screens/from/From.detail.screen';
+import LoginScreen from '../screens/login.screen';
+import FromScreen from '../screens/from/From.screen';
+import ToScreen from '../screens/to/To.screen';
+import MyCouponListScreen from '../screens/my/MyCouponList.screen';
+import MyCouponScreen from '../screens/my/MyCoupon.screen';
+import AddMyCouponListScreen from '../screens/my/AddMyCouponList.screen';
+import NewCouponScreen from '../screens/my/NewCoupon.screen';
+import ProfileScreen from '../screens/profile/Profile.screen';
+import MyCouponListDetailScreen from '../screens/my/MyCouponListDetail.screen';
+import ImportCouponScreen from '../screens/my/ImportCoupon.screen';
+import ShareScreen from '../screens/my/Share.screen';
+import FromDetailScreen from '../screens/from/FromDetail.screen';
+import AlertCardScreen from '../screens/profile/AlertCard.screen';
+import ToDetailScreen from '../screens/to/ToDetail.screen';
 
 import { Icon } from 'native-base';
 
@@ -39,7 +42,7 @@ const FromStackNavigator = createStackNavigator(
     'From Detail': {
       screen: FromDetailScreen
     }
-  },
+  }
   /* {
     defaultNavigationOptions: ({ navigation }) => {
       return {
@@ -49,18 +52,29 @@ const FromStackNavigator = createStackNavigator(
   } */
 );
 
-const ToStackNavigator = createStackNavigator({
-  To: {
-    screen: ToScreen
+const ToStackNavigator = createStackNavigator(
+  {
+    To: {
+      screen: ToScreen
+    },
+    'To Detail': {
+      screen: ToDetailScreen
+    }
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => {
+      return {
+        headerShown: false
+      };
+    }
   }
-});
+);
 
 const MyCouponTabNavigator = createStackNavigator(
   {
     'Coupon Lists': {
       screen: MyCouponListScreen,
-      navigationOptions: () => ({
-      })
+      navigationOptions: () => ({})
     },
     Coupons: {
       screen: MyCouponScreen
@@ -69,18 +83,18 @@ const MyCouponTabNavigator = createStackNavigator(
   {
     defaultNavigationOptions: ({ navigation }) => {
       return {
-        headerShown: false,
+        headerShown: false
         /* tabBarOptions: {
           showIcon: true,
           showLabel: false,
-          style: { backgroundColor: '#fff' }
+          style: { backgroundColor: "#fff" }
         },
         tabBarIcon: ({focused, tintClolr}) => {
           const { routeName } = navigation.state;
           let iconName;
-          if (routeName === 'Coupon Lists') iconName = 'md-albums';
-          else if (routeName === 'Coupons') iconName = 'md-square'; 
-          return <Icon name={iconName} size={20} style={{ color: focused ? '#00aaff' : 'gray' }} />
+          if (routeName === "Coupon Lists") iconName = "md-albums";
+          else if (routeName === "Coupons") iconName = "md-square"; 
+          return <Icon name={iconName} size={20} style={{ color: focused ? "#00aaff" : "gray" }} />
         } */
       };
     }
@@ -90,9 +104,7 @@ const MyCouponTabNavigator = createStackNavigator(
 const MyCouponsStackNavigator = createStackNavigator({
   'My Coupons': {
     screen: MyCouponTabNavigator,
-    navigationOptions: {
-
-    }
+    navigationOptions: {}
   },
   'Add Coupon List': {
     screen: AddMyCouponListScreen,
@@ -116,7 +128,7 @@ const MyCouponsStackNavigator = createStackNavigator({
   'Import Coupon': {
     screen: ImportCouponScreen
   },
-  'Share': {
+  Share: {
     screen: ShareScreen
   }
 });
@@ -124,6 +136,15 @@ const MyCouponsStackNavigator = createStackNavigator({
 const ProfileStackNavigator = createStackNavigator({
   Profile: {
     screen: ProfileScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerRight: () =>
+        <Text style={{ marginRight: 10, color: '#00aaff', fontWeight: '600' }} onPress={navigation.getParam('logout')}>
+          LOGOUT
+        </Text>
+    })
+  },
+  AlertCard: {
+    screen: AlertCardScreen,
     navigationOptions: {
       headerShown: false
     }
@@ -140,7 +161,7 @@ const CouponTabNavigator = createBottomTabNavigator(
       screen: ToStackNavigator,
       navigationOptions: {}
     },
-    'My': {
+    My: {
       screen: MyCouponsStackNavigator,
       navigationOptions: {}
     },
@@ -161,7 +182,7 @@ const CouponTabNavigator = createBottomTabNavigator(
         else if (routeName === 'To') iconName = 'md-log-out';
         else if (routeName === 'My') iconName = 'md-filing';
         else if (routeName === 'Profile') iconName = 'md-person';
-        return <Icon name={iconName} size={35} style={{ color: focused ? '#00aaff' : 'gray', marginTop:3 }} />;
+        return <Icon name={iconName} size={35} style={{ color: focused ? '#00aaff' : 'gray', marginTop: 3 }} />;
       }
     })
   }

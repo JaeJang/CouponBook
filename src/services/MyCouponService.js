@@ -181,7 +181,12 @@ export const deleteCouponFromCouponList = (index, parentKey) => {
 
 export const deleteCoupon = key => {
   return new Promise((resolve, reject) => {
-    firebase.getCUsersRef().child(key).remove().then(() => resolve()).catch(error => reject(error));
+    firebase.getCUsersRef()
+      .child('myCoupons')
+      .child(key)
+      .remove()
+      .then(() => resolve())
+      .catch(error => reject(error));
   });
 };
 

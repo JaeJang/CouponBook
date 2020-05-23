@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Alert, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { Fab, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
-//import DefaultImage from '../../images/74951747-0745-4C0B-A93C-A78E53502AC4.jpg';
+import { SwipeRow } from 'react-native-swipe-list-view';
+import _ from 'lodash';
+import moment from 'moment';
+
 import DefaultImage from '../../images/default_image.png';
 import firebase from '../../configs/firebase';
-//import ImagePicker from 'react-native-image-picker';
 
-import _ from 'lodash';
+import SwipeRowAlert from '@components/SwipeRowAlert';
+import { ALERT_TYPE, COUPON_STATUS } from '@constants';
+
 import * as ProfileService from '@service/ProfileService';
+import * as FromService from '@service/FromService';
+import { deleteToAlert, deleteFromAlert } from '@modules/profile';
+import { reset } from '@modules/from';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -31,8 +38,14 @@ class Profile extends Component {
       displayName: _.get(user, 'displayName', ''),
       image: _.get(user, 'photoURL', '')
     });
-    ProfileService.getAlerts((value) => this.setState({alerts: value}));
+    this.props.navigation.setParams({ logout: this.logout });
   }
+
+  logout = () => {
+    this.props.reset();
+    ProfileService.logout();
+    this.props.navigation.navigate('Login');
+  };
 
   openImagePicker = () => {
     ImagePicker.openPicker({
@@ -58,11 +71,26 @@ class Profile extends Component {
     }); */
   };
 
+  onPressToAlert = async item => {
+    this.props.navigation.navigate('AlertCard', { item });
+  };
+
+  onDeleteToAlert = key => {
+    ProfileService.deleteToAlert(key);
+    this.props.deleteToAlert(key);
+  };
+
+  onDeleteFromAlert = key => {
+    ProfileService.deleteFromAlert(key);
+    this.props.deleteFromAlert(key);
+  };
+
   render() {
     const { user } = this.props;
     const { displayNameEditable, image, displayName } = this.state;
+
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.displayName}>
           {!displayNameEditable
             ? <TouchableOpacity
@@ -86,21 +114,51 @@ class Profile extends Component {
                 onBlur={() => this.setState({ displayNameEditable: false })}
               />}
         </View>
-        <TouchableOpacity onPress={this.openImagePicker}>
-          {!image
-            ? <Image source={ DefaultImage } style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />
-            : <Image source={{ uri: image }} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />}
-        </TouchableOpacity>
-        <Text style={styles.imageClickText}>Touch image above to change your basic image</Text>
-      </View>
+        <View>
+          <TouchableOpacity onPress={this.openImagePicker}>
+            {!image
+              ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />
+              : <Image source={{ uri: image }} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />}
+          </TouchableOpacity>
+          <Text style={styles.imageClickText}>Touch image above to change your basic image</Text>
+        </View>
+        <View style={[styles.toAlertContainer]}>
+          <Text style={[styles.alertHeader]}>To Alerts</Text>
+          {this.props.toAlerts.length !== 0
+            ? this.props.toAlerts.map((item, index) => {
+                return (
+                  <SwipeRowAlert
+                    key={index}
+                    item={item}
+                    onRowPress={this.onPressToAlert}
+                    onDelete={this.onDeleteToAlert}
+                  />
+                );
+              })
+            : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
+        </View>
+        <View style={[styles.toAlertContainer]}>
+          <Text style={[styles.alertHeader]}>From Alerts</Text>
+          {this.props.fromAlerts.length !== 0
+            ? this.props.fromAlerts.map((item, index) => {
+                return (
+                  <SwipeRowAlert
+                    key={index}
+                    item={item}
+                    onRowPress={this.onPressToAlert}
+                    onDelete={this.onDeleteFromAlert}
+                  />
+                );
+              })
+            : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
+        </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 20
-  },
+  container: {},
   displayName: {
     alignItems: 'center',
     marginVertical: 20
@@ -120,13 +178,50 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: 'gray',
     marginTop: 5
+  },
+  toAlertContainer: {
+    marginTop: 20
+  },
+  alertHeader: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginBottom: 10,
+    marginLeft: 10
+  },
+  standaloneRowFront: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    height: 50,
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5
+  },
+  standaloneRowBack: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15
+  },
+  backTextWhite: {
+    color: '#FFF',
+    fontSize: 20
+  },
+  noAlertMessage: {
+    marginLeft: 20,
+    marginTop: 10,
+    color: 'gray'
   }
 });
 
 const mapStateToProps = state => {
   return {
-    user: state.authentication.user
+    user: state.authentication.user,
+    toAlerts: state.profile.toAlerts,
+    fromAlerts: state.profile.fromAlerts,
+    toList: state.to.toList
   };
 };
 
-export default connect(mapStateToProps, null)(Profile);
+export default connect(mapStateToProps, { deleteFromAlert, deleteToAlert, reset })(Profile);

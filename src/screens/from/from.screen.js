@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { FlatList, Image, View, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import Card from '@components/Card';
-import { CARD_TYPE, LIST_STATUS } from '@constants';
-import { getFromList, getFromListAfter } from '@modules/from';
+import Button from '@components/SubmitButton';
 
-import * as FromService from '@service/FromService';
+import { CARD_TYPE, LIST_STATUS } from '@constants';
+import { getFromList, getFromListAfter, deleteFrom } from '../../store/modules/from';
+
+import * as FromService from '../../services/FromService';
+
 class FromScreen extends Component {
   constructor(props) {
     super(props);
@@ -16,50 +20,82 @@ class FromScreen extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.fromList.length) {
-      this.props.getFromList();
-    }
+    this.props.getFromList();
+  }
+  componentWillUnmount() {
+    //FromService.removeListeners();
   }
 
-  onPressList = item => {
-    this.props.navigation.navigate('From Detail', { item: item, title: item.title });
+  onPressList = (item, index) => {
+    this.props.navigation.navigate('From Detail', { index: index, title: item.title });
   };
 
-  onPressX = (item, index) => {};
+  onPressX = (item, index) => {
+    Alert.alert('Coupons', `Do you really want to delete ${item.title}?`, [
+      {
+        text: 'Cancel'
+      },
+      {
+        text: 'Delete',
+        onPress: () => {
+          const userKey = this.props.fromKeys[index].userKey;
+          FromService.deleteFrom(item.key, userKey, item.title)
+            .then(() => {
+              this.props.deleteFrom(item.key, index);
+            })
+            .catch(() => {
+              Alert.alert('Coupons', 'Something went wrong. Please try again');
+            });
+        }
+      }
+    ]);
+  };
 
   renderFooter = () => {
-    /* const { couponKeys, couponLastKey } = this.props;
-    const index = couponKeys.indexOf(couponLastKey);
-    if (index + 1 < couponKeys.length) {
+    const { fromKeys, fromLastKey } = this.props;
+    const index = _.findIndex(fromKeys, { key: fromLastKey });
+    if (index + 1 < fromKeys.length) {
       return (
         <View style={{ flex: 1 }}>
-          <Button label="Load More" onPress={this.props.getMyCouponsKeyAfter} />
+          <Button label="Load More" onPress={this.props.getFromListAfter} />
         </View>
       );
     }
-    return null; */
+    return null;
   };
 
   render() {
     const { fromList } = this.props;
-    console.log(fromList);
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          horizontal={false}
-          keyExtractor={item => item.key}
-          //ListFooterComponent={this.renderFooter}
-          data={fromList}
-          renderItem={({ item, index }) =>
-            <Card
-              type={CARD_TYPE.LIST_FROM}
-              item={item}
-              onPress={() => this.onPressList(item)}
-              onPressX={() => this.onPressX(item, index)}
-              showXButton={true}
-            />}
-        />
+        {fromList.length
+          ? <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={false}
+              keyExtractor={(item, index) => index.toString()}
+              ListFooterComponent={this.renderFooter}
+              data={fromList}
+              renderItem={({ item, index }) =>
+                <Card
+                  type={CARD_TYPE.LIST_FROM}
+                  item={item}
+                  onPress={() => this.onPressList(item, index)}
+                  onPressX={() => this.onPressX(item, index)}
+                  showXButton={true}
+                />}
+            />
+          : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text
+                style={{
+                  marginLeft: 20,
+                  marginTop: 10,
+                  color: 'gray',
+                  fontSize: 20
+                }}
+              >
+                You didn't get any coupons yet
+              </Text>
+            </View>}
       </View>
     );
   }
@@ -67,8 +103,10 @@ class FromScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    fromList: state.from.fromList
+    fromList: state.from.fromList,
+    fromKeys: state.from.fromKeys,
+    fromLastKey: state.from.fromLastKey
   };
 };
 
-export default connect(mapStateToProps, { getFromList, getFromListAfter })(FromScreen);
+export default connect(mapStateToProps, { getFromList, getFromListAfter, deleteFrom })(FromScreen);

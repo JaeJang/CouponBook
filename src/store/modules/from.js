@@ -1,76 +1,127 @@
 import _ from 'lodash';
 
-import * as FromService from '@service/FromService';
+import * as FromService from '../../services/FromService';
+import * as FromToService from '../../services/FromToService';
+import { addToObject } from "../../utils/utils";
 
 import { PROCESSING, PROCESSED } from '@store/types/loading';
 import { processing, processed } from '@store/modules/processing';
 
-export const SET_KEYS = 'SET_KEYS';
+export const SET_FROM_KEYS = 'SET_FROM_KEYS';
 export const SET_LAST_KEY = 'SET_LAST_KEY';
 export const SET_FROM_USERS = 'SET_FROM_USERS';
 export const ADD_FROM = 'ADD_FROM';
 export const SET_FROM_LIST = 'SET_FROM_LIST';
 export const UPDATE_FROM_LIST = 'UPDATE_FROM_LIST';
+export const ADD_TO_FRONT = 'ADD_TO_FRONT';
 
-export const getFromList = () => dispatch => {
-  FromService.getFromList().then(values => {
-    dispatch({ type: SET_KEYS, payload: values });
-    dispatch(getFromListAfter());
+const TYPE = "from";
+
+export const addToFront = value => async (dispatch, getState) => {
+  const { fromUsers } = getState().from;
+  const user = await getUserByUserKey(fromUsers, value.userKey, dispatch);
+  const list = getState().from.fromList;
+  list.unshift({ email: user.email, userName: user.name, key: value.key });
+  dispatch({ type: SET_FROM_LIST, payload: list });
+  FromToService.onDistributedChange(value.key, result => dispatch(updateDist(value.key, result)));
+};
+
+export const listenToNewList = () => (dispatch, getState) => {
+  FromToService.childAddedListener(TYPE, (value) => {
+    const { fromKeys } = getState().from;
+    const index = _.findIndex(fromKeys, { key: value.key });
+    if (index === -1) {
+      if (!fromKeys.length) {
+        dispatch({ type: SET_LAST_KEY, payload: value.key });
+      }
+      fromKeys.unshift(value);
+      dispatch({ type: SET_FROM_KEYS, payload: fromKeys });
+      dispatch(addToFront(value));
+    }
   });
 };
 
+export const getFromList = () => dispatch => {
+  FromToService.getList(TYPE)
+    .then(values => {
+      if (values.length) {
+        dispatch({ type: SET_FROM_KEYS, payload: values });
+        dispatch(getFromListAfter());
+      }
+    })
+    .catch(error => console.error(error))
+    .finally(() => {
+      dispatch(listenToNewList());
+    });
+};
+
 export const getFromListAfter = () => async (dispatch, getState) => {
-  const { lastFromKeys, fromKeys, fromUsers } = getState().from;
-  //const list = [];
-  let i = lastFromKeys !== '' ? _.findIndex(fromKeys, lastFromKeys) + 1 : 0;
+  const { fromLastKey, fromKeys, fromUsers } = getState().from;
+  let i = fromLastKey !== '' ? _.findIndex(fromKeys, {key: fromLastKey}) + 1 : 0;
   const index = i;
+
   dispatch(processing());
+
   for (; i < index + 10 && i < fromKeys.length; ++i) {
     const { key, userKey } = fromKeys[i];
-    //const dist = await FromService.getDistributed(key);
-    let user = fromUsers[userKey];
+    let user = await getUserByUserKey(fromUsers, userKey, dispatch);
 
-    if (!user) {
-      user = await FromService.getUserByUid(userKey);
-      const object = { [userKey]: { email: user.email, name: user.name } };
-      dispatch({ type: SET_FROM_USERS, payload: object });
-    }
     const list = getState().from.fromList;
     list.push({ email: user.email, userName: user.name, key });
     dispatch({ type: SET_FROM_LIST, payload: list });
-    FromService.onDistributedChange(key);
+    FromToService.onDistributedChange(key, result => dispatch(updateDist(key, result)));
   }
-  //dispatch({ type: SET_FROM_LIST, payload: list });
-  /* for(let coupon of list) {
-    FromService.onDistributedChange(coupon.key);
-  } */
   dispatch(processed());
-  dispatch({ type: SET_LAST_KEY, payload: fromKeys[i - 1] });
+  dispatch({ type: SET_LAST_KEY, payload: fromKeys[i - 1].key });
 };
 
 export const updateDist = (key, updatedDist) => (dispatch, getState) => {
   const list = getState().from.fromList;
   const index = _.findIndex(list, { key: key });
   const newDist = Object.assign(list[index], updatedDist);
+
   dispatch({ type: UPDATE_FROM_LIST, payload: { key, newDist } });
 };
 
-const addToObject = (object, property) => {
-  const key = Object.keys(property);
-  object[key[0]] = property[key];
-  return object;
+export const reset = () => dispatch => {
+  dispatch({ type: 'LOGOUT' });
+};
+
+export const deleteFrom = (key, index) => (dispatch, getState) => {
+  const { fromKeys, fromList, fromLastKey } = getState().from;
+
+  if (key === fromLastKey) {
+    if (index === 0) {
+      dispatch({ type: SET_LAST_KEY, payload: '' });
+    } else {
+      dispatch({ type: SET_LAST_KEY, payload: fromKeys[index - 1].key });
+    }
+  }
+
+  dispatch({ type: SET_FROM_LIST, payload: fromList.filter((item, i) => i !== index) });
+  dispatch({ type: SET_FROM_KEYS, payload: fromKeys.filter((item, i) => i !== index) });
+};
+
+const getUserByUserKey = async (fromUsers, userKey, dispatch) => {
+  let user = fromUsers[userKey];
+  if (!user) {
+    user = await FromToService.getUserByUid(userKey);
+    const object = { [userKey]: { email: user.email, name: user.name } };
+    dispatch({ type: SET_FROM_USERS, payload: object });
+  }
+  return user;
 };
 
 const initialState = {
   fromKeys: [],
-  lastFromKeys: '',
+  fromLastKey: "",
   fromList: [],
   fromUsers: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case SET_KEYS:
+    case SET_FROM_KEYS:
       return {
         ...state,
         fromKeys: action.payload
@@ -78,7 +129,7 @@ export default function(state = initialState, action) {
     case SET_LAST_KEY:
       return {
         ...state,
-        lastFromKeys: action.payload
+        fromLastKey: action.payload
       };
     case SET_FROM_USERS:
       return {
@@ -101,6 +152,13 @@ export default function(state = initialState, action) {
       return {
         ...state,
         fromList: state.fromList.map(item => (item.key === key ? { ...item, ...newDist } : item))
+      };
+    case 'LOGOUT':
+      return {
+        fromKeys: [],
+        fromLastKey: '',
+        fromList: [],
+        fromUsers: {}
       };
     default:
       return state;

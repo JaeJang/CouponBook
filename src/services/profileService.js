@@ -38,21 +38,35 @@ export const updatePhotoUrl = (uri, onSuccess) => {
       store.dispatch(processed());
       Alert.alert('Upload Image', 'Something went wrong! Please try again.');
       console.error(error);
-    })
+    });
 };
 
-export const getToAlerts = async (cb) => {
+export const getToAlerts = async cb => {
   firebase.getCUsersRef().child('alert/to').on('value', snapshot => {
     if (snapshot.val()) {
       cb(snapshot.val());
     }
-  })
+  });
 };
 
-export const getFromAlerts = async (cb) => {
+export const getFromAlerts = async cb => {
   firebase.getCUsersRef().child('alert/from').on('value', snapshot => {
     if (snapshot.val()) {
       cb(snapshot.val());
     }
-  })
+  });
 };
+
+export const logout = () => {
+  firebase.auth().signOut();
+  store.dispatch({ type: 'LOGOUT' });
+};
+
+
+export const deleteToAlert = key => {
+  firebase.getCUsersRef().child('alert/to').child(key).remove();
+}
+
+export const deleteFromAlert = key => {
+  firebase.getCUsersRef().child('alert/from').child(key).remove();
+}

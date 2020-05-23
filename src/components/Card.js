@@ -20,14 +20,15 @@ import _ from 'lodash';
 import CachedImage from 'react-native-image-cache-wrapper';
 import Toast from 'react-native-simple-toast';
 
-import SubmitButton from '@components/SubmitButton';
-import Modal from '@components/Modal';
+import SubmitButton from './SubmitButton';
+import Modal from './Modal';
 
-import * as MyCouponService from '@service/MyCouponService';
-import { CARD_TYPE, EXPIRE, LIST_STATUS, COUPON_STATUS } from '@constants';
+import * as MyCouponService from '../services/MyCouponService';
+import { CARD_TYPE, EXPIRE, LIST_STATUS, COUPON_STATUS } from '../constants';
 import store from '../store';
 import { processing, processed } from '@store/modules/processing';
 import DefaultImage from '../images/default_image.png';
+import { checkExpiry } from '../utils/utils';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,7 +54,7 @@ class Card extends Component {
       top_width: new Animated.Value(width - 32),
       top_height: new Animated.Value(height / 5),
       bottom_width: new Animated.Value(width - 32),
-      bottom_height: new Animated.Value(height / 9),
+      bottom_height: new Animated.Value(height / 8),
       content_height: new Animated.Value(0),
 
       top_pan: new Animated.ValueXY(),
@@ -63,14 +64,40 @@ class Card extends Component {
       content_opac: new Animated.Value(0),
       button_opac: new Animated.Value(0),
       back_opac: new Animated.Value(0),
-      plus: new Animated.Value(1)
+      plus: new Animated.Value(1),
+
+      expired: false
     };
   }
+  componentDidMount() {
+    if (this.props.isAlert) {
+      this.setState({ pressed: !this.state.pressed });
+      this.calculateOffset();
+    }
+    const type = this.props.type;
+    if (type !== CARD_TYPE.LIST) {
+      this.checkExpiry();
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.item.status !== this.props.item.status) {
+      console.log(this.props.item.status);
+    }
+  }
+
+  checkExpiry = () => {
+    const { expireAt } = this.props.item;
+    if (expireAt && checkExpiry(expireAt)) {
+      this.setState({ expired: true });
+    }
+  };
 
   onPress = () => {
+    const type = this.props.type;
+
     if (this.props.onPress) this.props.onPress();
 
-    if (this.props.type === CARD_TYPE.COUPON) {
+    if (type === CARD_TYPE.COUPON || type === CARD_TYPE.COUPON_TO) {
       this.setState({ pressed: !this.state.pressed });
       this.calculateOffset();
     }
@@ -87,7 +114,7 @@ class Card extends Component {
         toValue: height / 2
       }).start(),
       Animated.spring(this.state.bottom_height, {
-        toValue: height / 9 + 50
+        toValue: height / 8 + 50
       }).start(),
       Animated.spring(this.state.content_height, {
         toValue: height / 2
@@ -214,10 +241,10 @@ class Card extends Component {
   };
 
   onPressMainButton = () => {
-    if (this.props.onPressRequest) {
-      this.props.onPressRequest();
+    if (this.props.onPressMainButton) {
+      this.props.onPressMainButton();
     }
-  }
+  };
 
   renderTop = () => {
     const back = this.state.pressed
@@ -287,19 +314,48 @@ class Card extends Component {
     );
   };
 
+  renderButtonLabel = () => {
+    const { status } = this.props.item;
+    const { type } = this.props;
+    const { expired } = this.state;
+
+    if (status === COUPON_STATUS.NOT_USED) {
+      if (expired) return <Text style={styles.buttonText}>Expired</Text>;
+      if (type === CARD_TYPE.COUPON_TO) return <Text style={styles.buttonText}>Not used</Text>;
+      else return <Text style={styles.buttonText}>Request</Text>;
+    }
+    if (status === COUPON_STATUS.USED) 
+      return <Text style={styles.buttonText}>Used</Text>
+      
+    if (type === CARD_TYPE.COUPON && status === COUPON_STATUS.REQUESTED) {
+      return <ActivityIndicator animating={true} color="white" />;
+    }
+
+    if (type === CARD_TYPE.COUPON_TO && status === COUPON_STATUS.REQUESTED) {
+      return <Text style={styles.buttonText}>Confirm</Text>;
+    }
+  };
+
   renderBottom = () => {
     /* var plusButton = !this.state.activated
         ?
-    <Animated.View style={{opacity: this.state.plus, justifyContent: 'center', alignItems: 'center'}}>
-        <Icon name='plus-circle' style={{fontSize: 24, color: this.props.color}}/>
+    <Animated.View style={{opacity: this.state.plus, justifyContent: "center", alignItems: "center"}}>
+        <Icon name="plus-circle" style={{fontSize: 24, color: this.props.color}}/>
     </Animated.View>
         :
-        <Animated.View style={{opacity: this.state.plus, justifyContent: 'center', alignItems: 'center'}}>
-        <Icon name='check-circle' style={{fontSize: 24, color: this.props.color}}/>
+        <Animated.View style={{opacity: this.state.plus, justifyContent: "center", alignItems: "center"}}>
+        <Icon name="check-circle" style={{fontSize: 24, color: this.props.color}}/>
     </Animated.View> */
     const { expireOption, expireIn, expireAt, title, status } = this.props.item;
-    const disableButton = this.props.disableButton !== undefined ? this.props.disableButton : false;
     const { sharable, type } = this.props;
+    const { expired } = this.state;
+    let disableButton = false;
+
+    if (this.props.disableButton !== undefined) {
+      disableButton = this.props.disableButton;
+    } else if (status === COUPON_STATUS.USED || expired) {
+      disableButton = true;
+    }
 
     return (
       <Animated.View
@@ -318,8 +374,8 @@ class Card extends Component {
             <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
               {title}
             </Text>
-            {type === CARD_TYPE.COUPON &&
-              <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
+            {(type === CARD_TYPE.COUPON || type === CARD_TYPE.COUPON_TO) &&
+              <Text style={{ fontSize: 12, fontWeight: '500', color: !expired ? 'gray' : 'red' }}>
                 {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
                 {expireOption === EXPIRE.AT && `Expires at ${new Date(expireAt).toLocaleDateString()}`}
                 {!expireOption && 'No expiry!!'}
@@ -332,7 +388,7 @@ class Card extends Component {
                   <Icon name="md-share-alt" style={{ fontSize: 20, marginLeft: 5, color: '#00aaff' }} />
                 </View>
               </TouchableOpacity>}
-            {type === CARD_TYPE.LIST_FROM &&
+            {(type === CARD_TYPE.LIST_FROM || type === CARD_TYPE.LIST_TO) &&
               <View>
                 <Text style={{ fontSize: 15, fontWeight: '500', color: 'gray' }}>
                   {this.props.item.userName}
@@ -359,9 +415,7 @@ class Card extends Component {
                 justifyContent: 'center'
               }}
             >
-              {status === COUPON_STATUS.NOT_USED && <Text style={{ color: 'white', fontWeight: '800', fontSize: 18 }}>Request</Text>}
-              {status === COUPON_STATUS.REQUESTED && <ActivityIndicator animating={true} color='white'/>}
-              {status === COUPON_STATUS.USED && <Text style={{ color: 'white', fontWeight: '800', fontSize: 18 }}>Used</Text>}
+              {this.renderButtonLabel()}
             </Animated.View>
           </TouchableOpacity>}
       </Animated.View>
@@ -437,11 +491,13 @@ class Card extends Component {
             {this.props.item.used &&
               !this.state.pressed &&
               <View style={[StyleSheet.absoluteFill, styles.coverCard]} />}
-            
+
             {this.renderTop()}
             {this.renderBottom()}
             {this.renderContent()}
-            {type === CARD_TYPE.LIST || type === CARD_TYPE.LIST_FROM ? this.renderCardListBackground() : null}
+            {type === CARD_TYPE.LIST || type === CARD_TYPE.LIST_FROM || type === CARD_TYPE.LIST_TO
+              ? this.renderCardListBackground()
+              : null}
           </View>
         </TouchableWithoutFeedback>
         <Modal
@@ -452,6 +508,7 @@ class Card extends Component {
         >
           <View style={{ marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
+              jaeautoCapitalize="none"
               style={{ flex: 0.8, backgroundColor: '#fff', paddingLeft: 10 }}
               width={100}
               placeholder="Email"
@@ -536,6 +593,11 @@ const styles = StyleSheet.create({
     zIndex: 10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '800',
+    fontSize: 18
   }
 });
 
