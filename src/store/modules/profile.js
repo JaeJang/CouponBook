@@ -44,7 +44,7 @@ export const switchDownloadOption = value => async dispatch => {
 
 export const getSettings = () => async dispatch => {
   const imageDownloadDisabled = await AsyncStorage.getItem('imageDownloadDisabled');
-  dispatch({ type: SET_SETTINGS, payload: { imageDownloadDisabled:(imageDownloadDisabled === "true") } });
+  dispatch({ type: SET_SETTINGS, payload: { imageDownloadDisabled: imageDownloadDisabled === 'true' } });
 };
 
 const initialState = {
@@ -79,7 +79,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         imageDownloadDisabled: action.payload.imageDownloadDisabled
-      }
+      };
     default:
       return state;
   }

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { FlatList, View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { FlatList, View, Animated } from 'react-native';
 import PropTypes from 'prop-types';
+import { Fab, Icon } from 'native-base';
 
 import Card from './Card';
 
@@ -12,14 +13,17 @@ const FromToDetail = ({
   onPressMainButton = () => {},
   ...props
 }) => {
+  const fabOpac = useRef(new Animated.Value(1)).current;
   const [scroll, setScroll] = useState(true);
   const onPress = () => {
     onPressCard();
     setScroll(false);
+    Animated.timing(fabOpac, { toValue: 0 }).start();
   };
   const onPressBack = () => {
     onPressCardBack();
     setScroll(true);
+    Animated.timing(fabOpac, { toValue: 1 }).start();
   };
 
   return (
@@ -39,6 +43,16 @@ const FromToDetail = ({
             item={item}
           />}
       />
+      <Fab
+        active={false}
+        direction="up"
+        containerStyle={{ opacity: fabOpac }}
+        style={{ backgroundColor: '#00aaff' }}
+        position="bottomLeft"
+        onPress={scroll ? props.navigation.goBack : null}
+      >
+        <Icon name="md-arrow-back" />
+      </Fab>
     </View>
   );
 };

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   Animated,
   Dimensions,
@@ -14,24 +14,24 @@ import {
   ImageBackground,
   TextInput,
   Alert
-} from "react-native";
-import { Icon } from "native-base";
-import PropTypes from "prop-types";
-import _ from "lodash";
-import CachedImage from "react-native-image-cache-wrapper";
-import Toast from "react-native-simple-toast";
+} from 'react-native';
+import { Icon } from 'native-base';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import CachedImage from 'react-native-image-cache-wrapper';
+import Toast from 'react-native-simple-toast';
 
-import SubmitButton from "./SubmitButton";
-import Modal from "./Modal";
+import SubmitButton from './SubmitButton';
+import Modal from './Modal';
 
-import * as MyCouponService from "../services/MyCouponService";
-import { CARD_TYPE, EXPIRE, LIST_STATUS, COUPON_STATUS } from "../constants";
-import store from "../store";
-import { processing, processed } from "@store/modules/processing";
-import DefaultImage from "../images/default_image.png";
-import { checkExpiry } from "../utils/utils";
+import * as MyCouponService from '../services/MyCouponService';
+import { CARD_TYPE, EXPIRE, LIST_STATUS, COUPON_STATUS } from '../constants';
+import store from '../store';
+import { processing, processed } from '@store/modules/processing';
+import DefaultImage from '../images/default_image.png';
+import { checkExpiry } from '../utils/utils';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 const BOTTOM_HEIGHT_DIVIDER = height < 700 ? 7 : 9;
 
@@ -52,7 +52,7 @@ class Card extends Component {
       offset: 0,
 
       shareModalVisible: false,
-      email: "",
+      email: '',
 
       top_width: new Animated.Value(width - 32),
       top_height: new Animated.Value(height / 5),
@@ -217,12 +217,12 @@ class Card extends Component {
   };
 
   onCloseShareModal = () => {
-    this.setState({ shareModalVisible: false, email: "" });
+    this.setState({ shareModalVisible: false, email: '' });
   };
 
   onPressSend = async () => {
     if (MyCouponService.getCurrentUserEmail() === this.state.email) {
-      Alert.alert("My Coupons", "You can't send it to yourself");
+      Alert.alert('My Coupons', "You can't send it to yourself");
       return;
     }
     try {
@@ -232,14 +232,14 @@ class Card extends Component {
         this.onCloseShareModal();
         store.dispatch(processing());
         MyCouponService.sendList(this.state.email, this.props.item, userKey)
-          .then(() => Toast.showWithGravity("Successfully sent!", Toast.SHORT, Toast.BOTTOM))
-          .catch(() => Alert.alert("My Coupons", "Something went wrong. Please try again later"))
+          .then(() => Toast.showWithGravity('Successfully sent!', Toast.SHORT, Toast.BOTTOM))
+          .catch(() => Alert.alert('My Coupons', 'Something went wrong. Please try again later'))
           .finally(() => store.dispatch(processed()));
       } else {
-        Alert.alert("My Coupons", "User does not exist!");
+        Alert.alert('My Coupons', 'User does not exist!');
       }
     } catch (error) {
-      Alert.alert("My Coupons", "Something went wrong! Please try  again");
+      Alert.alert('My Coupons', 'Something went wrong! Please try  again');
     }
   };
 
@@ -253,7 +253,7 @@ class Card extends Component {
     const back = this.state.pressed
       ? <TouchableOpacity style={[styles.backButton, {}]} onPress={this.onPress}>
           <Animated.View style={{ opacity: this.state.back_opac }}>
-            <Text style={{ color: "white" }}>
+            <Text style={{ color: 'white' }}>
               <Icon name="md-arrow-back" />
             </Text>
           </Animated.View>
@@ -279,7 +279,7 @@ class Card extends Component {
         ]}
       >
         {/* {imageContent} */}
-        <CachedImage source={image} style={{ width: "100%", height: "100%" }}>
+        <CachedImage source={image} style={{ width: '100%', height: '100%' }}>
           {back}
           {this.props.item.numOfCoupons &&
             !this.state.pressed &&
@@ -358,31 +358,31 @@ class Card extends Component {
           }
         ]}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={{}}>
-            <Text style={{ fontSize: 24, fontWeight: "700", paddingBottom: 8 }}>
+            <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
               {title}
             </Text>
             {(type === CARD_TYPE.COUPON || type === CARD_TYPE.COUPON_TO) &&
-              <Text style={{ fontSize: 12, fontWeight: "500", color: !expired ? "gray" : "red" }}>
+              <Text style={{ fontSize: 12, fontWeight: '500', color: !expired ? 'gray' : 'red' }}>
                 {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
                 {expireOption === EXPIRE.AT && `Expires at ${new Date(expireAt).toLocaleDateString()}`}
-                {!expireOption && "No expiry!!"}
+                {!expireOption && 'No expiry!!'}
               </Text>}
             {type === CARD_TYPE.LIST &&
               sharable &&
               <TouchableOpacity onPress={this.onPressShare}>
-                <View style={{ flexDirection: "row", alignItems: "center", textDecorationLine: "underline" }}>
-                  <Text style={{ fontSize: 15, fontWeight: "500", color: "#00aaff" }}>Share with others</Text>
-                  <Icon name="md-share-alt" style={{ fontSize: 20, marginLeft: 5, color: "#00aaff" }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', textDecorationLine: 'underline' }}>
+                  <Text style={{ fontSize: 15, fontWeight: '500', color: '#00aaff' }}>Share with others</Text>
+                  <Icon name="md-share-alt" style={{ fontSize: 20, marginLeft: 5, color: '#00aaff' }} />
                 </View>
               </TouchableOpacity>}
             {(type === CARD_TYPE.LIST_FROM || type === CARD_TYPE.LIST_TO) &&
               <View>
-                <Text style={{ fontSize: 15, fontWeight: "500", color: "gray" }}>
+                <Text style={{ fontSize: 15, fontWeight: '500', color: 'gray' }}>
                   {this.props.item.userName}
                 </Text>
-                <Text style={{ fontSize: 12, fontWeight: "500", color: "gray" }}>
+                <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
                   {this.props.item.email}
                 </Text>
               </View>}
@@ -395,13 +395,13 @@ class Card extends Component {
             <Animated.View
               style={{
                 opacity: this.state.button_opac,
-                backgroundColor: !disableButton ? "#00aaff" : "rgba(0,0,0,0.2)",
+                backgroundColor: !disableButton ? '#00aaff' : 'rgba(0,0,0,0.2)',
                 marginTop: 10,
                 borderRadius: 10,
                 width: width - 64,
                 height: 50,
-                alignItems: "center",
-                justifyContent: "center"
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
               {this.renderButtonLabel()}
@@ -422,18 +422,18 @@ class Card extends Component {
           width: width,
           height: this.state.content_height,
           zIndex: -1,
-          backgroundColor: "rgb(242, 242, 242)",
+          backgroundColor: 'rgb(242, 242, 242)',
           transform: this.state.content_pan.getTranslateTransform(),
           marginTop: 30
         }}
       >
-        <View style={{ backgroundColor: "white", flex: 1, margin: 16, padding: 16 }}>
-          <Text style={{ fontSize: 24, fontWeight: "700", color: "black" }}>Description</Text>
+        <View style={{ backgroundColor: 'white', flex: 1, margin: 16, padding: 16 }}>
+          <Text style={{ fontSize: 24, fontWeight: '700', color: 'black' }}>Description</Text>
           <Text style={{ paddingTop: 10 }}>
             {this.props.item.description}
           </Text>
           {this.props.item.note
-            ? <Text style={{ fontStyle: "italic", padding: 5, color: "gray" }}>
+            ? <Text style={{ fontStyle: 'italic', padding: 5, color: 'gray' }}>
                 Note: {this.props.item.note}
               </Text>
             : null}
@@ -448,12 +448,12 @@ class Card extends Component {
         style={[
           StyleSheet.absoluteFill,
           {
-            backgroundColor: "rgba(0,0,0,0.2)",
+            backgroundColor: 'rgba(0,0,0,0.2)',
             top: -10,
             left: 10,
             right: -10,
             bottom: 10,
-            position: "absolute",
+            position: 'absolute',
             borderBottomRightRadius: 5,
             zIndex: -1
           }
@@ -466,7 +466,7 @@ class Card extends Component {
     const { type, item } = this.props;
     return type === CARD_TYPE.LIST_FROM && item.status === LIST_STATUS.PENDING
       ? <View style={[StyleSheet.absoluteFill, styles.coverCard, {}]}>
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Touch to activate</Text>
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>Touch to activate</Text>
         </View>
       : null;
   };
@@ -476,7 +476,7 @@ class Card extends Component {
     return (
       <View style={[styles.container, this.state.pressedStyle]}>
         <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPress : null} style={{}}>
-          <View ref="container" style={[{ alignItems: "center" }]}>
+          <View ref="container" style={[{ alignItems: 'center' }]}>
             {this.props.item.used &&
               !this.state.pressed &&
               <View style={[StyleSheet.absoluteFill, styles.coverCard]} />}
@@ -495,15 +495,15 @@ class Card extends Component {
           touchToClose={true}
           onDismiss={this.onCloseShareModal}
         >
-          <View style={{ marginHorizontal: 10, flexDirection: "row", justifyContent: "center" }}>
+          <View style={{ marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
               jaeautoCapitalize="none"
-              style={{ flex: 0.8, backgroundColor: "#fff", paddingLeft: 10 }}
+              style={{ flex: 0.8, backgroundColor: '#fff', paddingLeft: 10 }}
               width={100}
               placeholder="Email"
               autoFocus={true}
-              autoCapitalize={"none"}
-              keyboardType={"email-address"}
+              autoCapitalize={'none'}
+              keyboardType={'email-address'}
               onChangeText={text => this.setState({ email: text })}
             />
             <SubmitButton style={{ flex: 0.2 }} label="SEND" onPress={this.onPressSend} />
@@ -516,76 +516,76 @@ class Card extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    alignSelf: "center",
+    alignItems: 'center',
+    alignSelf: 'center',
     marginBottom: 16,
     marginTop: 16
   },
   backButton: {
-    position: "absolute",
-    backgroundColor: "transparent",
+    position: 'absolute',
+    backgroundColor: 'transparent',
     top: 32,
     left: 10
   },
   top: {
     marginBottom: 0,
-    backgroundColor: "gray"
+    backgroundColor: 'gray'
   },
   bottom: {
     marginTop: 0,
     padding: 16,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   numberContainer: {
-    position: "absolute",
-    backgroundColor: "rgba(175,175,175,0.8)",
+    position: 'absolute',
+    backgroundColor: 'rgba(175,175,175,0.8)',
     borderRadius: 50,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     width: 35,
     height: 35,
-    justifyContent: "center",
+    justifyContent: 'center',
     top: 5,
     left: 5
   },
   number: {
-    textAlignVertical: "center",
-    textAlign: "center",
-    color: "#fff",
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    color: '#fff',
     fontSize: 20,
-    borderColor: "#000"
+    borderColor: '#000'
   },
   xButtonContainer: {
-    position: "absolute",
-    backgroundColor: "rgba(175,175,175,0.8)",
+    position: 'absolute',
+    backgroundColor: 'rgba(175,175,175,0.8)',
     borderRadius: 50,
-    justifyContent: "center",
-    alignSelf: "flex-end",
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
     top: 5,
     right: 5
   },
   xButtonIcon: {
-    fontWeight: "800",
-    textAlign: "center",
-    color: "#fff",
+    fontWeight: '800',
+    textAlign: 'center',
+    color: '#fff',
     fontSize: 35,
     width: 35,
     height: 35,
-    borderColor: "#000"
+    borderColor: '#000'
   },
   coverCard: {
-    backgroundColor: "rgba(255,255,255,0.6)",
+    backgroundColor: 'rgba(255,255,255,0.6)',
     top: 0,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
     zIndex: 10,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   buttonText: {
-    color: "white",
-    fontWeight: "800",
+    color: 'white',
+    fontWeight: '800',
     fontSize: 18
   }
 });

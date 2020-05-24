@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Alert, View, FlatList } from 'react-native';
+import { Alert, View, FlatList, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Fab, Icon } from 'native-base';
 
-import Card from '@components/Card';
+import Card from '../../components/Card';
 
-import { CARD_TYPE } from '@constants';
-import * as MyCouponService from '@service/MyCouponService';
+import { CARD_TYPE } from '../../constants';
+import * as MyCouponService from '../../services/MyCouponService';
 import store from '../../store';
-import { processing, processed } from '@store/modules/processing';
-import { removeCouponFromList } from '@modules/mycoupons';
+import { processing, processed } from '../../store/modules/processing';
+import { removeCouponFromList } from '../../store/modules/mycoupons';
 
 class MyCouponListDetail extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
@@ -24,7 +25,8 @@ class MyCouponListDetail extends Component {
     this.state = {
       scroll: true,
       list: [],
-      parentKey: props.navigation.getParam('parentKey', '')
+      parentKey: props.navigation.getParam('parentKey', ''),
+      fabOpac: new Animated.Value(1)
     };
   }
 
@@ -57,11 +59,13 @@ class MyCouponListDetail extends Component {
   onPressCard = () => {
     this.props.navigation.setParams({ headerShown: false });
     this.setState({ scroll: false });
+    Animated.timing(this.state.fabOpac, { toValue: 0 }).start();
   };
 
   onPressCardBack = () => {
     this.props.navigation.setParams({ headerShown: true });
     this.setState({ scroll: true });
+    Animated.timing(this.state.fabOpac, { toValue: 1 }).start();
   };
 
   onDelete = (item, index) => {
@@ -92,7 +96,7 @@ class MyCouponListDetail extends Component {
   };
 
   render() {
-    const { list } = this.state;
+    const { list, scroll, fabOpac } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <FlatList
@@ -110,6 +114,16 @@ class MyCouponListDetail extends Component {
               onPressX={() => this.onDelete(item, index)}
             />}
         />
+        <Fab
+          active={false}
+          direction="up"
+          containerStyle={{ opacity: fabOpac }}
+          style={{ backgroundColor: '#00aaff' }}
+          position="bottomLeft"
+          onPress={scroll ? this.props.navigation.goBack : null}
+        >
+          <Icon name="md-arrow-back" />
+        </Fab>
       </View>
     );
   }
@@ -117,10 +131,10 @@ class MyCouponListDetail extends Component {
 
 MyCouponListDetail.propTypes = {};
 
-const mapStateToProps  = state => {
+const mapStateToProps = state => {
   return {
     couponsInStore: state.mycoupons.coupons
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, { removeCouponFromList })(MyCouponListDetail);

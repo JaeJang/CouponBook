@@ -62,11 +62,10 @@ export const logout = () => {
   store.dispatch({ type: 'LOGOUT' });
 };
 
-
 export const deleteToAlert = key => {
   firebase.getCUsersRef().child('alert/to').child(key).remove();
-}
+};
 
 export const deleteFromAlert = key => {
   firebase.getCUsersRef().child('alert/from').child(key).remove();
-}
+};
