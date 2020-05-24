@@ -140,7 +140,9 @@ export const getCoupon = key => {
       .getCouponsRef()
       .child(key)
       .once('value')
-      .then(snapshot => resolve(snapshot.val()))
+      .then(snapshot => {
+        resolve(snapshot.val())}
+      )
       .catch(error => reject(error));
   });
 };
@@ -235,7 +237,7 @@ export const sendList = async (email, item, userKey) => {
     if (couponToBeAdded.expireOption === EXPIRE.IN) {
       couponToBeAdded.expireOption = EXPIRE.AT;
       couponToBeAdded.expireAt = Utils.convertExpiry(couponToBeAdded.expireIn);
-    } else if (couponToBeAdded.expireOption === EXPIRE.AT && !Utils.checkExpiry(couponToBeAdded.expireAt)) {
+    } else if (couponToBeAdded.expireOption === EXPIRE.AT && Utils.checkExpiry(couponToBeAdded.expireAt)) {
       continue;
     }
     for (let i = 0; i < coupon.numOfCoupons; ++i) {

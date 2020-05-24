@@ -6,6 +6,7 @@ import * as ProfileService from '@service/ProfileService';
 import { PROCESSING, PROCESSED } from '@store/types/loading';
 import { processing, processed } from '@store/modules/processing';
 import { updateToAlerts, updateFromAlerts } from '@modules/profile';
+import { getSettings } from "../modules/profile";
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
@@ -44,6 +45,7 @@ export const login = (data, onSuccess) => dispatch => {
       } else {
         ProfileService.getToAlerts(value => dispatch(updateToAlerts(value)));
         ProfileService.getFromAlerts(value => dispatch(updateFromAlerts(value)));
+        dispatch(getSettings());
         dispatch({ type: LOGIN, payload: firebase.getUser() });
         onSuccess();
       }

@@ -5,6 +5,7 @@ import { Fab, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import { SwipeRow } from 'react-native-swipe-list-view';
+import Switch from 'react-native-switch-pro';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -16,7 +17,7 @@ import { ALERT_TYPE, COUPON_STATUS } from '@constants';
 
 import * as ProfileService from '@service/ProfileService';
 import * as FromService from '@service/FromService';
-import { deleteToAlert, deleteFromAlert } from '@modules/profile';
+import { deleteToAlert, deleteFromAlert, switchDownloadOption } from '../../store/modules/profile';
 import { reset } from '@modules/from';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -64,7 +65,7 @@ class Profile extends Component {
       //console.log(response);
       if (response.didCancel) {
       } else if (response.error) {
-        Alert.alert('Image', 'Please try again -' + response.error);
+        Alert.alert("Image", "Please try again -" + response.error);
       } else {
         updatePhotoUrl(response.uri, url => this.setState({ image: url }));
       }
@@ -84,6 +85,10 @@ class Profile extends Component {
     ProfileService.deleteFromAlert(key);
     this.props.deleteFromAlert(key);
   };
+
+  onPressDoNoDownload = value => {
+    this.props.switchDownloadOption(value);
+  }
 
   render() {
     const { user } = this.props;
@@ -122,7 +127,25 @@ class Profile extends Component {
           </TouchableOpacity>
           <Text style={styles.imageClickText}>Touch image above to change your basic image</Text>
         </View>
-        <View style={[styles.toAlertContainer]}>
+        <View
+          style={[
+            styles.section,
+            {
+              marginTop: 20,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              alignItems: 'center'
+            }
+          ]}
+        >
+          <View>
+            <Text style={{ fontWeight: '500', fontSize: 15 }}>Do not download images</Text>
+            <Text style={{ fontWeight: '300', fontSize: 12 }}>Downloading image may increase data usage </Text>
+          </View>
+          <Switch value={this.props.imageDownloadDisabled} backgroundActive={'#00aaff'} onSyncPress={this.onPressDoNoDownload} />
+        </View>
+        <View style={[styles.section]}>
           <Text style={[styles.alertHeader]}>To Alerts</Text>
           {this.props.toAlerts.length !== 0
             ? this.props.toAlerts.map((item, index) => {
@@ -137,7 +160,7 @@ class Profile extends Component {
               })
             : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
         </View>
-        <View style={[styles.toAlertContainer]}>
+        <View style={[styles.section]}>
           <Text style={[styles.alertHeader]}>From Alerts</Text>
           {this.props.fromAlerts.length !== 0
             ? this.props.fromAlerts.map((item, index) => {
@@ -150,7 +173,7 @@ class Profile extends Component {
                   />
                 );
               })
-            : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
+            : <Text style={styles.noAlertMessage}>You dont have any Alerts</Text>}
         </View>
       </ScrollView>
     );
@@ -185,8 +208,7 @@ const styles = StyleSheet.create({
   alertHeader: {
     fontSize: 17,
     fontWeight: '600',
-    marginBottom: 10,
-    marginLeft: 10
+    marginBottom: 10
   },
   standaloneRowFront: {
     alignItems: 'center',
@@ -212,6 +234,15 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     color: 'gray'
+  },
+  section: {
+    marginTop: 0,
+    marginBottom: 10,
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5
   }
 });
 
@@ -220,8 +251,9 @@ const mapStateToProps = state => {
     user: state.authentication.user,
     toAlerts: state.profile.toAlerts,
     fromAlerts: state.profile.fromAlerts,
-    toList: state.to.toList
+    toList: state.to.toList,
+    imageDownloadDisabled: state.profile.imageDownloadDisabled
   };
 };
 
-export default connect(mapStateToProps, { deleteFromAlert, deleteToAlert, reset })(Profile);
+export default connect(mapStateToProps, { deleteFromAlert, deleteToAlert, switchDownloadOption, reset })(Profile);
