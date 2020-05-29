@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "CouponBook-tvOS.app"
-               BlueprintName = "CouponBook-tvOS"
-               ReferencedContainer = "container:CouponBook.xcodeproj">
+               BuildableName = "ElliesBook-tvOS.app"
+               BlueprintName = "ElliesBook-tvOS"
+               ReferencedContainer = "container:ElliesBook.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "CouponBook-tvOSTests.xctest"
-               BlueprintName = "CouponBook-tvOSTests"
-               ReferencedContainer = "container:CouponBook.xcodeproj">
+               BuildableName = "ElliesBook-tvOSTests.xctest"
+               BlueprintName = "ElliesBook-tvOSTests"
+               ReferencedContainer = "container:ElliesBook.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "CouponBook-tvOSTests.xctest"
-               BlueprintName = "CouponBook-tvOSTests"
-               ReferencedContainer = "container:CouponBook.xcodeproj">
+               BuildableName = "ElliesBook-tvOSTests.xctest"
+               BlueprintName = "ElliesBook-tvOSTests"
+               ReferencedContainer = "container:ElliesBook.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "CouponBook-tvOS.app"
-            BlueprintName = "CouponBook-tvOS"
-            ReferencedContainer = "container:CouponBook.xcodeproj">
+            BuildableName = "ElliesBook-tvOS.app"
+            BlueprintName = "ElliesBook-tvOS"
+            ReferencedContainer = "container:ElliesBook.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "CouponBook-tvOS.app"
-            BlueprintName = "CouponBook-tvOS"
-            ReferencedContainer = "container:CouponBook.xcodeproj">
+            BuildableName = "ElliesBook-tvOS.app"
+            BlueprintName = "ElliesBook-tvOS"
+            ReferencedContainer = "container:ElliesBook.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "CouponBook-tvOS.app"
-            BlueprintName = "CouponBook-tvOS"
-            ReferencedContainer = "container:CouponBook.xcodeproj">
+            BuildableName = "ElliesBook-tvOS.app"
+            BlueprintName = "ElliesBook-tvOS"
+            ReferencedContainer = "container:ElliesBook.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

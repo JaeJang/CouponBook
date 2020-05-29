@@ -1,4 +1,4 @@
-package com.couponbook;
+package com.elliesbook;
 
 import android.app.Application;
 import android.content.Context;
