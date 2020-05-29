@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import CachedImage from 'react-native-image-cache-wrapper';
 import Toast from 'react-native-simple-toast';
+import moment from 'moment';
 
 import SubmitButton from './SubmitButton';
 import Modal from './Modal';
@@ -233,7 +234,13 @@ class Card extends Component {
         store.dispatch(processing());
         MyCouponService.sendList(this.state.email, this.props.item, userKey)
           .then(() => Toast.showWithGravity('Successfully sent!', Toast.SHORT, Toast.BOTTOM))
-          .catch(() => Alert.alert('My Coupons', 'Something went wrong. Please try again later'))
+          .catch(error => {
+            if (error === 'empty') {
+              Alert.alert('My Coupons', 'There is no available coupon in this list.');
+            } else {
+              Alert.alert('My Coupons', 'Something went wrong. Please try again later');
+            }
+          })
           .finally(() => store.dispatch(processed()));
       } else {
         Alert.alert('My Coupons', 'User does not exist!');
@@ -335,7 +342,7 @@ class Card extends Component {
         <Animated.View style={{opacity: this.state.plus, justifyContent: "center", alignItems: "center"}}>
         <Icon name="check-circle" style={{fontSize: 24, color: this.props.color}}/>
     </Animated.View> */
-    const { expireOption, expireIn, expireAt, title, status } = this.props.item;
+    const { expireOption, expireIn, expireAt, title, status, date } = this.props.item;
     const { sharable, type } = this.props;
     const { expired } = this.state;
     let disableButton = false;
@@ -359,10 +366,16 @@ class Card extends Component {
         ]}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{}}>
-            <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
-              {title}
-            </Text>
+          <View>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
+              <Text style={{  fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
+                {title}
+              </Text>
+              {date &&
+                <Text style={{paddingBottom: 8, marginLeft:5, fontSize: 12, color: 'gray'}}>
+                  ({moment(date).format('MMM DD, YYYY')})
+                </Text>}
+            </View>
             {(type === CARD_TYPE.COUPON || type === CARD_TYPE.COUPON_TO) &&
               <Text style={{ fontSize: 12, fontWeight: '500', color: !expired ? 'gray' : 'red' }}>
                 {expireOption === EXPIRE.IN && `Expires in ${expireIn.amount} ${expireIn.measure}`}
@@ -379,7 +392,7 @@ class Card extends Component {
               </TouchableOpacity>}
             {(type === CARD_TYPE.LIST_FROM || type === CARD_TYPE.LIST_TO) &&
               <View>
-                <Text style={{ fontSize: 15, fontWeight: '500', color: 'gray' }}>
+                <Text style={{ fontSize: 15, fontWeight: '400',  }}>
                   {this.props.item.userName}
                 </Text>
                 <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>

@@ -148,11 +148,15 @@ class AddMyCouponList extends Component {
               scrollEnabled={this.state.scroll}
               ListHeaderComponent={
                 <Animated.View style={[styles.couponListNameContainer, nameBorderStyle, { left: nameShake }]}>
-                  <Text style={{ color: 'gray' }}>New Coupon List Name*</Text>
+                  <Text style={{ color: 'gray' }}>New Coupon List Name* ({this.state.couponListName.length}/20)</Text>
                   <TextInput
                     style={[styles.couponListName]}
                     value={this.state.couponListName}
-                    onChangeText={text => this.setState({ couponListName: text })}
+                    onChangeText={text => {
+                      if (text.length <= 20) {
+                        this.setState({ couponListName: text })
+                      }
+                    }}
                     placeholder="Please Enter"
                   />
                 </Animated.View>

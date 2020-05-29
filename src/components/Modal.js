@@ -264,4 +264,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default (Platform.OS === 'ios' ? Modal_IOS : Modal);
+//export default (Platform.OS === 'ios' ? Modal_IOS : Modal);
+export default Modal_IOS;

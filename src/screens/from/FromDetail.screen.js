@@ -12,8 +12,6 @@ import { Fab, Icon } from 'native-base';
 class FromDetailScreen extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title: navigation.getParam('title', ''),
-      //header: navigation.getParam("headerShown", true)
       headerShown: false
     };
   };

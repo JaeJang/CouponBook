@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, Animated, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Card, CardItem, Form, Input, Item, Label, Button } from 'native-base';
 import { connect } from 'react-redux';
+import Switch from 'react-native-switch-pro';
 
 import firebase from '../configs/firebase';
 
 import * as authenticationAction from '@modules/authentication';
+import * as ProfileService from '../services/ProfileService';
 import AnimatedName from '@components/animatedName';
 import { sleep } from '@utils/sleep';
-import { isEmailValid } from '@utils/validate';
+import { isEmailValid } from '../utils/validate';
 import { timingAnimation } from '@utils/animation';
 
 const LOGIN = 'LOGIN';
@@ -26,22 +28,34 @@ class LoginScreen extends Component {
     this.nameFlex = new Animated.Value(0);
     this.loginFormOpacity = new Animated.Value(0);
     this.signupFormOpacity = new Animated.Value(0);
+    this.rememberMe = false;
+    this.originalRememberMe = false;
 
     this.state = {
       data: {
-        email: 'wogur0505@gmail.com',
-        password: 'Ring1080',
+        email: '',
+        password: '',
         passwordConfirm: '',
         firstName: '',
         lastName: ''
       },
-      screen: LOGIN
+      screen: LOGIN,
+      rememberMe: false,
+      originalRememberMe: false
     };
   }
 
-  componentDidMount() {
-    const user = firebase.getUser();
+  async componentDidMount() {
     this.initialAnimationStart(INIT_ANI_START, user);
+    const user = firebase.getUser();
+    const rememberMe = await ProfileService.getRememberMe();
+    if (rememberMe) {
+      this.setState({
+        rememberMe: true,
+        originalRememberMe: true,
+        data: { ...this.state.data, email: rememberMe.email, password: rememberMe.password }
+      });
+    }
   }
 
   initForm = () => {
@@ -57,8 +71,12 @@ class LoginScreen extends Component {
     });
   };
 
-  initialAnimationStart = (milisec, user) => {
-    setTimeout(async () => {
+  initialAnimationStart = async (milisec, user) => {
+    await sleep(milisec);
+    timingAnimation(this.nameFlex);
+    await sleep(SLEEP_BETWEEN_NAME_FORM);
+    timingAnimation(this.loginFormOpacity);
+    /* setTimeout(async () => {
       timingAnimation(this.nameFlex);
 
       await sleep(SLEEP_BETWEEN_NAME_FORM);
@@ -66,7 +84,7 @@ class LoginScreen extends Component {
       //if (!user) {
       timingAnimation(this.loginFormOpacity);
       //}
-    }, milisec);
+    }, milisec); */
   };
 
   handleLogin = () => {
@@ -76,6 +94,14 @@ class LoginScreen extends Component {
       return;
     } else {
       this.props.login(this.state.data, () => {
+        if (this.state.originalRememberMe !== this.state.rememberMe) {
+          ProfileService.setRememberme(this.state.rememberMe);
+          if (this.state.rememberMe) {
+            ProfileService.setCredentials(email, password);
+          } else {
+            ProfileService.setCredentials('', '');
+          }
+        }
         this.props.navigation.navigate('From');
       });
     }
@@ -144,7 +170,7 @@ class LoginScreen extends Component {
 
   renderLoginForm = () => {
     const range = [0, 0.25, 0.5, 0.75, 1];
-    const { screen } = this.state;
+    const { screen, rememberMe } = this.state;
     const opacity = this.loginFormOpacity.interpolate({
       inputRange: screen === LOGIN ? range : range.reverse(),
       outputRange: screen === LOGIN ? range : range.reverse()
@@ -154,7 +180,7 @@ class LoginScreen extends Component {
       <Animated.View style={{ opacity }}>
         <Form style={styles.form}>
           <Item full style={{}}>
-            <TextInput
+            <Input
               autoCapitalize="none"
               style={styles.input}
               placeholderTextColor="#fff"
@@ -162,20 +188,29 @@ class LoginScreen extends Component {
               ref={ref => (this.emailRef = ref)}
               required={true}
               value={this.state.data.email}
+              keyboardType="email-address"
               onChangeText={value => this.setState({ data: { ...this.state.data, email: value } })}
             />
           </Item>
           <Item full>
-            <TextInput
+            <Input
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Please Enter Password"
-              type={'password'}
+              secureTextEntry={true}
               value={this.state.data.password}
               onChangeText={value => this.setState({ data: { ...this.state.data, password: value } })}
             />
           </Item>
           {this.renderButtons()}
+          <Item style={{ borderColor: 'transparent' }}>
+            <Text style={{ color: '#fff', fontWeight: '500', marginRight: 15 }}>Remember me</Text>
+            <Switch
+              value={rememberMe}
+              backgroundActive={'#00aaff'}
+              onSyncPress={value => this.setState({ rememberMe: value })}
+            />
+          </Item>
         </Form>
       </Animated.View>
     );
@@ -192,14 +227,14 @@ class LoginScreen extends Component {
       <Animated.ScrollView style={{ opacity }}>
         <Form style={styles.form}>
           <Item>
-            <TextInput
+            <Input
               style={[styles.input, styles.inputName]}
               placeholder="First Name"
               placeholderTextColor="#fff"
               value={this.state.firstName}
               onChangeText={value => this.setState({ data: { ...this.state.data, firstName: value } })}
             />
-            <TextInput
+            <Input
               style={[styles.input, styles.inputName]}
               placeholder="Last Name"
               placeholderTextColor="#fff"
@@ -208,11 +243,12 @@ class LoginScreen extends Component {
             />
           </Item>
           <Item full style={{}}>
-            <TextInput
+            <Input
               autoCapitalize="none"
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Please Enter Email"
+              keyboardType="email-address"
               ref={ref => (this.emailRef = ref)}
               required={true}
               value={this.state.data.email}
@@ -220,22 +256,22 @@ class LoginScreen extends Component {
             />
           </Item>
           <Item full>
-            <TextInput
+            <Input
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Please Enter Password"
-              type={'password'}
+              secureTextEntry={true}
               value={this.state.data.password}
               ref={ref => (this.passwordRef = ref)}
               onChangeText={value => this.setState({ data: { ...this.state.data, password: value } })}
             />
           </Item>
           <Item full>
-            <TextInput
+            <Input
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Confirm Your Password"
-              type={'password'}
+              secureTextEntry={true}
               value={this.state.data.passwordConfirm}
               onChangeText={value => this.setState({ data: { ...this.state.data, passwordConfirm: value } })}
             />

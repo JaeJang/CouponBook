@@ -40,6 +40,12 @@ class Firebase {
   getDistributedRef = () => {
     return firebase.database().ref('distributed');
   };
+  getEncryptSaltRef = () => {
+    return firebase.database().ref('encryptSalt');
+  }
+  getDecryptSaltRef = () => {
+    return firebase.database().ref('decryptSalt');
+  }
 }
 /* // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

@@ -6,7 +6,7 @@ import store from '../store';
 
 import { uploadToFirebase, uriToBlob } from '@utils/uploadImage';
 import { COUPON_STATUS, LIST_STATUS, EXPIRE } from '@constants';
-import * as Utils from '@utils/utils';
+import * as Utils from '../utils/utils';
 
 export const uploadPhoto = uri => {
   const uid = firebase.getUser().uid;
@@ -241,9 +241,16 @@ export const sendList = async (email, item, userKey) => {
   }
 
   return new Promise((resolve, reject) => {
+
+    if (!object.list.length) {
+      reject('empty');
+      return;
+    }
+
     const ref = firebase.getDistributedRef();
     const newDistributedKey = ref.push().key;
     object.key = newDistributedKey;
+    object.date = Utils.getCurrentTime();
     ref
       .child(newDistributedKey)
       .update(object)

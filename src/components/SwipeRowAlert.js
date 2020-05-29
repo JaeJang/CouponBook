@@ -31,23 +31,24 @@ const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
         </View>
       </TouchableWithoutFeedback>
       <TouchableHighlight onPress={!swiped ? onPress : null}>
-        <View style={styles.standaloneRowFront}>
+<View>
           {item.type === ALERT_TYPE.REQUESTED &&
-            <View>
+            <View style={[styles.standaloneRowFront, {backgroundColor:'#d6f1ff'}]}>
               <Text>
                 {item.name} wants to use {item.title}
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
               </Text>
             </View>}
           {item.type === ALERT_TYPE.CONFIRMED &&
-            <View>
+            <View style={[styles.standaloneRowFront, {backgroundColor:'#D2E7D6'}]}>
               <Text>
                 {item.name} confirmed {item.title}
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
               </Text>
             </View>}
           {item.type === ALERT_TYPE.DELETED &&
-            <View>
+            <View style={[styles.standaloneRowFront, {backgroundColor:'#F6DADA'}]}>
+
               <Text>
                 {item.name} deleted {item.title} list
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>

@@ -234,13 +234,17 @@ class NewCouponScreen extends Component {
       <View style={{ flex: 1 }}>
         <KeyboardAwareScrollView>
           <Animated.View style={[{ left: nameFontSize }, nameBorderStyle, styles.newtitle]}>
-            <Text style={{ color: 'gray' }}>New Coupon Name*</Text>
+            <Text style={{ color: 'gray' }}>New Coupon Name* ({this.state.data.title.length}/20)</Text>
             <TextInput
               autoFocus={true}
               placeholder="Please enter"
               maxLength={30}
               style={[styles.titleInput, nameBorderStyle]}
-              onChangeText={text => this.setState({ data: { ...this.state.data, title: text } })}
+              onChangeText={text => {
+                if (text.length <= 20) {
+                  this.setState({ data: { ...this.state.data, title: text } })
+                }
+              }}
               value={this.state.data.title}
             />
             <View style={{ borderBottomWidth: 2, borderBottomColor: 'red', marginBottom: 10 }} />
