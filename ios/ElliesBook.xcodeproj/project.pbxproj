@@ -17,10 +17,10 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* ElliesBookTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ElliesBookTests.m */; };
-		A51B24A135CDE8A89EBE6BC8 /* libPods-ElliesBook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4643AB6A4B36F683A89E4B75 /* libPods-ElliesBook.a */; };
-		B591A1E174AA9C37CC4A4D60 /* libPods-ElliesBookTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B9B1E974A7637744C3A6652 /* libPods-ElliesBookTests.a */; };
-		EAB68DF47C02E32CF5430861 /* libPods-ElliesBook-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C981883193551CA8D790C9 /* libPods-ElliesBook-tvOS.a */; };
-		F66FF6475652AAAE3EB4D2A9 /* libPods-ElliesBook-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B5ECBB328DF4583BAA32B2F /* libPods-ElliesBook-tvOSTests.a */; };
+		35D773F19192532CDF6C605B /* libPods-ElliesBook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D585DDA4AAC7FBB57D2A7E6 /* libPods-ElliesBook.a */; };
+		67114215B3244918CB52B891 /* libPods-ElliesBook-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6B8ABE7532DE8FAE0B3795 /* libPods-ElliesBook-tvOS.a */; };
+		75CDA3772B842717396FF3A3 /* libPods-ElliesBookTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 687604D5FC6001D22155F91D /* libPods-ElliesBookTests.a */; };
+		A05508144865E6C81026946F /* libPods-ElliesBook-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E51941A7E18F3B6DECEE6F92 /* libPods-ElliesBook-tvOSTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,8 +45,8 @@
 		00E356EE1AD99517003FC87E /* ElliesBookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ElliesBookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ElliesBookTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElliesBookTests.m; sourceTree = "<group>"; };
-		113EA75C25FC2E38B3639C46 /* Pods-ElliesBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook/Pods-ElliesBook.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* ElliesBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElliesBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C2802A5C3FBA4F414E5020B /* Pods-ElliesBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook/Pods-ElliesBook.debug.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Ellie's Book.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ellie's Book.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ElliesBook/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ElliesBook/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -54,21 +54,21 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ElliesBook/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ElliesBook/main.m; sourceTree = "<group>"; };
 		1902C041240C75450094C112 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		1F4380AB2313B27FB1FA92FA /* Pods-ElliesBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook/Pods-ElliesBook.release.xcconfig"; sourceTree = "<group>"; };
-		28A6C7F5153022E6552C0CFE /* Pods-ElliesBookTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBookTests.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBookTests/Pods-ElliesBookTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2A23682CBE606B658ECEDDD3 /* Pods-ElliesBook-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOS/Pods-ElliesBook-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		2C6B8ABE7532DE8FAE0B3795 /* libPods-ElliesBook-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* ElliesBook-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ElliesBook-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* ElliesBook-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ElliesBook-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		37EB1D909A8B6BEF585760CD /* Pods-ElliesBook-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOSTests/Pods-ElliesBook-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		3B5ECBB328DF4583BAA32B2F /* libPods-ElliesBook-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4643AB6A4B36F683A89E4B75 /* libPods-ElliesBook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5B9B1E974A7637744C3A6652 /* libPods-ElliesBookTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBookTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		60C981883193551CA8D790C9 /* libPods-ElliesBook-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		85C968E2A6E8D13B09161401 /* Pods-ElliesBook-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOS/Pods-ElliesBook-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		CD9447B1132449B9CAFBCDE6 /* Pods-ElliesBookTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBookTests.release.xcconfig"; path = "Target Support Files/Pods-ElliesBookTests/Pods-ElliesBookTests.release.xcconfig"; sourceTree = "<group>"; };
+		39F08287ECC4EBF54A36EEF0 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOSTests/Pods-ElliesBook-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3EB40FD0E30425A0FBDE18FB /* Pods-ElliesBookTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBookTests.release.xcconfig"; path = "Target Support Files/Pods-ElliesBookTests/Pods-ElliesBookTests.release.xcconfig"; sourceTree = "<group>"; };
+		687604D5FC6001D22155F91D /* libPods-ElliesBookTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBookTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BEA34A90C19CDDC47E4F165 /* Pods-ElliesBookTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBookTests.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBookTests/Pods-ElliesBookTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8AAE1915AEC94AACE271E3B7 /* Pods-ElliesBook-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOSTests/Pods-ElliesBook-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		8D585DDA4AAC7FBB57D2A7E6 /* libPods-ElliesBook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4BC634FD01BF25AA2A905B2 /* Pods-ElliesBook-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOS/Pods-ElliesBook-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		E51941A7E18F3B6DECEE6F92 /* libPods-ElliesBook-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ElliesBook-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAF71131767712974C678873 /* Pods-ElliesBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook/Pods-ElliesBook.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F9C9287E3ED9F198C8E8BD38 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOSTests/Pods-ElliesBook-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		FB729418118CEC00F24463F5 /* Pods-ElliesBook-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElliesBook-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ElliesBook-tvOS/Pods-ElliesBook-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B591A1E174AA9C37CC4A4D60 /* libPods-ElliesBookTests.a in Frameworks */,
+				75CDA3772B842717396FF3A3 /* libPods-ElliesBookTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A51B24A135CDE8A89EBE6BC8 /* libPods-ElliesBook.a in Frameworks */,
+				35D773F19192532CDF6C605B /* libPods-ElliesBook.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAB68DF47C02E32CF5430861 /* libPods-ElliesBook-tvOS.a in Frameworks */,
+				67114215B3244918CB52B891 /* libPods-ElliesBook-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F66FF6475652AAAE3EB4D2A9 /* libPods-ElliesBook-tvOSTests.a in Frameworks */,
+				A05508144865E6C81026946F /* libPods-ElliesBook-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,10 +144,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				4643AB6A4B36F683A89E4B75 /* libPods-ElliesBook.a */,
-				60C981883193551CA8D790C9 /* libPods-ElliesBook-tvOS.a */,
-				3B5ECBB328DF4583BAA32B2F /* libPods-ElliesBook-tvOSTests.a */,
-				5B9B1E974A7637744C3A6652 /* libPods-ElliesBookTests.a */,
+				8D585DDA4AAC7FBB57D2A7E6 /* libPods-ElliesBook.a */,
+				2C6B8ABE7532DE8FAE0B3795 /* libPods-ElliesBook-tvOS.a */,
+				E51941A7E18F3B6DECEE6F92 /* libPods-ElliesBook-tvOSTests.a */,
+				687604D5FC6001D22155F91D /* libPods-ElliesBookTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -155,14 +155,14 @@
 		632EB857186000072E67EEDD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				113EA75C25FC2E38B3639C46 /* Pods-ElliesBook.debug.xcconfig */,
-				1F4380AB2313B27FB1FA92FA /* Pods-ElliesBook.release.xcconfig */,
-				85C968E2A6E8D13B09161401 /* Pods-ElliesBook-tvOS.debug.xcconfig */,
-				FB729418118CEC00F24463F5 /* Pods-ElliesBook-tvOS.release.xcconfig */,
-				F9C9287E3ED9F198C8E8BD38 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */,
-				37EB1D909A8B6BEF585760CD /* Pods-ElliesBook-tvOSTests.release.xcconfig */,
-				28A6C7F5153022E6552C0CFE /* Pods-ElliesBookTests.debug.xcconfig */,
-				CD9447B1132449B9CAFBCDE6 /* Pods-ElliesBookTests.release.xcconfig */,
+				0C2802A5C3FBA4F414E5020B /* Pods-ElliesBook.debug.xcconfig */,
+				EAF71131767712974C678873 /* Pods-ElliesBook.release.xcconfig */,
+				B4BC634FD01BF25AA2A905B2 /* Pods-ElliesBook-tvOS.debug.xcconfig */,
+				2A23682CBE606B658ECEDDD3 /* Pods-ElliesBook-tvOS.release.xcconfig */,
+				39F08287ECC4EBF54A36EEF0 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */,
+				8AAE1915AEC94AACE271E3B7 /* Pods-ElliesBook-tvOSTests.release.xcconfig */,
+				6BEA34A90C19CDDC47E4F165 /* Pods-ElliesBookTests.debug.xcconfig */,
+				3EB40FD0E30425A0FBDE18FB /* Pods-ElliesBookTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -192,7 +192,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* ElliesBook.app */,
+				13B07F961A680F5B00A75B9A /* Ellie's Book.app */,
 				00E356EE1AD99517003FC87E /* ElliesBookTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* ElliesBook-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* ElliesBook-tvOSTests.xctest */,
@@ -207,7 +207,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ElliesBookTests" */;
 			buildPhases = (
-				F888C8EE412B576FC0B7DE71 /* [CP] Check Pods Manifest.lock */,
+				D84727925FCEB39AB38E3B86 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -226,13 +226,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ElliesBook" */;
 			buildPhases = (
-				E6FF4B88C45CA75D3CF8E6A6 /* [CP] Check Pods Manifest.lock */,
+				DE6FAEDE86CCCA194F0925DE /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				DD62013DF1549DB97F0EE4D9 /* [CP] Copy Pods Resources */,
+				6B0B5FDB9341DF11FC9DBBB8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -240,14 +240,14 @@
 			);
 			name = ElliesBook;
 			productName = ElliesBook;
-			productReference = 13B07F961A680F5B00A75B9A /* ElliesBook.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Ellie's Book.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* ElliesBook-tvOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ElliesBook-tvOS" */;
 			buildPhases = (
-				D20D8D3F92C9CF1C3063C835 /* [CP] Check Pods Manifest.lock */,
+				0EF8FA27893586C1F1858738 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -267,7 +267,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ElliesBook-tvOSTests" */;
 			buildPhases = (
-				A56089E8EDFD70A9249D7B90 /* [CP] Check Pods Manifest.lock */,
+				3CB21A915CBEBF7BEC7A9B3F /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -383,45 +383,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native Code And Images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		A56089E8EDFD70A9249D7B90 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ElliesBook-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D20D8D3F92C9CF1C3063C835 /* [CP] Check Pods Manifest.lock */ = {
+		0EF8FA27893586C1F1858738 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -443,7 +407,43 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DD62013DF1549DB97F0EE4D9 /* [CP] Copy Pods Resources */ = {
+		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native Code And Images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		3CB21A915CBEBF7BEC7A9B3F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ElliesBook-tvOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6B0B5FDB9341DF11FC9DBBB8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -495,29 +495,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ElliesBook/Pods-ElliesBook-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E6FF4B88C45CA75D3CF8E6A6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ElliesBook-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F888C8EE412B576FC0B7DE71 /* [CP] Check Pods Manifest.lock */ = {
+		D84727925FCEB39AB38E3B86 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -533,6 +511,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-ElliesBookTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE6FAEDE86CCCA194F0925DE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ElliesBook-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -644,7 +644,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 28A6C7F5153022E6552C0CFE /* Pods-ElliesBookTests.debug.xcconfig */;
+			baseConfigurationReference = 6BEA34A90C19CDDC47E4F165 /* Pods-ElliesBookTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 3B3HMAGNAN;
@@ -662,13 +662,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ElliesBook.app/ElliesBook";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellie's Book.app/Ellie's Book";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CD9447B1132449B9CAFBCDE6 /* Pods-ElliesBookTests.release.xcconfig */;
+			baseConfigurationReference = 3EB40FD0E30425A0FBDE18FB /* Pods-ElliesBookTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -683,13 +683,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ElliesBook.app/ElliesBook";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellie's Book.app/Ellie's Book";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 113EA75C25FC2E38B3639C46 /* Pods-ElliesBook.debug.xcconfig */;
+			baseConfigurationReference = 0C2802A5C3FBA4F414E5020B /* Pods-ElliesBook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -705,7 +705,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.ElliesBook;
-				PRODUCT_NAME = ElliesBook;
+				PRODUCT_NAME = "Ellie's Book";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -713,7 +713,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F4380AB2313B27FB1FA92FA /* Pods-ElliesBook.release.xcconfig */;
+			baseConfigurationReference = EAF71131767712974C678873 /* Pods-ElliesBook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -728,7 +728,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.ElliesBook;
-				PRODUCT_NAME = ElliesBook;
+				PRODUCT_NAME = "Ellie's Book";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -736,7 +736,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85C968E2A6E8D13B09161401 /* Pods-ElliesBook-tvOS.debug.xcconfig */;
+			baseConfigurationReference = B4BC634FD01BF25AA2A905B2 /* Pods-ElliesBook-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -765,7 +765,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FB729418118CEC00F24463F5 /* Pods-ElliesBook-tvOS.release.xcconfig */;
+			baseConfigurationReference = 2A23682CBE606B658ECEDDD3 /* Pods-ElliesBook-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -794,7 +794,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F9C9287E3ED9F198C8E8BD38 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 39F08287ECC4EBF54A36EEF0 /* Pods-ElliesBook-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -822,7 +822,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 37EB1D909A8B6BEF585760CD /* Pods-ElliesBook-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 8AAE1915AEC94AACE271E3B7 /* Pods-ElliesBook-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
