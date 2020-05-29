@@ -136,7 +136,7 @@ class AddMyCouponList extends Component {
       inputRange: inputRange,
       outputRange: outputRange
     });
-    const nameBorderStyle = this.state.nameError ? { borderBottomColor: 'red' } : { borderBottomColor: 'gray' };
+    const nameBorderStyle = this.state.nameError ? { borderColor: 'red', borderWidth: 1 } : null;
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -249,12 +249,16 @@ const styles = StyleSheet.create({
   },
   couponListNameContainer: {
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
     marginHorizontal: 10,
     marginTop: 15,
     flex: 0.1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)'
   },
   couponListName: {
     /* fontSize: 30,

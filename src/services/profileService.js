@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import SInfo from 'react-native-sensitive-info';
-import Config from 'react-native-config';
 import CryptoJS from "react-native-crypto-js";
 
 import firebase from '../configs/firebase';

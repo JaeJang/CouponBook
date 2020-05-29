@@ -11,11 +11,12 @@ import * as ProfileService from '../services/ProfileService';
 import AnimatedName from '@components/animatedName';
 import { sleep } from '@utils/sleep';
 import { isEmailValid } from '../utils/validate';
-import { timingAnimation } from '@utils/animation';
+import { timingAnimation } from '../utils/animation';
 
 const LOGIN = 'LOGIN';
 const SIGNUP = 'SIGNUP';
 
+//TODO: replace
 //const INIT_ANI_START = 1500;
 //const SLEEP_BETWEEN_NAME_FORM = 1000;
 const INIT_ANI_START = 0;
@@ -48,6 +49,8 @@ class LoginScreen extends Component {
   async componentDidMount() {
     this.initialAnimationStart(INIT_ANI_START, user);
     const user = firebase.getUser();
+    //TODO: uncomment
+    //await sleep(1700);
     const rememberMe = await ProfileService.getRememberMe();
     if (rememberMe) {
       this.setState({

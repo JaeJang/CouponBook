@@ -13,7 +13,7 @@ import {
   Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Input, Button, Content, Container, Icon } from 'native-base';
+import { Input, Button, Content, Container, Icon, Item } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultImage from '../../images/default_image.png';
 import CheckBox from 'react-native-check-box';
@@ -226,20 +226,20 @@ class NewCouponScreen extends Component {
       inputRange: inputRange,
       outputRange: outputRange
     });
-    const nameBorderStyle = this.state.nameError ? { borderBottomColor: 'red' } : { borderBottomColor: 'gray' };
+    const nameBorderStyle = this.state.nameError ? { borderColor: 'red', borderWidth: 1 } : null;
     const expiryBorderStyle = this.state.expiryError
       ? { borderColor: 'red', borderWidth: 1, borderBottomColor: 'red', borderBottomWidth: 1, borderRadius: 5 }
       : {};
     return (
       <View style={{ flex: 1 }}>
         <KeyboardAwareScrollView>
-          <Animated.View style={[{ left: nameFontSize }, nameBorderStyle, styles.newtitle]}>
+          <Animated.View style={[{ left: nameFontSize }, styles.newtitle, nameBorderStyle]}>
             <Text style={{ color: 'gray' }}>New Coupon Name* ({this.state.data.title.length}/20)</Text>
             <TextInput
               autoFocus={true}
-              placeholder="Please enter"
+              placeholder="Title"
               maxLength={30}
-              style={[styles.titleInput, nameBorderStyle]}
+              style={[styles.titleInput]}
               onChangeText={text => {
                 if (text.length <= 20) {
                   this.setState({ data: { ...this.state.data, title: text } })
@@ -247,7 +247,7 @@ class NewCouponScreen extends Component {
               }}
               value={this.state.data.title}
             />
-            <View style={{ borderBottomWidth: 2, borderBottomColor: 'red', marginBottom: 10 }} />
+
           </Animated.View>
           <View style={{ marginTop: 20 }}>
             <TouchableOpacity onPress={this.openImagePicker}>
@@ -361,16 +361,22 @@ class NewCouponScreen extends Component {
 const styles = StyleSheet.create({
   newtitle: {
     alignItems: 'center',
-    borderBottomWidth: 1,
     marginHorizontal: 10,
-    marginTop: 15
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)'
   },
   titleInput: {
     paddingTop: 10,
     fontSize: 20,
     textAlign: 'center',
     width: '95%',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    fontWeight: '500'
     //marginTop: 15,
     //borderWidth: 1,
     //borderColor: 'gray',
