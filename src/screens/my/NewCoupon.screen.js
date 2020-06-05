@@ -8,9 +8,8 @@ import {
   StyleSheet,
   Text,
   Animated,
-  ScrollView,
-  KeyboardAvoidingView,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Input, Button, Content, Container, Icon, Item } from 'native-base';
@@ -58,7 +57,7 @@ const expireInData = [
 
 const Field = ({ label, ...props }) => {
   return (
-    <View style={[styles.field]}>
+    <View style={[styles.field, styles.shadow]}>
       <Text style={styles.fieldLabel}>
         {label}
       </Text>
@@ -233,8 +232,10 @@ class NewCouponScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         <KeyboardAwareScrollView>
-          <Animated.View style={[{ left: nameFontSize }, styles.newtitle, nameBorderStyle]}>
-            <Text style={{ color: 'gray' }}>New Coupon Name* ({this.state.data.title.length}/20)</Text>
+          <Animated.View style={[{ left: nameFontSize }, styles.newtitle, styles.shadow, nameBorderStyle]}>
+            <Text style={{ color: 'gray' }}>
+              New Coupon Name* ({this.state.data.title.length}/20)
+            </Text>
             <TextInput
               autoFocus={true}
               placeholder="Title"
@@ -242,12 +243,11 @@ class NewCouponScreen extends Component {
               style={[styles.titleInput]}
               onChangeText={text => {
                 if (text.length <= 20) {
-                  this.setState({ data: { ...this.state.data, title: text } })
+                  this.setState({ data: { ...this.state.data, title: text } });
                 }
               }}
               value={this.state.data.title}
             />
-
           </Animated.View>
           <View style={{ marginTop: 20 }}>
             <TouchableOpacity onPress={this.openImagePicker}>
@@ -263,7 +263,7 @@ class NewCouponScreen extends Component {
           </View>
           <View style={{ marginTop: 10 }}>
             <View style={{ paddingBottom: 10 }}>
-              <Animated.View style={[styles.field, expiryBorderStyle, { left: expireShake }]}>
+              <Animated.View style={[styles.field, styles.shadow, expiryBorderStyle, { left: expireShake }]}>
                 <Text style={styles.fieldLabel}>Expiry</Text>
                 <Animated.View style={[styles.expireSelectionView]}>
                   <View style={[styles.expireSelection]}>
@@ -329,24 +329,25 @@ class NewCouponScreen extends Component {
               <Field label="Description">
                 <TextInput
                   multiline={true}
-                  numberOfLines={10}
                   style={[styles.descriptionTextInput]}
                   onChangeText={text => {
                     this.setState({ data: { ...this.state.data, description: text } });
                   }}
                   value={this.state.data.description}
+                  returnKeyType={Platform.OS === 'ios' ? 'default' : 'none'}
+                  placeholder="Description"
                 />
               </Field>
               <Field label="Note">
                 <TextInput
                   multiline={true}
-                  numberOfLines={10}
                   style={[styles.noteTextInput]}
                   onChangeText={text => {
                     this.setState({ data: { ...this.state.data, note: text } });
                   }}
                   value={this.state.data.note}
-                  returnKeyType="done"
+                  returnKeyType={Platform.OS === 'ios' ? 'default' : 'none'}
+                  placeholder="Note"
                 />
               </Field>
             </View>
@@ -405,24 +406,27 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   field: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'gray',
     //borderRadius: 10,
     marginHorizontal: 10,
     paddingHorizontal: 5,
     paddingTop: 5,
     paddingBottom: 15,
-    marginTop: 15
+    marginTop: 15,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: '#fff'
   },
   fieldLabel: {
-    color: 'rgba(0,0,0,0.6)'
+    color: 'rgba(0,0,0,0.6)',
+    marginLeft: 5
   },
   descriptionTextInput: {
     paddingHorizontal: 10,
     marginTop: 10,
 
     borderRadius: 5,
-    fontSize: 20
+    fontSize: 15
   },
   noteTextInput: {
     paddingHorizontal: 10,
@@ -461,6 +465,16 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     top: 5,
     right: 5
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
+    elevation: 5
   }
 });
 

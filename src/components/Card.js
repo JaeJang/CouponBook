@@ -15,7 +15,7 @@ import {
   TextInput,
   Alert
 } from 'react-native';
-import { Icon } from 'native-base';
+import { Icon, Fab } from 'native-base';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import CachedImage from 'react-native-image-cache-wrapper';
@@ -31,13 +31,21 @@ import store from '../store';
 import { processing, processed } from '@store/modules/processing';
 import DefaultImage from '../images/default_image.png';
 import { checkExpiry } from '../utils/utils';
+import MinimizeButton from './MinimizeButton';
 
 const { width, height } = Dimensions.get('window');
 
-const BOTTOM_HEIGHT_DIVIDER = height < 700 ? 7 : 9;
+const BOTTOM_HEIGHT_DIVIDER = height < 700 ? 7 : height < 800 ? 8 : height < 900 ? 9 : 10;
+const BOTTOM_PAN_ADDITION = height < 700 ? 90 : height < 800 ? 80 : height < 900 ? 60 : 50;
+const CONTENT_PAN_ADDITION = height < 700 ? 5.5 : height < 800 ? 6.5 : height < 900 ? 7 : 8;
+const DESCRIPTION_LENGTH_MAX_LIMIT = height < 700 ? 300 : 450;
+const DESCRIPTION_LENGTH_LIMIT = height < 700 ? 180 : 300;
+const NOTE_LENGTH_MAX_LIMIT = height < 700 ? 300 : 450;
+const NOTE_LENGTH_LIMIT = height < 700 ? 80 : 200;
 
 class Card extends Component {
   constructor(props) {
+    console.log(height);
     super(props);
     this.state = {
       pressedStyle: {},
@@ -55,6 +63,9 @@ class Card extends Component {
       shareModalVisible: false,
       email: '',
 
+      container_width: new Animated.Value(width - 32),
+      container_height: new Animated.Value(height / 5 + height / BOTTOM_HEIGHT_DIVIDER),
+
       top_width: new Animated.Value(width - 32),
       top_height: new Animated.Value(height / 5),
       bottom_width: new Animated.Value(width - 32),
@@ -70,7 +81,8 @@ class Card extends Component {
       back_opac: new Animated.Value(0),
       plus: new Animated.Value(1),
 
-      expired: false
+      expired: false,
+      seeMore: false
     };
   }
   componentDidMount() {
@@ -96,21 +108,32 @@ class Card extends Component {
     }
   };
 
-  onPress = () => {
-    const type = this.props.type;
-
-    if (this.props.onPress) this.props.onPress();
-
+  onPressCard = () => {
+    const { type } = this.props;
     if (type === CARD_TYPE.COUPON || type === CARD_TYPE.COUPON_TO) {
-      this.setState({ pressed: !this.state.pressed });
-      this.calculateOffset();
+      this.setState({ pressed: true }, () => {
+        this.calculateOffset();
+      });
     }
+    if (this.props.onPress) this.props.onPress();
+  };
+
+  onPressBack = () => {
+    if (this.props.onPressBack) this.props.onPressBack();
+    this.setState({ pressed: false }, () => {
+      this.calculateOffset();
+    });
   };
 
   grow = () => {
     this.setState({ topBorderRadius: 0, bottomBorderRadius: 5 });
-
     Animated.parallel([
+      Animated.spring(this.state.container_height, {
+        toValue: height
+      }).start(),
+      Animated.spring(this.state.container_width, {
+        toValue: width
+      }).start(),
       Animated.spring(this.state.top_width, {
         toValue: width
       }).start(),
@@ -132,13 +155,13 @@ class Card extends Component {
       Animated.spring(this.state.content_pan, {
         toValue: {
           x: 0,
-          y: -(height / 8 + this.state.offset)
+          y: -(height / CONTENT_PAN_ADDITION + this.state.offset)
         }
       }).start(),
       Animated.spring(this.state.bottom_pan, {
         toValue: {
           x: 0,
-          y: -(50 + this.state.offset)
+          y: -(BOTTOM_PAN_ADDITION + this.state.offset)
         }
       }).start(),
 
@@ -155,10 +178,18 @@ class Card extends Component {
         toValue: 0
       }).start()
     ]);
+    /* setTimeout(() => {
+      this.refs.container.measure((fx, fy, width, height, px, py) => {
+        if (this.props.scrollToOffset) {
+  
+            this.props.scrollToOffset(py);
+  
+        }
+      });
+    },500) */
   };
   shrink = () => {
     this.setState({ TopBorderRadius: 5, BottomBorderRadius: 0 });
-    if (this.props.onPressBack) this.props.onPressBack();
     Animated.parallel([
       Animated.spring(this.state.top_width, {
         toValue: this.state.orgWidth
@@ -195,6 +226,13 @@ class Card extends Component {
       }).start(),
       Animated.timing(this.state.plus, {
         toValue: 1
+      }).start(),
+
+      Animated.spring(this.state.container_height, {
+        toValue: height / 5 + height / BOTTOM_HEIGHT_DIVIDER
+      }).start(),
+      Animated.spring(this.state.container_width, {
+        toValue: this.state.orgWidth
       }).start()
     ]);
   };
@@ -257,37 +295,27 @@ class Card extends Component {
   };
 
   renderTop = () => {
-    const back = this.state.pressed
-      ? <TouchableOpacity style={[styles.backButton, {}]} onPress={this.onPress}>
-          <Animated.View style={{ opacity: this.state.back_opac }}>
-            <Text style={{ color: 'white' }}>
-              <Icon name="md-arrow-back" />
-            </Text>
-          </Animated.View>
-        </TouchableOpacity>
-      : <View />;
-
     const borderStyles = !this.state.pressed
       ? { borderTopRightRadius: this.state.topBorderRadius, borderTopLeftRadius: this.state.topBorderRadius }
       : { borderTopRightRadius: 0, borderTopLeftRadius: 0 };
 
     const image =
       this.props.item.image && !this.props.imageDownloadDisabled ? { uri: this.props.item.image } : DefaultImage;
+      const elevation = this.state.pressed ? {  } : {elevation: 5};
     return (
       <Animated.View
         style={[
           styles.top,
           borderStyles,
+          elevation,
           {
             width: this.state.top_width,
             height: this.state.top_height,
-            transform: this.state.top_pan.getTranslateTransform()
+            transform: this.state.top_pan.getTranslateTransform(),
           }
         ]}
       >
-        {/* {imageContent} */}
-        <CachedImage source={image} style={{ width: '100%', height: '100%' }}>
-          {back}
+        <CachedImage source={image} style={[{ width: '100%', height: '100%' }]}>
           {this.props.item.numOfCoupons &&
             !this.state.pressed &&
             <TouchableOpacity
@@ -304,8 +332,13 @@ class Card extends Component {
               style={[styles.xButtonContainer]}
               onPress={this.props.onPressX ? this.props.onPressX : null}
             >
-              <Icon name="close" style={[styles.xButtonIcon]} />
+              <Icon type="Ionicons" name="ios-close" style={[styles.xButtonIcon]} />
             </TouchableOpacity>}
+          {this.props.item.status && this.props.item.status === COUPON_STATUS.USED && 
+            <View>
+              <Icon type="Ionicons" name="ios-checkmark-circle-outline" style={[styles.checkedIcon]}/>
+            </View>
+          }
         </CachedImage>
       </Animated.View>
     );
@@ -332,16 +365,51 @@ class Card extends Component {
     }
   };
 
+  renderDescription = () => {
+    const { description, note } = this.props.item;
+    let modifiedDes = description ? description : '',
+      modifiedNote = note ? note : '';
+    let seeMore = false;
+
+    if (!modifiedNote.length && modifiedDes.length > DESCRIPTION_LENGTH_MAX_LIMIT) {
+      modifiedDes = modifiedDes.substr(0, DESCRIPTION_LENGTH_MAX_LIMIT) + '.....';
+      seeMore = true;
+    } else if (modifiedDes.length > DESCRIPTION_LENGTH_LIMIT) {
+      modifiedDes = modifiedDes.substr(0, DESCRIPTION_LENGTH_LIMIT) + '.....';
+      if (modifiedNote.length > NOTE_LENGTH_LIMIT) {
+        modifiedNote = modifiedNote.substr(0, NOTE_LENGTH_LIMIT) + '.....';
+      }
+      seeMore = true;
+    } else if (modifiedDes.length <= DESCRIPTION_LENGTH_LIMIT && modifiedNote.length > NOTE_LENGTH_LIMIT) {
+      modifiedNote = modifiedNote.substr(0, NOTE_LENGTH_LIMIT) + '.....';
+      seeMore = true;
+    } else if (!modifiedDes.length && modifiedNote.length > NOTE_LENGTH_MAX_LIMIT) {
+      modifiedNote = modifiedNote.substr(0, NOTE_LENGTH_MAX_LIMIT) + '.....';
+      seeMore = true;
+    }
+
+    return (
+      <View style={{ backgroundColor: 'white', margin: 16, padding: 16 }}>
+        <Text style={{ fontSize: 24, fontWeight: '700', color: 'black' }}>Description</Text>
+
+        <Text style={{ paddingTop: 5 }}>
+          {modifiedDes}
+        </Text>
+        {modifiedNote
+          ? <Text style={{ marginTop: 1, fontStyle: 'italic', padding: 5, color: 'gray' }}>
+              Note: {modifiedNote}
+            </Text>
+          : null}
+        {seeMore &&
+          <Text style={{ color: '#00aaff' }} onPress={() => this.setState({ seeMore: true })}>
+            {/* 안뇽 장재구리? 잘 자구 이로났니 사랑해 뿅뿅뿅 */}
+            See More
+          </Text>}
+      </View>
+    );
+  };
+
   renderBottom = () => {
-    /* var plusButton = !this.state.activated
-        ?
-    <Animated.View style={{opacity: this.state.plus, justifyContent: "center", alignItems: "center"}}>
-        <Icon name="plus-circle" style={{fontSize: 24, color: this.props.color}}/>
-    </Animated.View>
-        :
-        <Animated.View style={{opacity: this.state.plus, justifyContent: "center", alignItems: "center"}}>
-        <Icon name="check-circle" style={{fontSize: 24, color: this.props.color}}/>
-    </Animated.View> */
     const { expireOption, expireIn, expireAt, title, status, date } = this.props.item;
     const { sharable, type } = this.props;
     const { expired } = this.state;
@@ -352,7 +420,7 @@ class Card extends Component {
     } else if (status === COUPON_STATUS.USED || expired) {
       disableButton = true;
     }
-
+    const elevation = this.state.pressed ? {  } : {elevation: 5};
     return (
       <Animated.View
         style={[
@@ -362,17 +430,18 @@ class Card extends Component {
             height: this.state.bottom_height,
             borderRadius: this.bottomBorderRadius,
             transform: this.state.bottom_pan.getTranslateTransform()
-          }
+          },
+          elevation
         ]}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View>
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
-              <Text style={{  fontSize: 24, fontWeight: '700', paddingBottom: 8 }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+              <Text style={{ fontSize: 24, fontWeight: '700', paddingBottom: 5 }}>
                 {title}
               </Text>
               {date &&
-                <Text style={{paddingBottom: 8, marginLeft:5, fontSize: 12, color: 'gray'}}>
+                <Text style={{ paddingBottom: 8, marginLeft: 5, fontSize: 12, color: 'gray' }}>
                   ({moment(date).format('MMM DD, YYYY')})
                 </Text>}
             </View>
@@ -392,7 +461,7 @@ class Card extends Component {
               </TouchableOpacity>}
             {(type === CARD_TYPE.LIST_FROM || type === CARD_TYPE.LIST_TO) &&
               <View>
-                <Text style={{ fontSize: 15, fontWeight: '400',  }}>
+                <Text style={{ fontSize: 15, fontWeight: '400' }}>
                   {this.props.item.userName}
                 </Text>
                 <Text style={{ fontSize: 12, fontWeight: '500', color: 'gray' }}>
@@ -400,8 +469,6 @@ class Card extends Component {
                 </Text>
               </View>}
           </View>
-
-          {/* {plusButton} */}
         </View>
         {this.state.pressed &&
           <TouchableOpacity disabled={disableButton} onPress={this.onPressMainButton}>
@@ -440,17 +507,7 @@ class Card extends Component {
           marginTop: 30
         }}
       >
-        <View style={{ backgroundColor: 'white', flex: 1, margin: 16, padding: 16 }}>
-          <Text style={{ fontSize: 24, fontWeight: '700', color: 'black' }}>Description</Text>
-          <Text style={{ paddingTop: 10 }}>
-            {this.props.item.description}
-          </Text>
-          {this.props.item.note
-            ? <Text style={{ fontStyle: 'italic', padding: 5, color: 'gray' }}>
-                Note: {this.props.item.note}
-              </Text>
-            : null}
-        </View>
+        {this.renderDescription()}
       </Animated.View>
     );
   };
@@ -485,15 +542,23 @@ class Card extends Component {
   };
 
   render() {
-    const { type } = this.props;
+    const { type, pressed } = this.props;
+
     return (
-      <View style={[styles.container, this.state.pressedStyle]}>
-        <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPress : null} style={{}}>
+      <Animated.View
+        pointerEvents={pressed === true && !this.state.pressed ? 'none' : 'auto'}
+        style={[
+          styles.container,
+          this.state.pressedStyle,
+
+          { width: this.state.container_width, height: this.state.container_height }
+        ]}
+      >
+        <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPressCard : null} style={{}}>
           <View ref="container" style={[{ alignItems: 'center' }]}>
             {this.props.item.used &&
               !this.state.pressed &&
               <View style={[StyleSheet.absoluteFill, styles.coverCard]} />}
-
             {this.renderTop()}
             {this.renderBottom()}
             {this.renderContent()}
@@ -522,7 +587,27 @@ class Card extends Component {
             <SubmitButton style={{ flex: 0.2 }} label="SEND" onPress={this.onPressSend} />
           </View>
         </Modal>
-      </View>
+        <Modal
+          visible={this.state.seeMore}
+          hasOpacityAnimation={true}
+          onDismiss={() => this.setState({ seeMore: false })}
+        >
+          <ScrollView style={{ backgroundColor: 'white', margin: 16, padding: 16, flex:1 }}>
+            <Text style={{ fontSize: 24, fontWeight: '700', color: 'black' }}>Description</Text>
+
+            <Text style={{ paddingTop: 10 }}>
+              {this.props.item.description}
+            </Text>
+            {this.props.item.note
+              ? <Text style={{ marginTop: 5, fontStyle: 'italic', padding: 5, color: 'gray' }}>
+                  Note: {this.props.item.note}
+                </Text>
+              : null}
+          </ScrollView>
+            <SubmitButton style={{}} label="Close" onPress={() => this.setState({ seeMore: false })} />
+        </Modal>
+        <MinimizeButton visible={this.state.pressed} onPressBack={this.onPressBack} />
+      </Animated.View>
     );
   }
 }
@@ -532,13 +617,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     marginBottom: 16,
-    marginTop: 16
+    marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: '#0000'
   },
   backButton: {
     position: 'absolute',
     backgroundColor: 'transparent',
     top: 32,
-    left: 10
+    left: 10,
+    zIndex: 10
+  },
+  backButtonLeft: {
+    position: 'absolute',
+    top: 10,
+    left: 0,
+    right: 10,
+    bottom: 0,
+    alignItems: 'flex-end'
   },
   top: {
     marginBottom: 0,
@@ -556,8 +659,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(175,175,175,0.8)',
     borderRadius: 50,
     alignSelf: 'flex-start',
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     top: 5,
     left: 5
@@ -566,7 +669,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     borderColor: '#000'
   },
   xButtonContainer: {
@@ -582,10 +685,23 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textAlign: 'center',
     color: '#fff',
-    fontSize: 35,
-    width: 35,
-    height: 35,
+    fontSize: 30,
+    width: 30,
+    height: 30,
     borderColor: '#000'
+  },
+  checkedContainer: {
+    position: 'absolute',
+    backgroundColor: 'rgba(175,175,175,0.8)',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
+  },
+  checkedIcon: {
+    color: '#00aaff',
+    marginLeft: 10,
+    marginTop: 10,
+    fontSize: 35
   },
   coverCard: {
     backgroundColor: 'rgba(255,255,255,0.6)',

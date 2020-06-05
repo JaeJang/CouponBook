@@ -5,7 +5,6 @@ import {
   Dimensions,
   View,
   TouchableOpacity,
-  Modal,
   TouchableWithoutFeedback,
   Animated
 } from 'react-native';
@@ -15,6 +14,7 @@ import _ from 'lodash';
 
 import { timingAnimation } from '@utils/animation';
 import { sleep } from '@utils/sleep';
+import RootComponent from './RootComponent';
 /*
 In current react native for ios, Alert disappears when modal from react-native-modal is being closed.
 Becasue of that reason, we can use react-native-modal in Android but need to create a new modal 
@@ -42,11 +42,11 @@ const getOutputRange = height => {
 };
 
 // Base Modal for ios
-const Modal_IOS_Base = ({ ...props }) => {
+const Modal_IOS_Base = ({ width = 1, ...props }) => {
   const touchToClose = _.get(props, 'touchToClose', false);
   const [opacity, setOpacity] = useState(0);
   const [visible, setVisible] = useState(props.visible);
-  const size = modalSize(props.width, props.height);
+  const size = modalSize(width, props.height);
   const containerOpacityValue = useRef(new Animated.Value(0)).current;
   const contentOpacityValue = useRef(new Animated.Value(0)).current;
   const transformYValue = useRef(new Animated.Value(0)).current;
@@ -188,6 +188,12 @@ const Modal_IOS_Base = ({ ...props }) => {
   }
 };
 
+const CustomModal = ({ ...props }) => {
+  return <RootComponent {...props} renderComponent={Modal_IOS_Base} />;
+};
+
+export default CustomModal;
+
 // Modal for ios
 // Place modal on top of other components using sibling
 class Modal_IOS extends Component {
@@ -265,4 +271,3 @@ const styles = StyleSheet.create({
 });
 
 //export default (Platform.OS === 'ios' ? Modal_IOS : Modal);
-export default Modal_IOS;

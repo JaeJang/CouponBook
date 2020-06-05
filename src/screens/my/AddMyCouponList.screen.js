@@ -258,7 +258,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.2)'
+    borderColor: 'rgba(0,0,0,0.2)',
+    shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 3.84,
+      elevation: 5
   },
   couponListName: {
     /* fontSize: 30,

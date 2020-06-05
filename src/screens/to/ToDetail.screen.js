@@ -9,20 +9,22 @@ import { CARD_TYPE } from '../../constants';
 import FromToDetail from '../../components/FromToDetail';
 import store from '../../store';
 import { processing, processed } from '../../store/modules/processing';
+import { NavigationActions } from 'react-navigation';
 
 class ToDetailScreen extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: navigation.getParam('title', ''),
       //header: navigation.getParam("headerShown", true)
-      headerShown: false
+      headerShown: false,
     };
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      index: props.navigation.getParam('index')
+      index: props.navigation.getParam('index'),
+      pressed: false
     };
   }
 
@@ -44,7 +46,7 @@ class ToDetailScreen extends Component {
     const item = this.props.toList[this.state.index];
     return (
       <FromToDetail
-        list={item.list}
+        list={item ? item.list : []}
         type={CARD_TYPE.COUPON_TO}
         onPressMainButton={this.onPressMainButton}
         {...this.props}

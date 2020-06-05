@@ -21,7 +21,6 @@ const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
       disableRightSwipe={true}
       onRowOpen={() => setSwiped(true)}
       onRowClose={() => setSwiped(false)}
-
       style={{ marginBottom: 5 }}
     >
       <TouchableWithoutFeedback onPress={() => onDelete(item.alertKey)}>
@@ -31,24 +30,23 @@ const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
         </View>
       </TouchableWithoutFeedback>
       <TouchableHighlight onPress={!swiped ? onPress : null}>
-<View>
+        <View>
           {item.type === ALERT_TYPE.REQUESTED &&
-            <View style={[styles.standaloneRowFront, {backgroundColor:'#d6f1ff'}]}>
+            <View style={[styles.standaloneRowFront, { backgroundColor: '#d6f1ff' }]}>
               <Text>
                 {item.name} wants to use {item.title}
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
               </Text>
             </View>}
           {item.type === ALERT_TYPE.CONFIRMED &&
-            <View style={[styles.standaloneRowFront, {backgroundColor:'#D2E7D6'}]}>
+            <View style={[styles.standaloneRowFront, { backgroundColor: '#D2E7D6' }]}>
               <Text>
                 {item.name} confirmed {item.title}
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
               </Text>
             </View>}
           {item.type === ALERT_TYPE.DELETED &&
-            <View style={[styles.standaloneRowFront, {backgroundColor:'#F6DADA'}]}>
-
+            <View style={[styles.standaloneRowFront, { backgroundColor: '#F6DADA' }]}>
               <Text>
                 {item.name} deleted {item.title} list
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>

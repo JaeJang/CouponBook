@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Animated,
+  Dimensions,
+  StyleSheet,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+  ImageBackground,
+  Image
+} from 'react-native';
 import { Card, CardItem, Form, Input, Item, Label, Button } from 'native-base';
 import { connect } from 'react-redux';
 import Switch from 'react-native-switch-pro';
@@ -13,14 +24,19 @@ import { sleep } from '@utils/sleep';
 import { isEmailValid } from '../utils/validate';
 import { timingAnimation } from '../utils/animation';
 
+import background1 from '../images/login_background1.jpg';
+import background2 from '../images/login_background2.jpg';
+
 const LOGIN = 'LOGIN';
 const SIGNUP = 'SIGNUP';
 
 //TODO: replace
-//const INIT_ANI_START = 1500;
-//const SLEEP_BETWEEN_NAME_FORM = 1000;
-const INIT_ANI_START = 0;
-const SLEEP_BETWEEN_NAME_FORM = 0;
+const INIT_ANI_START = 1500;
+const SLEEP_BETWEEN_NAME_FORM = 1000;
+//const INIT_ANI_START = 0;
+//const SLEEP_BETWEEN_NAME_FORM = 0;
+
+const { WIDTH, HEIGHT } = Dimensions.get('window');
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -50,7 +66,7 @@ class LoginScreen extends Component {
     this.initialAnimationStart(INIT_ANI_START, user);
     const user = firebase.getUser();
     //TODO: uncomment
-    //await sleep(1700);
+    await sleep(1700);
     const rememberMe = await ProfileService.getRememberMe();
     if (rememberMe) {
       this.setState({
@@ -78,7 +94,7 @@ class LoginScreen extends Component {
     await sleep(milisec);
     timingAnimation(this.nameFlex);
     await sleep(SLEEP_BETWEEN_NAME_FORM);
-    timingAnimation(this.loginFormOpacity);
+    timingAnimation(this.loginFormOpacity, 1, 500);
     /* setTimeout(async () => {
       timingAnimation(this.nameFlex);
 
@@ -159,13 +175,14 @@ class LoginScreen extends Component {
     const { screen } = this.state;
     const onPressLogin = screen === LOGIN ? this.handleLogin : this.switchToLogin;
     const onPressSignup = screen === SIGNUP ? this.handleSignup : this.switchToSignup;
+    
     return (
       <View>
-        <TouchableOpacity style={[styles.button]} onPress={onPressLogin}>
-          <Text style={[styles.buttonText]}>LOG IN</Text>
+        <TouchableOpacity style={[styles.button, { backgroundColor: screen === LOGIN ? '#00aaff': '#fff'}]} onPress={onPressLogin}>
+          <Text style={[styles.buttonText, { color: screen === LOGIN ? '#fff': '#000'}]}>LOG IN</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#DDDDDD' }]} onPress={onPressSignup}>
-          <Text style={[styles.buttonText]}>SIGN UP</Text>
+        <TouchableOpacity style={[styles.button, { backgroundColor: screen === SIGNUP ? '#00aaff': '#fff'}]} onPress={onPressSignup}>
+          <Text style={[styles.buttonText, { color: screen === SIGNUP ? '#fff': '#000'}]}>SIGN UP</Text>
         </TouchableOpacity>
       </View>
     );
@@ -294,16 +311,20 @@ class LoginScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.center, { flex }]}>
-          <Animated.View style={{}}>
-            <AnimatedName />
+        {/* <ImageBackground source={background1} style={[styles.backgroundImage]}> */}
+          <Animated.View style={[styles.center, { flex }]}>
+            <Animated.View style={{}}>
+              <AnimatedName />
+            </Animated.View>
+            <Animated.View />
           </Animated.View>
-          <Animated.View />
-        </Animated.View>
-        <Animated.View style={styles.loginFormContainer}>
-          {screen === LOGIN && this.renderLoginForm()}
-          {screen === SIGNUP && this.renderSignupForm()}
-        </Animated.View>
+          <Animated.View style={styles.loginFormContainer}>
+            {screen === LOGIN && this.renderLoginForm()}
+            {screen === SIGNUP && this.renderSignupForm()}
+          </Animated.View>
+       {/*  </ImageBackground> */}
+        <Image source={background1} style={[styles.backgroundImage]} />
+        <View style={[StyleSheet.absoluteFill, styles.blur]}/>
       </View>
     );
   }
@@ -317,6 +338,21 @@ const styles = StyleSheet.create({
   center: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  backgroundImage: {
+    width: WIDTH,
+    height: HEIGHT,
+    flex:1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    zIndex: -2
+  },
+  blur: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    zIndex: -1
   },
   loginFormContainer: {
     flex: 3
@@ -342,7 +378,8 @@ const styles = StyleSheet.create({
   form: {
     padding: 10,
     margin: 10,
-    backgroundColor: 'rgb(146,146,146)',
+    //backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     borderRadius: 10
   },
   inputLabel: {

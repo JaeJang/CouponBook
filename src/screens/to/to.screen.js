@@ -82,6 +82,7 @@ class ToScreen extends Component {
                   onPress={() => this.onPressList(item, index)}
                   onPressX={() => this.onPressX(item, index)}
                   showXButton={item.status === LIST_STATUS.DELETED}
+                  pressed={false}
                 />}
             />
           : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -93,7 +94,7 @@ class ToScreen extends Component {
                   fontSize: 20
                 }}
               >
-                You didn't get any coupons yet
+                You didn't send any coupons yet
               </Text>
             </View>}
       </View>

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { timingAnimation } from '@utils/animation';
 
-const HEADER_HEIGHT = Platform.OS === 'ios' ? 70 : 70 + StatusBar.currentHeight;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? 70 : 50 + StatusBar.currentHeight;
 
 const CollapsibleHeader = ({ route,navigation, ...props }) => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;

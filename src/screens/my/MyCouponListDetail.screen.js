@@ -26,7 +26,9 @@ class MyCouponListDetail extends Component {
       scroll: true,
       list: [],
       parentKey: props.navigation.getParam('parentKey', ''),
-      fabOpac: new Animated.Value(1)
+      //fabOpac: new Animated.Value(1),
+      fabOpac: 1,
+      pressed: false
     };
   }
 
@@ -58,14 +60,15 @@ class MyCouponListDetail extends Component {
 
   onPressCard = () => {
     this.props.navigation.setParams({ headerShown: false });
-    this.setState({ scroll: false });
-    Animated.timing(this.state.fabOpac, { toValue: 0 }).start();
+    this.setState({ scroll: false, pressed: true, fabOpac: 0 });
+    //Animated.spring(this.state.fabOpac, { toValue: 0 }).start();
+    
   };
 
   onPressCardBack = () => {
     this.props.navigation.setParams({ headerShown: true });
-    this.setState({ scroll: true });
-    Animated.timing(this.state.fabOpac, { toValue: 1 }).start();
+    this.setState({ scroll: true, pressed: false, fabOpac: 1 });
+    //Animated.spring(this.state.fabOpac, { toValue: 1 }).start();
   };
 
   onDelete = (item, index) => {
@@ -96,7 +99,7 @@ class MyCouponListDetail extends Component {
   };
 
   render() {
-    const { list, scroll, fabOpac } = this.state;
+    const { list, scroll, fabOpac, pressed } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <FlatList
@@ -112,6 +115,7 @@ class MyCouponListDetail extends Component {
               onPressBack={this.onPressCardBack}
               showXButton={true}
               onPressX={() => this.onDelete(item, index)}
+              pressed={pressed}
             />}
         />
         <Fab
@@ -119,10 +123,10 @@ class MyCouponListDetail extends Component {
           direction="up"
           containerStyle={{ opacity: fabOpac }}
           style={{ backgroundColor: '#00aaff' }}
-          position="bottomLeft"
+          position="bottomRight"
           onPress={scroll ? this.props.navigation.goBack : null}
         >
-          <Icon name="md-arrow-back" />
+          <Icon type="Ionicons" name="ios-arrow-back" />
         </Fab>
       </View>
     );

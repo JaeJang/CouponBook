@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
+import _ from 'lodash';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialTopTabNavigator, createBottomTabNavigator, createTabNavigator } from 'react-navigation-tabs';
@@ -104,7 +105,9 @@ const MyCouponTabNavigator = createStackNavigator(
 const MyCouponsStackNavigator = createStackNavigator({
   'My Coupons': {
     screen: MyCouponTabNavigator,
-    navigationOptions: {}
+    navigationOptions: {
+      headerShown: false
+    }
   },
   'Add Coupon List': {
     screen: AddMyCouponListScreen,
@@ -151,6 +154,15 @@ const ProfileStackNavigator = createStackNavigator({
   }
 });
 
+/* ToStackNavigator.navigationOptions = ({navigation}) => {
+  const { routeName } = navigation.state.routes[navigation.state.index];
+
+  return {
+    tabBarVisible: routeName === 'To Detail' ? false : true
+    
+  }
+} */
+
 const CouponTabNavigator = createBottomTabNavigator(
   {
     From: {
@@ -172,22 +184,25 @@ const CouponTabNavigator = createBottomTabNavigator(
   },
   {
     resetOnBlur: true,
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarOptions: {
-        showIcon: true,
-        activeBackgroundColor: '#00aaff',
-        activeTintColor: '#fff'
-      },
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
-        if (routeName === 'From') iconName = 'md-log-in';
-        else if (routeName === 'To') iconName = 'md-log-out';
-        else if (routeName === 'My') iconName = 'md-filing';
-        else if (routeName === 'Profile') iconName = 'md-person';
-        return <Icon name={iconName} size={35} style={{ color: focused ? '#fff' : 'gray', marginTop: 3 }} />;
+    defaultNavigationOptions: ({ navigation }) => {
+      const hiddenTabBars = ['To Detail', 'From Detail'];
+      return {
+        tabBarOptions: {
+          showIcon: true,
+          activeBackgroundColor: '#00aaff',
+          activeTintColor: '#fff'
+        },
+        tabBarIcon: ({ focused, tintColor }) => {
+          const { routeName } = navigation.state;
+          let iconName;
+          if (routeName === 'From') iconName = 'ios-log-in';
+          else if (routeName === 'To') iconName = 'ios-log-out';
+          else if (routeName === 'My') iconName = 'ios-apps';
+          else if (routeName === 'Profile') iconName = 'ios-home';
+          return <Icon type="Ionicons" name={iconName} size={35} style={{ color: focused ? '#fff' : 'gray', marginTop: 3 }} />;
+        }
       }
-    })
+    }
   }
 );
 

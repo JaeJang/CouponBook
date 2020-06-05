@@ -23,7 +23,8 @@ class MyCouponScreen extends Component {
     super();
     this.state = {
       scroll: true,
-      list: []
+      list: [],
+      pressed: false
     };
   }
 
@@ -35,12 +36,12 @@ class MyCouponScreen extends Component {
 
   onPressCard = () => {
     this.props.navigation.setParams({ headerShown: false });
-    this.setState({ scroll: false });
+    this.setState({ scroll: false, pressed: true });
   };
 
   onPressCardBack = () => {
     this.props.navigation.setParams({ headerShown: true });
-    this.setState({ scroll: true });
+    this.setState({ scroll: true, pressed: false });
   };
 
   onPressDelete = (item, index) => {
@@ -86,13 +87,14 @@ class MyCouponScreen extends Component {
   };
 
   render() {
+    const { pressed, scroll } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <CollapsibleHeader
           route={this.props.navigation.state.routeName}
           navigation={this.props.navigation}
           list={this.props.coupons}
-          scrollEnabled={this.state.scroll}
+          scrollEnabled={scroll}
           ListFooterComponent={this.renderFooter}
           renderItem={({ item, index }) =>
             <Card
@@ -103,6 +105,7 @@ class MyCouponScreen extends Component {
               onPressX={() => this.onPressDelete(item, index)}
               showXButton={true}
               disableButton={true}
+              pressed={pressed}
             />}
         />
         <Fab
