@@ -7,12 +7,13 @@ import { addToObject } from '../../utils/utils';
 import { processing, processed } from '../../store/modules/processing';
 
 export const SET_TO_KEYS = 'SET_TO_KEYS';
-export const SET_LAST_KEY = 'SET_LAST_KEY';
+export const SET_TO_LAST_KEY = 'SET_TO_LAST_KEY';
 export const SET_TO_USERS = 'SET_TO_USERS';
 export const ADD_TO = 'ADD_TO';
 export const SET_TO_LIST = 'SET_TO_LIST';
 export const UPDATE_TO_LIST = 'UPDATE_TO_LIST';
 export const ADD_TO_FRONT = 'ADD_TO_FRONT';
+export const TO_FIRST_TIME_LOADED = 'TO_FIRST_TIME_LOADED';
 
 const TYPE = 'to';
 
@@ -31,7 +32,7 @@ export const listenToNewList = () => (dispatch, getState) => {
     const index = _.findIndex(toKeys, { key: value.key });
     if (index === -1) {
       if (!toKeys.length) {
-        dispatch({ type: SET_LAST_KEY, payload: value.key });
+        dispatch({ type: SET_TO_LAST_KEY, payload: value.key });
       }
       toKeys.unshift(value);
       dispatch({ type: SET_TO_KEYS, payload: toKeys });
@@ -70,7 +71,7 @@ export const getToListAfter = () => async (dispatch, getState) => {
     FromToService.onDistributedChange(key, result => dispatch(updateDist(key, result)));
   }
   dispatch(processed());
-  dispatch({ type: SET_LAST_KEY, payload: toKeys[i - 1].key });
+  dispatch({ type: SET_TO_LAST_KEY, payload: toKeys[i - 1].key });
 };
 
 export const updateDist = (key, updatedDist) => (dispatch, getState) => {
@@ -86,14 +87,18 @@ export const deleteTo = (key, index) => (dispatch, getState) => {
 
   if (key === toLastKey) {
     if (index === 0) {
-      dispatch({ type: SET_LAST_KEY, payload: '' });
+      dispatch({ type: SET_TO_LAST_KEY, payload: '' });
     } else {
-      dispatch({ type: SET_LAST_KEY, payload: toKeys[index - 1].key });
+      dispatch({ type: SET_TO_LAST_KEY, payload: toKeys[index - 1].key });
     }
   }
 
   dispatch({ type: SET_TO_LIST, payload: toList.filter((item, i) => i !== index) });
   dispatch({ type: SET_TO_KEYS, payload: toKeys.filter((item, i) => i !== index) });
+}
+
+export const setFirstTimeLoaded = () => dispatch => {
+  dispatch({ type: TO_FIRST_TIME_LOADED });
 }
 
 const getUserByUserKey = async (toUsers, userKey, dispatch) => {
@@ -110,7 +115,8 @@ const initialState = {
   toKeys: [],
   toLastKey: '',
   toList: [],
-  toUsers: {}
+  toUsers: {},
+  firstTimeLoaded: false
 };
 
 export default function(state = initialState, action) {
@@ -120,7 +126,7 @@ export default function(state = initialState, action) {
         ...state,
         toKeys: action.payload
       };
-    case SET_LAST_KEY:
+    case SET_TO_LAST_KEY:
       return {
         ...state,
         toLastKey: action.payload
@@ -146,6 +152,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         toList: state.toList.map(item => (item.key === key ? { ...item, ...newDist } : item))
+      };
+    case TO_FIRST_TIME_LOADED:
+      return {
+        ...state,
+        firstTimeLoaded: true
       };
     case 'LOGOUT':
       return {

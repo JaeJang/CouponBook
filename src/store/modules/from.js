@@ -8,12 +8,13 @@ import { PROCESSING, PROCESSED } from '@store/types/loading';
 import { processing, processed } from '@store/modules/processing';
 
 export const SET_FROM_KEYS = 'SET_FROM_KEYS';
-export const SET_LAST_KEY = 'SET_LAST_KEY';
+export const SET_FROM_LAST_KEY = 'SET_FROM_LAST_KEY';
 export const SET_FROM_USERS = 'SET_FROM_USERS';
 export const ADD_FROM = 'ADD_FROM';
 export const SET_FROM_LIST = 'SET_FROM_LIST';
 export const UPDATE_FROM_LIST = 'UPDATE_FROM_LIST';
 export const ADD_TO_FRONT = 'ADD_TO_FRONT';
+export const FROM_FIRST_TIME_LOADED = 'FROM_FIRST_TIME_LOADED';
 
 const TYPE = "from";
 
@@ -32,7 +33,7 @@ export const listenToNewList = () => (dispatch, getState) => {
     const index = _.findIndex(fromKeys, { key: value.key });
     if (index === -1) {
       if (!fromKeys.length) {
-        dispatch({ type: SET_LAST_KEY, payload: value.key });
+        dispatch({ type: SET_FROM_LAST_KEY, payload: value.key });
       }
       fromKeys.unshift(value);
       dispatch({ type: SET_FROM_KEYS, payload: fromKeys });
@@ -67,12 +68,12 @@ export const getFromListAfter = () => async (dispatch, getState) => {
     let user = await getUserByUserKey(fromUsers, userKey, dispatch);
 
     const list = getState().from.fromList;
-    list.push({ email: user.email, userName: user.name, key });
+    list.push({ email: user.email, userName: user.name, key, userKey: userKey });
     dispatch({ type: SET_FROM_LIST, payload: list });
     FromToService.onDistributedChange(key, result => dispatch(updateDist(key, result)));
   }
   dispatch(processed());
-  dispatch({ type: SET_LAST_KEY, payload: fromKeys[i - 1].key });
+  dispatch({ type: SET_FROM_LAST_KEY, payload: fromKeys[i - 1].key });
 };
 
 export const updateDist = (key, updatedDist) => (dispatch, getState) => {
@@ -92,15 +93,19 @@ export const deleteFrom = (key, index) => (dispatch, getState) => {
 
   if (key === fromLastKey) {
     if (index === 0) {
-      dispatch({ type: SET_LAST_KEY, payload: '' });
+      dispatch({ type: SET_FROM_LAST_KEY, payload: '' });
     } else {
-      dispatch({ type: SET_LAST_KEY, payload: fromKeys[index - 1].key });
+      dispatch({ type: SET_FROM_LAST_KEY, payload: fromKeys[index - 1].key });
     }
   }
 
   dispatch({ type: SET_FROM_LIST, payload: fromList.filter((item, i) => i !== index) });
   dispatch({ type: SET_FROM_KEYS, payload: fromKeys.filter((item, i) => i !== index) });
 };
+
+export const setFirstTimeLoaded = () => dispatch => {
+  dispatch({ type: FROM_FIRST_TIME_LOADED });
+}
 
 const getUserByUserKey = async (fromUsers, userKey, dispatch) => {
   let user = fromUsers[userKey];
@@ -116,7 +121,8 @@ const initialState = {
   fromKeys: [],
   fromLastKey: "",
   fromList: [],
-  fromUsers: {}
+  fromUsers: {},
+  firstTimeLoaded: false
 };
 
 export default function(state = initialState, action) {
@@ -126,7 +132,7 @@ export default function(state = initialState, action) {
         ...state,
         fromKeys: action.payload
       };
-    case SET_LAST_KEY:
+    case SET_FROM_LAST_KEY:
       return {
         ...state,
         fromLastKey: action.payload
@@ -153,6 +159,11 @@ export default function(state = initialState, action) {
         ...state,
         fromList: state.fromList.map(item => (item.key === key ? { ...item, ...newDist } : item))
       };
+    case FROM_FIRST_TIME_LOADED:
+        return {
+          ...state,
+          firstTimeLoaded: true
+        }
     case 'LOGOUT':
       return {
         fromKeys: [],

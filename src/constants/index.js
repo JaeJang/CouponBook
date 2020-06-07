@@ -16,7 +16,8 @@ export const CARD_TYPE = {
 export const COUPON_STATUS = {
   NOT_USED: 'NOT_USED',
   REQUESTED: 'REQUESTED',
-  USED: 'USED'
+  USED: 'USED',
+  DELETED: 'DELETED'
 };
 
 export const LIST_STATUS = {
@@ -29,5 +30,6 @@ export const LIST_STATUS = {
 export const ALERT_TYPE = {
   REQUESTED: 'REQUESTED',
   CONFIRMED: 'CONFIRMED',
-  DELETED: 'DELETED'
+  DELETED: 'DELETED',
+  C_DELETED: 'C_DELETED'
 }

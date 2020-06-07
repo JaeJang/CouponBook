@@ -164,7 +164,7 @@ const Modal_IOS_Base = ({ width = 1, ...props }) => {
             <View style={{}}>
               <View style={[styles.modal, size, props.modalStyle]}>
                 <Animated.View
-                  style={{
+                  style={[{
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -173,7 +173,7 @@ const Modal_IOS_Base = ({ width = 1, ...props }) => {
                       { translateY: hasTransformYAnimation ? transformY : 0 },
                       { translateX: hasTransformXAnimation ? transformX : 0 }
                     ]
-                  }}
+                  },  props.modalStyle]}
                 >
                   {props.children}
                 </Animated.View>

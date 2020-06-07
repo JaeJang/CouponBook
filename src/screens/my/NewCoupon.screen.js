@@ -12,7 +12,7 @@ import {
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Input, Button, Content, Container, Icon, Item } from 'native-base';
+import { Input, Button, Icon } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultImage from '../../images/default_image.png';
 import CheckBox from 'react-native-check-box';
@@ -236,7 +236,7 @@ class NewCouponScreen extends Component {
             <Text style={{ color: 'gray' }}>
               New Coupon Name* ({this.state.data.title.length}/20)
             </Text>
-            <TextInput
+            <Input
               autoFocus={true}
               placeholder="Title"
               maxLength={30}
@@ -247,6 +247,7 @@ class NewCouponScreen extends Component {
                 }
               }}
               value={this.state.data.title}
+              placeholderTextColor="rgba(0,0,0,0.3)"
             />
           </Animated.View>
           <View style={{ marginTop: 20 }}>
@@ -327,7 +328,7 @@ class NewCouponScreen extends Component {
                 </Animated.View>
               </Animated.View>
               <Field label="Description">
-                <TextInput
+                <Input
                   multiline={true}
                   style={[styles.descriptionTextInput]}
                   onChangeText={text => {
@@ -336,10 +337,11 @@ class NewCouponScreen extends Component {
                   value={this.state.data.description}
                   returnKeyType={Platform.OS === 'ios' ? 'default' : 'none'}
                   placeholder="Description"
+                  placeholderTextColor="rgba(0,0,0,0.3)"
                 />
               </Field>
               <Field label="Note">
-                <TextInput
+                <Input
                   multiline={true}
                   style={[styles.noteTextInput]}
                   onChangeText={text => {
@@ -348,6 +350,7 @@ class NewCouponScreen extends Component {
                   value={this.state.data.note}
                   returnKeyType={Platform.OS === 'ios' ? 'default' : 'none'}
                   placeholder="Note"
+                  placeholderTextColor="rgba(0,0,0,0.3)"
                 />
               </Field>
             </View>

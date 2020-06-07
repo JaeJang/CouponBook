@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, Animated, Alert, FlatList, ScrollView } from 'react-native';
-import { Fab, Icon, Button } from 'native-base';
+import { Fab, Icon, Button, Input } from 'native-base';
 import { connect } from 'react-redux';
 
 import CouponList from '@components/CouponList';
@@ -149,7 +149,7 @@ class AddMyCouponList extends Component {
               ListHeaderComponent={
                 <Animated.View style={[styles.couponListNameContainer, nameBorderStyle, { left: nameShake }]}>
                   <Text style={{ color: 'gray' }}>New Coupon List Name* ({this.state.couponListName.length}/20)</Text>
-                  <TextInput
+                  <Input
                     style={[styles.couponListName]}
                     value={this.state.couponListName}
                     onChangeText={text => {
@@ -158,6 +158,7 @@ class AddMyCouponList extends Component {
                       }
                     }}
                     placeholder="Please Enter"
+                    placeholderTextColor="rgba(0,0,0,0.3)"
                   />
                 </Animated.View>
               }

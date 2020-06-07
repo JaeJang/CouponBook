@@ -236,6 +236,7 @@ export const sendList = async (email, item, userKey) => {
       continue;
     }
     for (let i = 0; i < coupon.numOfCoupons; ++i) {
+      delete couponToBeAdded.numOfCoupons;
       object.list.push({ ...couponToBeAdded, status: COUPON_STATUS.NOT_USED });
     }
   }

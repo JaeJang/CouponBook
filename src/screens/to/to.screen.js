@@ -7,7 +7,7 @@ import Card from '../../components/Card';
 import Button from '../../components/SubmitButton';
 
 import { CARD_TYPE, LIST_STATUS } from '../../constants';
-import { getToList, getToListAfter, deleteTo } from '../../store/modules/to';
+import { getToList, getToListAfter, deleteTo ,setFirstTimeLoaded } from '../../store/modules/to';
 
 import * as ToService from '../../services/ToService';
 
@@ -20,7 +20,10 @@ class ToScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getToList();
+    if (!this.props.firstTimeLoaded) {
+      this.props.getToList();
+      this.props.setFirstTimeLoaded();
+    }
   }
   componentWillUnmount() {
     //ToService.removeListeners();
@@ -106,8 +109,9 @@ const mapStateToProps = state => {
   return {
     toList: state.to.toList,
     toKeys: state.to.toKeys,
-    toLastKey: state.to.toLastKey
+    toLastKey: state.to.toLastKey,
+    firstTimeLoaded: state.to.firstTimeLoaded
   };
 };
 
-export default connect(mapStateToProps, { getToList, getToListAfter, deleteTo })(ToScreen);
+export default connect(mapStateToProps, { getToList, getToListAfter, deleteTo, setFirstTimeLoaded })(ToScreen);

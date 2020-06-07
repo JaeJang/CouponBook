@@ -16,7 +16,7 @@ class ToDetailScreen extends Component {
     return {
       title: navigation.getParam('title', ''),
       //header: navigation.getParam("headerShown", true)
-      headerShown: false,
+      headerShown: false
     };
   };
 
@@ -46,7 +46,7 @@ class ToDetailScreen extends Component {
     const item = this.props.toList[this.state.index];
     return (
       <FromToDetail
-        list={item ? item.list : []}
+        coupons={item}
         type={CARD_TYPE.COUPON_TO}
         onPressMainButton={this.onPressMainButton}
         {...this.props}

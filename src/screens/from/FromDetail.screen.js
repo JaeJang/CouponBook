@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View } from 'react-native';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -30,13 +30,36 @@ class FromDetailScreen extends Component {
     );
   };
 
+  onPressX = (item, index, couponTitle) => {
+    Alert.alert(item.title, `Do you really want to delete ${couponTitle} from ${item.title}? `, [
+      {
+        text: 'Cancel'
+      },
+      {
+        text: 'Ok',
+        onPress: () => {
+          FromService.deleteCoupon(item.key, item.userKey, index, item.title, couponTitle)
+            .then(() => {
+              //this.props.removeCoupon(item.key, index);
+            })
+            .catch(error => {
+              console.error(error);
+              Alert.alert('My coupons', 'Something went wrong! Please try again.');
+            });
+        }
+      }
+    ]);
+  };
+
   render() {
     const item = this.props.fromList[this.state.index];
     return (
       <FromToDetail
-        list={item.list}
+        coupons={item}
         type={CARD_TYPE.COUPON}
         onPressMainButton={this.onPressMainButton}
+        onPressX={this.onPressX}
+        showXButton={true}
         {...this.props}
       />
     );
@@ -46,7 +69,8 @@ class FromDetailScreen extends Component {
 FromDetailScreen.propTypes = {};
 
 const mapStateToProps = state => ({
-  fromList: state.from.fromList
+  fromList: state.from.fromList,
+  fromKeys: state.from.fromKeys
 });
 
 export default connect(mapStateToProps, null)(FromDetailScreen);

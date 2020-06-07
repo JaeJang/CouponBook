@@ -7,7 +7,7 @@ import Card from '@components/Card';
 import Button from '@components/SubmitButton';
 
 import { CARD_TYPE, LIST_STATUS } from '@constants';
-import { getFromList, getFromListAfter, deleteFrom } from '../../store/modules/from';
+import { getFromList, getFromListAfter, deleteFrom, setFirstTimeLoaded } from '../../store/modules/from';
 
 import * as FromService from '../../services/FromService';
 
@@ -20,7 +20,10 @@ class FromScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getFromList();
+    if (!this.props.firstTimeLoaded) {
+      this.props.getFromList();
+      this.props.setFirstTimeLoaded();
+    }
   }
   componentWillUnmount() {
     //FromService.removeListeners();
@@ -105,8 +108,9 @@ const mapStateToProps = state => {
   return {
     fromList: state.from.fromList,
     fromKeys: state.from.fromKeys,
-    fromLastKey: state.from.fromLastKey
+    fromLastKey: state.from.fromLastKey,
+    firstTimeLoaded: state.from.firstTimeLoaded
   };
 };
 
-export default connect(mapStateToProps, { getFromList, getFromListAfter, deleteFrom })(FromScreen);
+export default connect(mapStateToProps, { getFromList, getFromListAfter, deleteFrom, setFirstTimeLoaded })(FromScreen);

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 import { sleep } from '@utils/sleep';
 import { timingAnimation } from '@utils/animation';
-const name = ['E', 'L', 'L', 'I', 'E', '\'','S', ' B', 'O', 'O', 'K'];
+const name = ['E', 'L', 'L', 'I', 'E', "'", 'S', ' B', 'O', 'O', 'K'];
 const colors = [
   '#FE0302',
   '#FF7E39',
@@ -15,7 +15,7 @@ const colors = [
   '#FF7E39',
   '#FF7E39',
   '#00B04F'
-]
+];
 const AnimatedName = ({ ...props }) => {
   const animated = [];
   const opacities = [];
@@ -42,9 +42,14 @@ const AnimatedName = ({ ...props }) => {
   }, []);
 
   return (
-    <Animated.View style={{ flexDirection: 'row', backgroundColor:'rgba(0,0,0,0.4)', borderRadius: 10, paddingHorizontal: 30, paddingVertical: 5 }}>
+    <Animated.View
+      style={{
+        flexDirection: 'row',
+        
+      }}
+    >
       {opacities.map((opacity, index) =>
-        <Animated.Text style={[styles.text, { opacity, color: colors[index] }]} key={index}>
+        <Animated.Text style={[styles.text, { opacity, color: '#fff' }]} key={index}>
           {name[index]}
         </Animated.Text>
       )}

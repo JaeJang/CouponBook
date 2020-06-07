@@ -113,14 +113,14 @@ class LoginScreen extends Component {
       return;
     } else {
       this.props.login(this.state.data, () => {
-        if (this.state.originalRememberMe !== this.state.rememberMe) {
+
           ProfileService.setRememberme(this.state.rememberMe);
           if (this.state.rememberMe) {
             ProfileService.setCredentials(email, password);
           } else {
             ProfileService.setCredentials('', '');
           }
-        }
+
         this.props.navigation.navigate('From');
       });
     }
@@ -215,6 +215,7 @@ class LoginScreen extends Component {
           <Item full>
             <Input
               style={styles.input}
+              autoCapitalize="none"
               placeholderTextColor="#fff"
               placeholder="Please Enter Password"
               secureTextEntry={true}

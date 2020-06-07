@@ -40,7 +40,7 @@ export const requestCoupon = (key, index, ownerKey, title) => {
           .child(`${key}/list/${index}`)
           .update({ status: COUPON_STATUS.REQUESTED })
           .then(() => {
-            resolve()
+            resolve();
           })
           .catch(error => {
             console.error(error);
@@ -63,7 +63,29 @@ export const deleteFrom = (key, userKey, title) => {
         firebase.getDistributedRef().child(key).update({ status: LIST_STATUS.DELETED });
         const toAlertRef = firebase.getUsersRef().child(userKey).child('alert').child('to');
         const toAlertKey = toAlertRef.push().key;
-        toAlertRef.child(toAlertKey).update({ date: Utils.getCurrentTime(), name, title, type: ALERT_TYPE.DELETED });
+        toAlertRef.child(toAlertKey).update({ date: (new Date).getTime(), name, title, type: ALERT_TYPE.DELETED });
+        resolve();
+      })
+      .catch(error => {
+        console.error(error);
+        reject();
+      });
+  });
+};
+
+export const deleteCoupon = (key, userKey, index, title, couponTitle) => {
+  const name = firebase.getUser().displayName;
+  return new Promise((resolve, reject) => {
+    firebase
+      .getDistributedRef()
+      .child(key)
+      .child('list')
+      .child(index)
+      .update({status: COUPON_STATUS.DELETED})
+      .then(() => {
+        const toAlertRef = firebase.getUsersRef().child(userKey).child('alert').child('to');
+        const toAlertKey = toAlertRef.push().key;
+        toAlertRef.child(toAlertKey).update({ date: (new Date).getTime(), name, title, type: ALERT_TYPE.C_DELETED, couponTitle });
         resolve();
       })
       .catch(error => {

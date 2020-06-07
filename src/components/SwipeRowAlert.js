@@ -10,7 +10,7 @@ import { ALERT_TYPE, COUPON_STATUS } from '../constants';
 const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
   const [swiped, setSwiped] = useState(false);
   const onPress = () => {
-    if (!swiped && item.type !== ALERT_TYPE.DELETED) {
+    if (!swiped && item.type !== ALERT_TYPE.DELETED && item.type !== ALERT_TYPE.C_DELETED) {
       onRowPress(item);
     }
   };
@@ -49,6 +49,13 @@ const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
             <View style={[styles.standaloneRowFront, { backgroundColor: '#F6DADA' }]}>
               <Text>
                 {item.name} deleted {item.title} list
+                <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
+              </Text>
+            </View>}
+          {item.type === ALERT_TYPE.C_DELETED &&
+            <View style={[styles.standaloneRowFront, { backgroundColor: '#F6DADA' }]}>
+              <Text>
+                {item.name} deleted {item.couponTitle} from {item.title}
                 <Text style={{ fontSize: 10, marginLeft: 5 }}>({moment(item.date).format('MM/DD h:mm a')})</Text>
               </Text>
             </View>}

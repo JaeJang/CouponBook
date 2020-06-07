@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Alert, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import { Fab, Icon } from 'native-base';
+import { Fab, Icon, Input } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import { SwipeRow } from 'react-native-swipe-list-view';
@@ -109,7 +109,7 @@ class Profile extends Component {
                 </Text>
                 <Icon name="md-create" style={{ marginLeft: 10, color: 'gray', fontSize: 20 }} />
               </TouchableOpacity>
-            : <TextInput
+            : <Input
                 placeholder="Enter"
                 onChangeText={text => this.setState({ displayName: text })}
                 value={this.state.displayName}
@@ -117,6 +117,7 @@ class Profile extends Component {
                 style={styles.displayNameInput}
                 autoFocus={true}
                 onBlur={() => this.setState({ displayNameEditable: false })}
+                placeholderTextColor="rgba(0,0,0,0.3)"
               />}
         </View>
         <View>

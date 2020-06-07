@@ -63,7 +63,7 @@ class RootComponent extends Component {
 
 RootComponent.propTypes = {
   visible: PropTypes.bool.isRequired,
-  renderComponent: PropTypes.element.isRequired,
+  renderComponent: PropTypes.func.isRequired,
   onDismiss: PropTypes.func
 };
 

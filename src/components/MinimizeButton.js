@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Dimensions, Platform, TouchableOpacity, Text, Animated } from 'react-native';
 import { Icon } from 'native-base';
-import Sibling from 'react-native-root-siblings';
 import RootComponent from './RootComponent';
 
 const { width, height } = Dimensions.get('window');

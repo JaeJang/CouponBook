@@ -7,8 +7,13 @@ import Loader from '@components/loader';
 import AppNavigator from './src/navigation/app.navigation';
 import { SafeAreaView } from 'react-navigation';
 import ToastScreen from '@screens/Toast.screen';
+import SplashScreen from 'react-native-splash-screen' 
 
 export default class App extends Component {
+
+  componentDidMount() {
+    SplashScreen.hide();
+  }
   render() {
     return (
       <Provider store={store}>
