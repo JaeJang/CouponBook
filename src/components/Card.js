@@ -5,17 +5,15 @@ import {
   Dimensions,
   View,
   Text,
-  Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
   ScrollView,
-  ImageBackground,
-  TextInput,
-  Alert
+  Alert,
+  BackHandler
 } from 'react-native';
-import { Icon, Fab, Input } from 'native-base';
+import { Icon, Input } from 'native-base';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import CachedImage from 'react-native-image-cache-wrapper';
@@ -32,7 +30,6 @@ import { processing, processed } from '@store/modules/processing';
 import DefaultImage from '../images/default_image.png';
 import { checkExpiry } from '../utils/utils';
 import MinimizeButton from './MinimizeButton';
-import RootComponent from './RootComponent';
 
 const { width, height } = Dimensions.get('window');
 
@@ -94,11 +91,21 @@ class Card extends Component {
     if (type !== CARD_TYPE.LIST) {
       this.checkExpiry();
     }
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (this.state.pressed) {
+        this.onPressBack();
+        return true;
+      }
+    });
   }
   componentDidUpdate(prevProps) {
     if (prevProps.item.status !== this.props.item.status) {
       console.log(this.props.item.status);
     }
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
 
   checkExpiry = () => {
@@ -339,7 +346,7 @@ class Card extends Component {
             >
               <Icon type="Ionicons" name="ios-close" style={[styles.xButtonIcon]} />
             </TouchableOpacity>}
-          {this.props.item.status &&
+          {/* {this.props.item.status &&
             this.props.item.status === COUPON_STATUS.USED &&
             <View>
               <Icon type="Ionicons" name="ios-checkmark-circle-outline" style={[styles.checkedIcon]} />
@@ -359,7 +366,7 @@ class Card extends Component {
                 color="white"
                 style={[styles.checkedIcon, { alignItems: 'flex-start' }]}
               />
-            </View>}
+            </View>} */}
         </CachedImage>
       </Animated.View>
     );
@@ -509,6 +516,23 @@ class Card extends Component {
               {this.renderButtonLabel()}
             </Animated.View>
           </TouchableOpacity>}
+        <View style={{ position: 'absolute', alignSelf: 'flex-end', top: 10, right: 10 }}>
+          {this.props.item.status &&
+            this.props.item.status === COUPON_STATUS.USED &&
+            <Icon type="Ionicons" name="ios-checkmark-circle-outline" style={{ color: '#00B04F' }} />}
+          {this.props.item.status &&
+            this.props.item.status === COUPON_STATUS.NOT_USED &&
+            this.state.expired &&
+            <Icon
+              type="MaterialCommunityIcons"
+              name="alert-circle-outline"
+              style={[styles.checkedIcon, { color: 'red', fontSize: 30 }]}
+            />}
+          {!this.state.pressed &&
+            this.props.item.status &&
+            this.props.item.status === COUPON_STATUS.REQUESTED &&
+            <ActivityIndicator animating={true} />}
+        </View>
       </Animated.View>
     );
   };
@@ -645,7 +669,7 @@ class Card extends Component {
           </ScrollView>
           <SubmitButton style={{}} label="Close" onPress={() => this.setState({ seeMore: false })} />
         </Modal>
-        <MinimizeButton visible={this.state.pressed} onPressBack={this.onPressBack} />
+        {this.state.pressed && <MinimizeButton visible={true} onPressBack={this.onPressBack} />}
       </Animated.View>
     );
   }
@@ -743,7 +767,9 @@ const styles = StyleSheet.create({
     color: '#00B04F',
     marginLeft: 10,
     marginTop: 10,
-    fontSize: 35
+    fontSize: 35,
+    position: 'absolute',
+    alignSelf: 'flex-end'
   },
   coverCard: {
     backgroundColor: 'rgba(255,255,255,0.6)',
