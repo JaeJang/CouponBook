@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, Image, View, Text, Alert } from 'react-native';
+import { FlatList, View, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 

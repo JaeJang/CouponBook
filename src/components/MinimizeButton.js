@@ -1,9 +1,9 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dimensions, Platform, TouchableOpacity, Text, Animated } from 'react-native';
 import { Icon } from 'native-base';
 import RootComponent from './RootComponent';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const MinimizeButtonBase = ({ ...props }) => {
   const [visible, setVisible] = useState(props.visible);

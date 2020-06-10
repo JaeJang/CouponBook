@@ -147,21 +147,6 @@ class Profile extends Component {
           <Switch value={this.props.imageDownloadDisabled} backgroundActive={'#00aaff'} onSyncPress={this.onPressDoNoDownload} />
         </View>
         <View style={[styles.section]}>
-          <Text style={[styles.alertHeader]}>To Alerts</Text>
-          {this.props.toAlerts.length !== 0
-            ? this.props.toAlerts.map((item, index) => {
-                return (
-                  <SwipeRowAlert
-                    key={index}
-                    item={item}
-                    onRowPress={this.onPressToAlert}
-                    onDelete={this.onDeleteToAlert}
-                  />
-                );
-              })
-            : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
-        </View>
-        <View style={[styles.section]}>
           <Text style={[styles.alertHeader]}>From Alerts</Text>
           {this.props.fromAlerts.length !== 0
             ? this.props.fromAlerts.map((item, index) => {
@@ -176,6 +161,22 @@ class Profile extends Component {
               })
             : <Text style={styles.noAlertMessage}>You dont have any Alerts</Text>}
         </View>
+        <View style={[styles.section]}>
+          <Text style={[styles.alertHeader]}>To Alerts</Text>
+          {this.props.toAlerts.length !== 0
+            ? this.props.toAlerts.map((item, index) => {
+                return (
+                  <SwipeRowAlert
+                    key={index}
+                    item={item}
+                    onRowPress={this.onPressToAlert}
+                    onDelete={this.onDeleteToAlert}
+                  />
+                );
+              })
+            : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
+        </View>
+        
       </ScrollView>
     );
   }
