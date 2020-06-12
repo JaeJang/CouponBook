@@ -15,6 +15,7 @@ import { getMyCouponLists, addCouponList, removeListFromList } from '@modules/my
 import * as MyCouponService from '@service/MyCouponService';
 import store from '../../store';
 import { processing, processed } from '@store/modules/processing';
+import EmptyMessage from '../../components/EmptyMessage';
 
 const H_MAX_HEIGHT = 150;
 const H_MIN_HEIGHT = 52;
@@ -27,15 +28,12 @@ class MyCouponListScreen extends Component {
     }
   }
 
-  componentWillUpdate(prevProps) {
-
-  }
+  componentWillUpdate(prevProps) {}
   goToAddList = () => {
     this.props.navigation.navigate('Add Coupon List');
   };
 
   onPressX = (item, index) => {
-
     Alert.alert('My Coupon List', `Do you really want to delete ${item.title} from your list?`, [
       {
         text: 'Cancel'
@@ -46,7 +44,10 @@ class MyCouponListScreen extends Component {
           store.dispatch(processing());
           MyCouponService.removeListFromList(item.key)
             .then(() => this.props.removeListFromList(index))
-            .catch(() => {console.log(error);Alert.alert('My Coupon List', 'Something went wrong. Please try again')})
+            .catch(() => {
+              console.log(error);
+              Alert.alert('My Coupon List', 'Something went wrong. Please try again');
+            })
             .finally(() => store.dispatch(processed()));
         }
       }
@@ -54,11 +55,15 @@ class MyCouponListScreen extends Component {
   };
 
   onPressList = item => {
-    this.props.navigation.navigate('My Coupon List Detail', {title: item.title, list: item.list, parentKey: item.key});
+    this.props.navigation.navigate('My Coupon List Detail', {
+      title: item.title,
+      list: item.list,
+      parentKey: item.key
+    });
   };
 
   onPressShare = item => {
-    this.props.navigation.navigate('Share', {item: item});
+    this.props.navigation.navigate('Share', { item: item });
   };
 
   render() {
@@ -69,6 +74,7 @@ class MyCouponListScreen extends Component {
           route={this.props.navigation.state.routeName}
           navigation={this.props.navigation}
           list={lists}
+          scrollEnabled={lists.length ? true : false}
           renderItem={({ item, index }) =>
             <Card
               type={CARD_TYPE.LIST}
@@ -78,8 +84,12 @@ class MyCouponListScreen extends Component {
               onPressX={() => this.onPressX(item, index)}
               sharable={true}
             />}
-        >
-        </CollapsibleHeader>
+        />
+        {!lists.length &&
+          <EmptyMessage 
+            message="Make your own coupon list and share!"
+            containerStyle={{justifyContent: 'flex-start'}}
+          />}
         <Fab
           active={false}
           direction="up"

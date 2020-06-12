@@ -29,7 +29,7 @@ const SwipeRowAlert = ({ item, onRowPress, onDelete, ...props }) => {
           <Icon name="md-remove-circle" style={styles.backTextWhite} />
         </View>
       </TouchableWithoutFeedback>
-      <TouchableHighlight onPress={!swiped ? onPress : null}>
+      <TouchableHighlight onPressIn={!swiped ? onPress : null}>
         <View>
           {item.type === ALERT_TYPE.REQUESTED &&
             <View style={[styles.standaloneRowFront, { backgroundColor: '#d6f1ff' }]}>

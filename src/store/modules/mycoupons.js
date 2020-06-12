@@ -98,17 +98,17 @@ export const removeCouponFromList = (parentKey, key) => (dispatch, getState) => 
 };
 
 export const removeCoupon = (key, index) => (dispatch, getState) => {
-  const {coupons, keys, lastKey} = getState().mycoupons;
+  const {coupons, couponKeys, couponLastKey} = getState().mycoupons;
   
-  if (key === lastKey) {
+  if (key === couponLastKey) {
     if (index === 0) {
       dispatch({ type: EDIT_LAST_KEY, payload: '' });
     } else {
-      dispatch({ type: EDIT_LAST_KEY, payload: keys[index - 1] });
+      dispatch({ type: EDIT_LAST_KEY, payload: couponKeys[index - 1] });
     }
   }
   dispatch({ type: SET_COUPONS, payload: coupons.filter((item, i) => i !== index) });
-  dispatch({ type: GET_MY_COUPON_KEYS, payload: keys.filter((item, i) => i !== index) });
+  dispatch({ type: GET_MY_COUPON_KEYS, payload: couponKeys.filter((item, i) => i !== index) });
 };
 
 const initialState = {

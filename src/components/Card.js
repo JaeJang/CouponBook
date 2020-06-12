@@ -99,9 +99,6 @@ class Card extends Component {
     });
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.item.status !== this.props.item.status) {
-      console.log(this.props.item.status);
-    }
   }
 
   componentWillUnmount() {
@@ -185,15 +182,6 @@ class Card extends Component {
         toValue: 0
       }).start()
     ]);
-    /* setTimeout(() => {
-      this.refs.container.measure((fx, fy, width, height, px, py) => {
-        if (this.props.scrollToOffset) {
-  
-            this.props.scrollToOffset(py);
-  
-        }
-      });
-    },500) */
   };
   shrink = () => {
     this.setState({ TopBorderRadius: 5, BottomBorderRadius: 0 });
@@ -313,6 +301,7 @@ class Card extends Component {
 
     const image =
       this.props.item.image && !this.props.imageDownloadDisabled ? { uri: this.props.item.image } : DefaultImage;
+      console.log(image);
     const elevation = this.state.pressed ? {} : { elevation: 5 };
     return (
       <Animated.View
@@ -346,27 +335,6 @@ class Card extends Component {
             >
               <Icon type="Ionicons" name="ios-close" style={[styles.xButtonIcon]} />
             </TouchableOpacity>}
-          {/* {this.props.item.status &&
-            this.props.item.status === COUPON_STATUS.USED &&
-            <View>
-              <Icon type="Ionicons" name="ios-checkmark-circle-outline" style={[styles.checkedIcon]} />
-            </View>}
-          {this.props.item.status &&
-            this.props.item.status === COUPON_STATUS.NOT_USED &&
-            this.state.expired &&
-            <View>
-              <Icon type="MaterialCommunityIcons" name="alert-circle-outline" style={[styles.checkedIcon, {color: 'red', fontSize: 30}]} />
-            </View>}
-          {!this.state.pressed &&
-            this.props.item.status &&
-            this.props.item.status === COUPON_STATUS.REQUESTED &&
-            <View>
-              <ActivityIndicator
-                animating={true}
-                color="white"
-                style={[styles.checkedIcon, { alignItems: 'flex-start' }]}
-              />
-            </View>} */}
         </CachedImage>
       </Animated.View>
     );
@@ -526,7 +494,7 @@ class Card extends Component {
             <Icon
               type="MaterialCommunityIcons"
               name="alert-circle-outline"
-              style={[styles.checkedIcon, { color: 'red', fontSize: 30 }]}
+              style={[{ color: 'red', fontSize: 25 }]}
             />}
           {!this.state.pressed &&
             this.props.item.status &&

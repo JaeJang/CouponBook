@@ -15,8 +15,8 @@ import firebase from '../../configs/firebase';
 import SwipeRowAlert from '@components/SwipeRowAlert';
 import { ALERT_TYPE, COUPON_STATUS } from '@constants';
 
-import * as ProfileService from '@service/ProfileService';
-import * as FromService from '@service/FromService';
+import * as ProfileService from '../../services/ProfileService';
+import * as FromToService from '../../services/FromToService';
 import { deleteToAlert, deleteFromAlert, switchDownloadOption } from '../../store/modules/profile';
 import { reset } from '@modules/from';
 
@@ -56,24 +56,17 @@ class Profile extends Component {
       compressImageQuality: 0.8
     }).then(image => {
       ProfileService.updatePhotoUrl(image.path, url => this.setState({ image: url }));
-      /* const imageSource = `data:${image.mime}$;base64,${image.data}`;
-      this.setState({ image: imageSource });
-
-      const user = firebase.auth().currentUser; */
     });
-    /* ImagePicker.launchImageLibrary({ maxHeight: 300, quality: 0.5 }, response => {
-      //console.log(response);
-      if (response.didCancel) {
-      } else if (response.error) {
-        Alert.alert("Image", "Please try again -" + response.error);
-      } else {
-        updatePhotoUrl(response.uri, url => this.setState({ image: url }));
-      }
-    }); */
   };
 
   onPressToAlert = async item => {
-    this.props.navigation.navigate('AlertCard', { item });
+    try {
+      const dist = await FromToService.getDistributedCoupon(item.key, item.index);
+      Object.assign(item, dist);
+      this.props.navigation.navigate('AlertCard', { dist });
+    } catch (error) {
+      Alert.alert('Profile', 'Something went wrong. Please try again');
+    }
   };
 
   onDeleteToAlert = key => {
@@ -88,10 +81,9 @@ class Profile extends Component {
 
   onPressDoNoDownload = value => {
     this.props.switchDownloadOption(value);
-  }
+  };
 
   render() {
-    const { user } = this.props;
     const { displayNameEditable, image, displayName } = this.state;
 
     return (
@@ -123,8 +115,8 @@ class Profile extends Component {
         <View>
           <TouchableOpacity onPress={this.openImagePicker}>
             {!image
-              ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />
-              : <Image source={{ uri: image }} style={{ height: 130, width: deviceWidth }} resizeMode="stretch" />}
+              ? <Image source={DefaultImage} style={{ height: 230, width: deviceWidth }} resizeMode="stretch" />
+              : <Image source={{ uri: image }} style={{ height: 230, width: deviceWidth }} resizeMode="stretch" />}
           </TouchableOpacity>
           <Text style={styles.imageClickText}>Touch image above to change your basic image</Text>
         </View>
@@ -144,7 +136,11 @@ class Profile extends Component {
             <Text style={{ fontWeight: '500', fontSize: 15 }}>Do not download images</Text>
             <Text style={{ fontWeight: '300', fontSize: 12 }}>Downloading image may increase data usage </Text>
           </View>
-          <Switch value={this.props.imageDownloadDisabled} backgroundActive={'#00aaff'} onSyncPress={this.onPressDoNoDownload} />
+          <Switch
+            value={this.props.imageDownloadDisabled}
+            backgroundActive={'#00aaff'}
+            onSyncPress={this.onPressDoNoDownload}
+          />
         </View>
         <View style={[styles.section]}>
           <Text style={[styles.alertHeader]}>From Alerts</Text>
@@ -176,7 +172,6 @@ class Profile extends Component {
               })
             : <Text style={styles.noAlertMessage}>You don't have any Alerts</Text>}
         </View>
-        
       </ScrollView>
     );
   }

@@ -15,15 +15,14 @@ class AlertCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: { type: '' }
+      item: props.navigation.getParam('dist', null)
     };
   }
 
   async componentDidMount() {
-    const item = this.props.navigation.getParam('item', null);
-    const dist = await FromToService.getDistributed(item.key);
-    Object.assign(item, dist.list[item.index]);
-    this.setState({ item: item });
+    /* const item = this.props.navigation.getParam('dist', null);
+  
+    this.setState({ item: item }); */
   }
 
   onPressConfirm = () => {

@@ -74,3 +74,21 @@ export const onDistributedChange = (key, cb) => {
   });
 
 };
+
+export const getDistributedCoupon = (key, index) => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .getDistributedRef()
+      .child(key)
+      .child('list')
+      .child(index)
+      .once('value')
+      .then(snapshot => {
+        resolve(snapshot.val());
+      })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
+}

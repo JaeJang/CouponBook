@@ -11,6 +11,7 @@ import Button from '@components/SubmitButton';
 import * as MyCouponService from '@service/MyCouponService';
 import { CARD_TYPE } from '@constants';
 import { getMyCoupons, getMyCouponsKeyAfter, removeCoupon } from '@modules/mycoupons';
+import EmptyMessage from '../../components/EmptyMessage';
 
 class MyCouponScreen extends Component {
   /*   static navigationOptions = ({ navigation, navigationOptions }) => {
@@ -94,7 +95,7 @@ class MyCouponScreen extends Component {
           route={this.props.navigation.state.routeName}
           navigation={this.props.navigation}
           list={this.props.coupons}
-          scrollEnabled={scroll}
+          scrollEnabled={!this.props.coupons.length ? false : scroll}
           ListFooterComponent={this.renderFooter}
           renderItem={({ item, index }) =>
             <Card
@@ -108,6 +109,9 @@ class MyCouponScreen extends Component {
               pressed={pressed}
             />}
         />
+        {this.props.coupons &&
+          !this.props.coupons.length &&
+          <EmptyMessage message="You don't have any coupons yet!" containerStyle={{ justifyContent: 'flex-start' }} />}
         <Fab
           active={false}
           direction="up"

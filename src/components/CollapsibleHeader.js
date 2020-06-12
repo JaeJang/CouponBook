@@ -1,5 +1,15 @@
 import React, { useRef } from 'react';
-import { Animated, View, ScrollView, Text, Platform, StatusBar, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import {
+  Animated,
+  View,
+  ScrollView,
+  Text,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 
@@ -7,7 +17,7 @@ import { timingAnimation } from '@utils/animation';
 
 const HEADER_HEIGHT = Platform.OS === 'ios' ? 70 : 50 + StatusBar.currentHeight;
 
-const CollapsibleHeader = ({ route,navigation, ...props }) => {
+const CollapsibleHeader = ({ route, navigation, ...props }) => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollHalf = useRef(new Animated.Value(0)).current;
   let currentOffset = 0;
@@ -32,12 +42,12 @@ const CollapsibleHeader = ({ route,navigation, ...props }) => {
   const couponListsColor = route === 'Coupon Lists' ? '#00aaff' : '#000';
   const couponsColor = route === 'Coupons' ? '#00aaff' : '#000';
 
-  if (props.scrollEnabled !== undefined && !props.scrollEnabled) {
+  if (props.scrollEnabled !== undefined && !props.scrollEnabled && props.list.length) {
     timingAnimation(scrollHalf, HEADER_HEIGHT, 200);
   }
   return (
     <View style={{ flex: 1 }}>
-      <FlatList 
+      <FlatList
         onScroll={e => {
           if (e.nativeEvent.contentOffset.y > currentOffset) {
             if (scrollHalf._value === 0) timingAnimation(scrollHalf, HEADER_HEIGHT, 200);
@@ -59,7 +69,7 @@ const CollapsibleHeader = ({ route,navigation, ...props }) => {
         renderItem={props.renderItem}
         contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
         ListFooterComponent={props.ListFooterComponent ? props.ListFooterComponent : null}
-        scrollEnabled={props.scrollEnabled !== undefined ? props.scrollEnabled : true} 
+        scrollEnabled={props.scrollEnabled !== undefined ? props.scrollEnabled : true}
       />
 
       {/* <ScrollView
@@ -129,7 +139,7 @@ const styles = StyleSheet.create({
 
 CollapsibleHeader.propTypes = {
   route: PropTypes.string.isRequired,
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 export default CollapsibleHeader;

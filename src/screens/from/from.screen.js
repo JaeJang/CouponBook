@@ -10,6 +10,7 @@ import { CARD_TYPE, LIST_STATUS } from '@constants';
 import { getFromList, getFromListAfter, deleteFrom, setFirstTimeLoaded } from '../../store/modules/from';
 
 import * as FromService from '../../services/FromService';
+import EmptyMessage from '../../components/EmptyMessage';
 
 class FromScreen extends Component {
   constructor(props) {
@@ -87,18 +88,7 @@ class FromScreen extends Component {
                   showXButton={true}
                 />}
             />
-          : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text
-                style={{
-                  marginLeft: 20,
-                  marginTop: 10,
-                  color: 'gray',
-                  fontSize: 20
-                }}
-              >
-                You didn't get any coupons yet
-              </Text>
-            </View>}
+          : <EmptyMessage message="You didn't get any coupons yet" />}
       </View>
     );
   }

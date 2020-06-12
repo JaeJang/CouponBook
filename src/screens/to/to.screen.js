@@ -10,6 +10,7 @@ import { CARD_TYPE, LIST_STATUS } from '../../constants';
 import { getToList, getToListAfter, deleteTo ,setFirstTimeLoaded } from '../../store/modules/to';
 
 import * as ToService from '../../services/ToService';
+import EmptyMessage from '../../components/EmptyMessage';
 
 class ToScreen extends Component {
   constructor(props) {
@@ -88,18 +89,9 @@ class ToScreen extends Component {
                   pressed={false}
                 />}
             />
-          : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text
-                style={{
-                  marginLeft: 20,
-                  marginTop: 10,
-                  color: 'gray',
-                  fontSize: 20
-                }}
-              >
-                You didn't send any coupons yet
-              </Text>
-            </View>}
+          : <EmptyMessage 
+            message="You didn't send any coupons yet"
+          />}
       </View>
     );
   }
