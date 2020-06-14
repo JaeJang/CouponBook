@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';
 

@@ -3,7 +3,7 @@ import { Dimensions, Platform, TouchableOpacity, Text, Animated } from 'react-na
 import { Icon } from 'native-base';
 import RootComponent from './RootComponent';
 
-const { width } = Dimensions.get('window');
+const { WIDTH } = Dimensions.get('window');
 
 const MinimizeButtonBase = ({ ...props }) => {
   const [visible, setVisible] = useState(props.visible);
@@ -42,7 +42,7 @@ const MinimizeButtonBase = ({ ...props }) => {
           alignItems: 'flex-end',
           zIndex: 100,
           elevation: 5,
-          width: width - 30,
+          width: WIDTH - 30,
           height: 30
         }}
         onPress={onPress}

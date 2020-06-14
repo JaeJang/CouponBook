@@ -1,6 +1,5 @@
 import React, { useState, Component, useEffect, useRef } from 'react';
 import {
-  Platform,
   StyleSheet,
   Dimensions,
   View,
@@ -9,7 +8,6 @@ import {
   Animated
 } from 'react-native';
 import Sibling from 'react-native-root-siblings';
-import { Content } from 'native-base';
 import _ from 'lodash';
 
 import { timingAnimation } from '@utils/animation';

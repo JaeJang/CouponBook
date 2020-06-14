@@ -1,9 +1,5 @@
 import firebase from '../configs/firebase';
 import _ from 'lodash';
-import store from '../store';
-import { updateDist } from '../store/modules/from';
-import { ALERT_TYPE, COUPON_STATUS, LIST_STATUS } from '../constants';
-import * as Utils from '../utils/utils';
 
 export const getList = type => {
   return new Promise((resolve, reject) => {

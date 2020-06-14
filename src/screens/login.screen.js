@@ -5,13 +5,11 @@ import {
   Animated,
   Dimensions,
   StyleSheet,
-  TextInput,
   Alert,
   TouchableOpacity,
-  ImageBackground,
   Image
 } from 'react-native';
-import { Card, CardItem, Form, Input, Item, Label, Button } from 'native-base';
+import { Form, Input, Item, } from 'native-base';
 import { connect } from 'react-redux';
 import Switch from 'react-native-switch-pro';
 

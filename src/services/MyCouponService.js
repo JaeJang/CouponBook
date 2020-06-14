@@ -1,5 +1,3 @@
-import { Alert } from 'react-native';
-
 import firebase from '../configs/firebase';
 import NewCoupon from '../models/NewCoupon';
 import store from '../store';

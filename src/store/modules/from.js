@@ -1,10 +1,8 @@
 import _ from 'lodash';
 
-import * as FromService from '../../services/FromService';
 import * as FromToService from '../../services/FromToService';
 import { addToObject } from "../../utils/utils";
 
-import { PROCESSING, PROCESSED } from '@store/types/loading';
 import { processing, processed } from '@store/modules/processing';
 
 export const SET_FROM_KEYS = 'SET_FROM_KEYS';

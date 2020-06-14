@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Animated, Alert, FlatList, ScrollView } from 'react-native';
-import { Fab, Icon, Button, Input } from 'native-base';
+import { View, Text, StyleSheet, Animated, Alert, FlatList } from 'react-native';
+import { Fab, Icon, Input } from 'native-base';
 import { connect } from 'react-redux';
 
-import CouponList from '@components/CouponList';
-import Modal from '@components/Modal';
 import SubmitButton from '@components/SubmitButton';
 import NumOfCouponsModal from '@components/NumOfCouponsModal';
 import TwoButtonModal from '@components/TwoButtonModal';
@@ -177,34 +175,6 @@ class AddMyCouponList extends Component {
                   onPressX={() => this.onDeleteCouponFromList(index)}
                 />}
             />
-            {/* <CouponList
-              list={couponList}
-              onDelete={this.onDeleteCouponFromList}
-              onEditNumOfCoupons={this.onEditNumOfCoupons}
-            /> */}
-
-            {/* <Card
-                  type={CARD_TYPE.COUPON}
-                  item={{numOfCoupons:1}}
-                  onPress={this.onPressCard}
-                  onPressBack={this.onPressCardBack}
-                  showXButton={true}
-                />
-                <Card
-                  type={CARD_TYPE.COUPON}
-                  item={{numOfCoupons:1}}
-                  onPress={this.onPressCard}
-                  onPressBack={this.onPressCardBack}
-                  showXButton={true}
-                />
-                <Card
-                  type={CARD_TYPE.COUPON}
-                  item={{numOfCoupons:1}}
-                  onPress={this.onPressCard}
-                  onPressBack={this.onPressCardBack}
-                  showXButton={true}
-                /> */}
-
             <Fab
               active={false}
               direction="up"

@@ -1,26 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Alert, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import { Fab, Icon, Input } from 'native-base';
-import { TextInput } from 'react-native-gesture-handler';
+import { Icon, Input } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
-import { SwipeRow } from 'react-native-swipe-list-view';
 import Switch from 'react-native-switch-pro';
 import _ from 'lodash';
-import moment from 'moment';
 
 import DefaultImage from '../../images/default_image.png';
 import firebase from '../../configs/firebase';
 
 import SwipeRowAlert from '@components/SwipeRowAlert';
-import { ALERT_TYPE, COUPON_STATUS } from '@constants';
 
 import * as ProfileService from '../../services/ProfileService';
 import * as FromToService from '../../services/FromToService';
 import { deleteToAlert, deleteFromAlert, switchDownloadOption } from '../../store/modules/profile';
 import { reset } from '@modules/from';
 
-const deviceWidth = Dimensions.get('window').width;
+const WIDTH = Dimensions.get('window').width;
 
 class Profile extends Component {
   constructor(props) {
@@ -115,8 +111,8 @@ class Profile extends Component {
         <View>
           <TouchableOpacity onPress={this.openImagePicker}>
             {!image
-              ? <Image source={DefaultImage} style={{ height: 230, width: deviceWidth }} resizeMode="stretch" />
-              : <Image source={{ uri: image }} style={{ height: 230, width: deviceWidth }} resizeMode="stretch" />}
+              ? <Image source={DefaultImage} style={{ height: 230, width: WIDTH }} resizeMode="stretch" />
+              : <Image source={{ uri: image }} style={{ height: 230, width: WIDTH }} resizeMode="stretch" />}
           </TouchableOpacity>
           <Text style={styles.imageClickText}>Touch image above to change your basic image</Text>
         </View>

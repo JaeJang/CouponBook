@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import connect from 'react-redux';
 import { View, Alert } from 'react-native';
 
 import { CARD_TYPE, ALERT_TYPE, COUPON_STATUS } from '../../constants';
 import { processing, processed } from '../../store/modules/processing';
 import store from '../../store';
-import * as FromService from '../../services/FromService';
 import * as ToService from '../../services/ToService';
-import * as FromToService from '../../services/FromToService';
 
 import Card from '@components/Card';
 
@@ -17,12 +14,6 @@ class AlertCard extends Component {
     this.state = {
       item: props.navigation.getParam('dist', null)
     };
-  }
-
-  async componentDidMount() {
-    /* const item = this.props.navigation.getParam('dist', null);
-  
-    this.setState({ item: item }); */
   }
 
   onPressConfirm = () => {

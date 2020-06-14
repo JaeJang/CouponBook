@@ -1,11 +1,7 @@
 import firebase from '../configs/firebase';
 import _ from 'lodash';
-import store from '../store';
-import { updateDist } from '../store/modules/from';
-import { ALERT_TYPE, COUPON_STATUS, LIST_STATUS } from '../constants';
-import * as Utils from '../utils/utils';
 
-const listeners = [];
+import { ALERT_TYPE, COUPON_STATUS, LIST_STATUS } from '../constants';
 
 export const getFromListPagination = async key => {
   const uid = firebase.getUser().uid;
@@ -59,7 +55,6 @@ export const deleteFrom = (key, userKey, title) => {
       .child(key)
       .remove()
       .then(() => {
-        //firebase.getUsersRef().child(userKey).child('to').child(key).remove();
         firebase.getDistributedRef().child(key).update({ status: LIST_STATUS.DELETED });
         const toAlertRef = firebase.getUsersRef().child(userKey).child('alert').child('to');
         const toAlertKey = toAlertRef.push().key;

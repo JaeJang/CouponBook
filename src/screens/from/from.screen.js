@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { FlatList, Image, View, Text, Alert } from 'react-native';
+import { FlatList, View, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import Card from '@components/Card';
 import Button from '@components/SubmitButton';
 
-import { CARD_TYPE, LIST_STATUS } from '@constants';
+import { CARD_TYPE } from '@constants';
 import { getFromList, getFromListAfter, deleteFrom, setFirstTimeLoaded } from '../../store/modules/from';
 
 import * as FromService from '../../services/FromService';

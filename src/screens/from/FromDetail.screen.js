@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import Card from '../../components/Card';
 import * as FromService from '../../services/FromService';
 import { CARD_TYPE } from '../../constants';
 import FromToDetail from '../../components/FromToDetail';
-import { Fab, Icon } from 'native-base';
 
 class FromDetailScreen extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {

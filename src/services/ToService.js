@@ -1,7 +1,5 @@
 import firebase from '../configs/firebase';
 import _ from 'lodash';
-import store from '../store';
-
 import { COUPON_STATUS, ALERT_TYPE } from '@constants';
 
 export const confirmCoupon = (title, key, index, userKey, alertKey) => {

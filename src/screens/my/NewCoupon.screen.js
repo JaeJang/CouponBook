@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  TextInput,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -37,7 +36,7 @@ import store from '../../store';
 import { processing, processed } from '@store/modules/processing';
 import { refreshMyCoupons } from '@modules/mycoupons';
 
-const deviceWidth = Dimensions.get('window').width;
+const WIDTH = Dimensions.get('window').width;
 const inputRange = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
 const outputRange = [0, -10, 10, -10, 10, -10, 10, -10, 10, -10, 0];
 const expireInData = [
@@ -253,7 +252,7 @@ class NewCouponScreen extends Component {
           <View style={{ marginTop: 20 }}>
             <TouchableOpacity onPress={this.openImagePicker}>
               {!data.image
-                ? <Image source={DefaultImage} style={{ height: 130, width: deviceWidth }} resizeMode="cover" />
+                ? <Image source={DefaultImage} style={{ height: 130, width: WIDTH }} resizeMode="cover" />
                 : <Image source={{ uri: data.image }} style={{ height: 230 }} resizeMode="cover" />}
               {data.image !== '' &&
                 <TouchableOpacity style={[styles.setToDefaultImageTouchable]} onPress={this.setToDefaultImage}>

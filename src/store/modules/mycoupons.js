@@ -2,7 +2,6 @@ import firebase from '../../configs/firebase';
 import _ from 'lodash';
 
 import * as MyCouponService from '@service/MyCouponService';
-import { PROCESSING, PROCESSED } from '@store/types/loading';
 import { processing, processed } from '@store/modules/processing';
 
 export const ADD_LIST = 'ADD_LIST';

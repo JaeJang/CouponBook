@@ -31,15 +31,15 @@ import DefaultImage from '../images/default_image.png';
 import { checkExpiry } from '../utils/utils';
 import MinimizeButton from './MinimizeButton';
 
-const { width, height } = Dimensions.get('window');
+const { WIDTH, HEIGHT } = Dimensions.get('window');
 
-const BOTTOM_HEIGHT_DIVIDER = height < 700 ? 7 : height < 800 ? 8 : height < 900 ? 9 : 10;
-const BOTTOM_PAN_ADDITION = height < 700 ? 90 : height < 800 ? 80 : height < 900 ? 60 : 50;
-const CONTENT_PAN_ADDITION = height < 700 ? 5.5 : height < 800 ? 6.5 : height < 900 ? 7 : 8;
-const DESCRIPTION_LENGTH_MAX_LIMIT = height < 700 ? 300 : 450;
-const DESCRIPTION_LENGTH_LIMIT = height < 700 ? 180 : 300;
-const NOTE_LENGTH_MAX_LIMIT = height < 700 ? 300 : 450;
-const NOTE_LENGTH_LIMIT = height < 700 ? 80 : 200;
+const BOTTOM_HEIGHT_DIVIDER = HEIGHT < 700 ? 7 : HEIGHT < 800 ? 8 : HEIGHT < 900 ? 9 : 10;
+const BOTTOM_PAN_ADDITION = HEIGHT < 700 ? 90 : HEIGHT < 800 ? 80 : HEIGHT < 900 ? 60 : 50;
+const CONTENT_PAN_ADDITION = HEIGHT < 700 ? 5.5 : HEIGHT < 800 ? 6.5 : HEIGHT < 900 ? 7 : 8;
+const DESCRIPTION_LENGTH_MAX_LIMIT = HEIGHT < 700 ? 300 : 450;
+const DESCRIPTION_LENGTH_LIMIT = HEIGHT < 700 ? 180 : 300;
+const NOTE_LENGTH_MAX_LIMIT = HEIGHT < 700 ? 300 : 450;
+const NOTE_LENGTH_LIMIT = HEIGHT < 700 ? 80 : 200;
 
 class Card extends Component {
   constructor(props) {
@@ -47,8 +47,8 @@ class Card extends Component {
     this.state = {
       pressedStyle: {},
 
-      orgWidth: width - 32,
-      orgHeight: height / 5,
+      orgWidth: WIDTH - 32,
+      orgHeight: HEIGHT / 5,
 
       topBorderRadius: 5,
       bottomBorderRaidus: 0,
@@ -60,13 +60,13 @@ class Card extends Component {
       shareModalVisible: false,
       email: '',
 
-      container_width: new Animated.Value(width - 32),
-      container_height: new Animated.Value(height / 5 + height / BOTTOM_HEIGHT_DIVIDER),
+      container_width: new Animated.Value(WIDTH - 32),
+      container_height: new Animated.Value(HEIGHT / 5 + HEIGHT / BOTTOM_HEIGHT_DIVIDER),
 
-      top_width: new Animated.Value(width - 32),
-      top_height: new Animated.Value(height / 5),
-      bottom_width: new Animated.Value(width - 32),
-      bottom_height: new Animated.Value(height / BOTTOM_HEIGHT_DIVIDER),
+      top_width: new Animated.Value(WIDTH - 32),
+      top_height: new Animated.Value(HEIGHT / 5),
+      bottom_width: new Animated.Value(WIDTH - 32),
+      bottom_height: new Animated.Value(HEIGHT / BOTTOM_HEIGHT_DIVIDER),
       content_height: new Animated.Value(0),
 
       top_pan: new Animated.ValueXY(),
@@ -98,8 +98,7 @@ class Card extends Component {
       }
     });
   }
-  componentDidUpdate(prevProps) {
-  }
+  componentDidUpdate(prevProps) {}
 
   componentWillUnmount() {
     this.backHandler.remove();
@@ -133,22 +132,22 @@ class Card extends Component {
     this.setState({ topBorderRadius: 0, bottomBorderRadius: 5 });
     Animated.parallel([
       Animated.spring(this.state.container_height, {
-        toValue: height
+        toValue: HEIGHT
       }).start(),
       Animated.spring(this.state.container_width, {
-        toValue: width
+        toValue: WIDTH
       }).start(),
       Animated.spring(this.state.top_width, {
-        toValue: width
+        toValue: WIDTH
       }).start(),
       Animated.spring(this.state.top_height, {
-        toValue: height / 2
+        toValue: HEIGHT / 2
       }).start(),
       Animated.spring(this.state.bottom_height, {
-        toValue: height / BOTTOM_HEIGHT_DIVIDER + 50
+        toValue: HEIGHT / BOTTOM_HEIGHT_DIVIDER + 50
       }).start(),
       Animated.spring(this.state.content_height, {
-        toValue: height / 2
+        toValue: HEIGHT / 2
       }).start(),
       Animated.spring(this.state.top_pan, {
         toValue: {
@@ -159,7 +158,7 @@ class Card extends Component {
       Animated.spring(this.state.content_pan, {
         toValue: {
           x: 0,
-          y: -(height / CONTENT_PAN_ADDITION + this.state.offset)
+          y: -(HEIGHT / CONTENT_PAN_ADDITION + this.state.offset)
         }
       }).start(),
       Animated.spring(this.state.bottom_pan, {
@@ -193,7 +192,7 @@ class Card extends Component {
         toValue: this.state.orgHeight
       }).start(),
       Animated.spring(this.state.bottom_height, {
-        toValue: height / BOTTOM_HEIGHT_DIVIDER
+        toValue: HEIGHT / BOTTOM_HEIGHT_DIVIDER
       }).start(),
       Animated.spring(this.state.top_pan, {
         toValue: {
@@ -224,7 +223,7 @@ class Card extends Component {
       }).start(),
 
       Animated.spring(this.state.container_height, {
-        toValue: height / 5 + height / BOTTOM_HEIGHT_DIVIDER
+        toValue: HEIGHT / 5 + HEIGHT / BOTTOM_HEIGHT_DIVIDER
       }).start(),
       Animated.spring(this.state.container_width, {
         toValue: this.state.orgWidth
@@ -234,7 +233,7 @@ class Card extends Component {
 
   calculateOffset = () => {
     if (this.refs.container) {
-      this.refs.container.measure((fx, fy, width, height, px, py) => {
+      this.refs.container.measure((fx, fy, WIDTH, height, px, py) => {
         this.setState({ offset: py }, () => {
           if (this.state.pressed) {
             this.grow();
@@ -301,7 +300,6 @@ class Card extends Component {
 
     const image =
       this.props.item.image && !this.props.imageDownloadDisabled ? { uri: this.props.item.image } : DefaultImage;
-      console.log(image);
     const elevation = this.state.pressed ? {} : { elevation: 5 };
     return (
       <Animated.View
@@ -467,6 +465,7 @@ class Card extends Component {
           </View>
         </View>
         {this.state.pressed &&
+          
           <TouchableOpacity disabled={disableButton} onPressIn={this.onPressMainButton}>
             <Animated.View
               ref={ref => (this.buttonRef = ref)}
@@ -475,7 +474,7 @@ class Card extends Component {
                 backgroundColor: !disableButton ? '#00aaff' : 'rgba(0,0,0,0.2)',
                 marginTop: 10,
                 borderRadius: 10,
-                width: width - 64,
+                width: WIDTH - 64,
                 height: 50,
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -491,11 +490,7 @@ class Card extends Component {
           {this.props.item.status &&
             this.props.item.status === COUPON_STATUS.NOT_USED &&
             this.state.expired &&
-            <Icon
-              type="MaterialCommunityIcons"
-              name="alert-circle-outline"
-              style={[{ color: 'red', fontSize: 25 }]}
-            />}
+            <Icon type="MaterialCommunityIcons" name="alert-circle-outline" style={[{ color: 'red', fontSize: 25 }]} />}
           {!this.state.pressed &&
             this.props.item.status &&
             this.props.item.status === COUPON_STATUS.REQUESTED &&
@@ -513,7 +508,7 @@ class Card extends Component {
       <Animated.View
         style={{
           opacity: this.state.content_opac,
-          width: width,
+          WIDTH: WIDTH,
           height: this.state.content_height,
           zIndex: -1,
           backgroundColor: 'rgb(242, 242, 242)',
@@ -566,7 +561,7 @@ class Card extends Component {
           styles.container,
           this.state.pressedStyle,
 
-          { width: this.state.container_width, height: this.state.container_height }
+          { WIDTH: this.state.container_width, height: this.state.container_height }
         ]}
       >
         <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPressCard : null} style={{}}>
@@ -651,7 +646,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     shadowColor: '#000',
     shadowOffset: {
-      width: 0,
+      WIDTH: 0,
       height: 2
     },
     shadowOpacity: 0.2,
@@ -690,7 +685,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     borderRadius: 50,
     alignSelf: 'flex-start',
-    width: 30,
+    WIDTH: 30,
     height: 30,
     justifyContent: 'center',
     top: 5,
@@ -719,7 +714,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontSize: 30,
-    width: 30,
+    WIDTH: 30,
     height: 30,
     borderColor: '#000',
     zIndex: 15

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FlatList, View, Animated, ScrollView } from 'react-native';
+import { FlatList, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Fab, Icon } from 'native-base';
 
@@ -18,23 +18,18 @@ const FromToDetail = ({
   //const fabOpac = useRef(new Animated.Value(1)).current;
   const [scroll, setScroll] = useState(true);
   const [pressed, setPressed] = useState(false);
-  const flatListRef = useRef();
 
   const onPress = () => {
     onPressCard();
     setPressed(true);
     setScroll(false);
-    //Animated.timing(fabOpac, { toValue: 0 }).start();
   };
   const onPressBack = () => {
     onPressCardBack();
     setPressed(false);
     setScroll(true);
-    //Animated.timing(fabOpac, { toValue: 1 }).start();
+
   };
-  /* const scrollToOffset = offset => {
-    flatListRef.current.scrollToOffset({ offset, animated: true });
-  }; */
 
   return (
     <View style={{ flex: 1 }}>
@@ -57,25 +52,6 @@ const FromToDetail = ({
             showXButton={props.showXButton !== undefined ? props.showXButton : false}
           />}
       />
-      {/* <ScrollView scrollEnabled={scroll} showsHorizontalScrollIndicator={false} horizontal={false}>
-        {coupons.list &&
-          coupons.list.length &&
-          coupons.list.map(
-            (item, index) =>
-              item.status !== COUPON_STATUS.DELETED &&
-              <Card
-                key={index}
-                type={type}
-                onPress={onPress}
-                onPressBack={onPressBack}
-                onPressMainButton={() => onPressMainButton(item, index)}
-                onPressX={() => onPressX(coupons, index, item.title)}
-                pressed={pressed}
-                item={item}
-                showXButton={props.showXButton !== undefined ? props.showXButton : false}
-              />
-          )}
-      </ScrollView> */}
       {!pressed &&
         <Fab
           active={false}

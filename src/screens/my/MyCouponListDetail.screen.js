@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, FlatList, Animated } from 'react-native';
-import PropTypes from 'prop-types';
+import { Alert, View, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { Fab, Icon } from 'native-base';
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TouchableHighlight, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { SwipeRow } from 'react-native-swipe-list-view';
 import { Icon } from 'native-base';
 import PropTypes from 'prop-types';

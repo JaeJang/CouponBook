@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon, Fab } from 'native-base';
 
-import firebase from '../../configs/firebase';
-
 import CollapsibleHeader from '@components/CollapsibleHeader';
-import CouponCard from '@components/CouponCard';
 import Card from '@components/Card';
-import Modal from '@components/Modal';
 
 import { CARD_TYPE } from '@constants';
 import { getMyCouponLists, addCouponList, removeListFromList } from '@modules/mycoupons';
