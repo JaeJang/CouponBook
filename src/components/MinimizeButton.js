@@ -3,7 +3,7 @@ import { Dimensions, Platform, TouchableOpacity, Text, Animated } from 'react-na
 import { Icon } from 'native-base';
 import RootComponent from './RootComponent';
 
-const { WIDTH } = Dimensions.get('window');
+const { width: WIDTH } = Dimensions.get('window');
 
 const MinimizeButtonBase = ({ ...props }) => {
   const [visible, setVisible] = useState(props.visible);

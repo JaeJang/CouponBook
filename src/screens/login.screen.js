@@ -34,7 +34,7 @@ const SLEEP_BETWEEN_NAME_FORM = 1000;
 //const INIT_ANI_START = 0;
 //const SLEEP_BETWEEN_NAME_FORM = 0;
 
-const { WIDTH, HEIGHT } = Dimensions.get('window');
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 class LoginScreen extends Component {
   constructor(props) {

@@ -31,7 +31,7 @@ import DefaultImage from '../images/default_image.png';
 import { checkExpiry } from '../utils/utils';
 import MinimizeButton from './MinimizeButton';
 
-const { WIDTH, HEIGHT } = Dimensions.get('window');
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 const BOTTOM_HEIGHT_DIVIDER = HEIGHT < 700 ? 7 : HEIGHT < 800 ? 8 : HEIGHT < 900 ? 9 : 10;
 const BOTTOM_PAN_ADDITION = HEIGHT < 700 ? 90 : HEIGHT < 800 ? 80 : HEIGHT < 900 ? 60 : 50;
@@ -233,7 +233,7 @@ class Card extends Component {
 
   calculateOffset = () => {
     if (this.refs.container) {
-      this.refs.container.measure((fx, fy, WIDTH, height, px, py) => {
+      this.refs.container.measure((fx, fy, width, height, px, py) => {
         this.setState({ offset: py }, () => {
           if (this.state.pressed) {
             this.grow();
@@ -508,7 +508,7 @@ class Card extends Component {
       <Animated.View
         style={{
           opacity: this.state.content_opac,
-          WIDTH: WIDTH,
+          width: WIDTH,
           height: this.state.content_height,
           zIndex: -1,
           backgroundColor: 'rgb(242, 242, 242)',
@@ -561,7 +561,7 @@ class Card extends Component {
           styles.container,
           this.state.pressedStyle,
 
-          { WIDTH: this.state.container_width, height: this.state.container_height }
+          { width: this.state.container_width, height: this.state.container_height }
         ]}
       >
         <TouchableWithoutFeedback onPress={!this.state.pressed ? this.onPressCard : null} style={{}}>
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     shadowColor: '#000',
     shadowOffset: {
-      WIDTH: 0,
+      width: 0,
       height: 2
     },
     shadowOpacity: 0.2,
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     borderRadius: 50,
     alignSelf: 'flex-start',
-    WIDTH: 30,
+    width: 30,
     height: 30,
     justifyContent: 'center',
     top: 5,
@@ -714,7 +714,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontSize: 30,
-    WIDTH: 30,
+    width: 30,
     height: 30,
     borderColor: '#000',
     zIndex: 15
